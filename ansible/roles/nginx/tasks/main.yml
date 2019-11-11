@@ -16,3 +16,5 @@
 - template:
     src: api-env
     dest: /var/www/smartcare-calendar/api/.env
+  when: # for capistrano
+   - ansible_distribution == "Ubuntu"

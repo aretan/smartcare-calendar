@@ -55,11 +55,11 @@ database.default.username = {{ mysql_username }}
 database.default.password = {{ mysql_password }}
 database.default.DBDriver = MySQLi
 
-# database.tests.hostname = localhost
-# database.tests.database = ci4
-# database.tests.username = root
-# database.tests.password = root
-# database.tests.DBDriver = MySQLi
+database.tests.hostname = writable/tests.db
+database.tests.database = smartcare
+database.tests.username = root
+database.tests.password = root
+database.tests.DBDriver = SQLite3
 
 #--------------------------------------------------------------------
 # CONTENT SECURITY POLICY

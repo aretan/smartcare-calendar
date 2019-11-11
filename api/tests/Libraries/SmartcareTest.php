@@ -1,6 +1,5 @@
 <?php namespace App\Libraries;
 
-
 class SmartcareTest extends \CIUnitTestCase
 {
     /**
@@ -41,13 +40,13 @@ class SmartcareTest extends \CIUnitTestCase
 
     /**
      * function separateTsuin
-     * 2つめのwarrantyMaxが0になるはずのケース
+     * othersに２つ入ってるケース
      */
     public function testSeparateTsuinCase1()
     {
         $smartcare = new Smartcare();
         $result = $smartcare->separateTsuin(null, null, null);
 
-        $this->assertEquals(2, count(json_decode($result->data, true)['others']));
+        $this->assertEquals(2, count($result['others']));
     }
 }

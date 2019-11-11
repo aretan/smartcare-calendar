@@ -1,5 +1,6 @@
 - apt:
     name: python-pymysql
+
 - mysql_db:
     login_host: "{{ mysql_hostname }}"
     login_user: "{{ mysql_username }}"

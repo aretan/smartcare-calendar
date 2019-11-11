@@ -23,8 +23,8 @@ class BaseController extends ResourceController
      */
     public function index()
     {
-        $model = $this->_getModel();
-        $parents = $this->_getParentId();
+        $model = $this->_getModel($this);
+        $parents = $this->_getParentId($this);
         if (count($parents)) {
             $model->where($parents);
         }
@@ -38,9 +38,9 @@ class BaseController extends ResourceController
      */
     public function create()
     {
-        $model = $this->_getModel();
-        $data = array_merge($this->_getParentId(), $this->request->getJSON(true));
-        $this->_getModel()->insert($this->_getEntity($data));
+        $model = $this->_getModel($this);
+        $data = array_merge($this->_getParentId($this), $this->request->getJSON(true));
+        $model->insert($this->_getEntity($this, $data));
         return $this->respondCreated();
     }
 
@@ -51,12 +51,12 @@ class BaseController extends ResourceController
      */
     public function show($id = null)
     {
-        $model = $this->_getModel();
-        $parents = $this->_getParentId();
+        $model = $this->_getModel($this);
+        $parents = $this->_getParentId($this);
         if (count($parents)) {
             $model->where($parents);
         }
-        return $this->respond($this->_getModel()->find($parents['id']), 200);
+        return $this->respond($model->find($parents['id']), 200);
     }
 
     /**
@@ -65,9 +65,10 @@ class BaseController extends ResourceController
      */
     public function update($id = null)
     {
-        $data = array_merge($this->_getParentId(), $this->request->getJSON(true));
-        $data['id'] = $id;
-        $this->_getModel()->update($this->_getEntity($data));
+        $model = $this->_getModel($this);
+        $parents = $this->_getParentId($this);
+        $data = array_merge($parents, $this->request->getJSON(true));
+        $this->_getModel($this)->update($this->_getEntity($this, $data));
         return $this->respond();
     }
 
@@ -77,37 +78,43 @@ class BaseController extends ResourceController
      */
     public function delete($id = null)
     {
-        $this->_getModel()->delete($id);
+        $model = $this->_getModel($this);
+        $parents = $this->_getParentId($this);
+        if (count($parents)) {
+            $model->where($parents);
+        }
+        $model->delete($parents['id']);
         return $this->respondDeleted();
     }
 
     /**
      * 内部関数：クラス名そのままのモデルを返す
      */
-    protected function _getModel()
+    protected function _getModel($class)
     {
-        $model = '\\App\\Models' . strrchr(get_class($this), '\\') . "Model";
+        $model = 'App\\Models' . strrchr(get_class($class), '\\') . "Model";
         return new $model();
     }
 
     /**
      * 内部関数：クラス名そのままのエンティティを返す
      */
-    protected function _getEntity($data = null)
+    protected function _getEntity($class, $data = null)
     {
-        $entity = '\\App\\Entities' . strrchr(get_class($this), '\\');
+        $entity = 'App\\Entities' . strrchr(get_class($class), '\\');
         return new $entity($data);
     }
 
     /**
      * 内部関数：URLから親のリソースIDを取得する
      */
-    protected function _getParentId()
+    protected function _getParentId($class)
     {
-        $segments = $this->request->uri->getSegments();
+        $segments = $class->request->uri->getSegments();
+        $parents = [];
 
-        for ($i=1; isset($segments[$i]); $i=$i+2) {
-            if (strtolower(substr(strrchr(get_class($this), '\\'), 1)) == $segments[$i]) {
+        for ($i=1; isset($segments[$i]) && isset($segments[$i+1]); $i=$i+2) {
+            if (strtolower(substr(strrchr(get_class($class), '\\'), 1)) == $segments[$i]) {
                 $parents['id'] = $segments[$i+1];
             } else {
                 $parents["{$segments[$i]}_id"] = $segments[$i+1];

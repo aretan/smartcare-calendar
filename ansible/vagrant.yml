@@ -6,7 +6,7 @@
     machine_name_s: "{{ lookup('env', 'LOGNAME') }}"
     api_environment: development
     mysql_hostname: localhost
-    mysql_database: smarrcare
+    mysql_database: smartcare
     mysql_username: vagrant
     mysql_password: password
     datadog_apikey: b5bf83818c93e58db07c347d5a50ce09
