@@ -1,0 +1,20 @@
+- stat:
+    path: /usr/share/phpmyadmin
+  register: phpmyadmin
+- unarchive:
+    src: https://files.phpmyadmin.net/phpMyAdmin/4.9.1/phpMyAdmin-4.9.1-all-languages.tar.gz
+    dest: /usr/share/phpmyadmin
+    remote_src: yes
+    extra_opts:
+      - "--strip-components=1"
+  when: phpmyadmin.stat.exists == false
+- mysql_db:
+    login_host: "{{ mysql_hostname }}"
+    login_user: "{{ mysql_username }}"
+    login_password: "{{ mysql_password }}"
+    name: all
+    state: import
+    target: /usr/share/phpmyadmin/sql/create_tables.sql
+- template:
+    src: config.inc.php
+    dest: /usr/share/phpmyadmin/config.inc.php

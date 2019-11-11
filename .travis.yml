@@ -1,0 +1,13 @@
+language: php
+os: linux
+script:
+- true
+after_success:
+- "./travis/deploy.sh"
+before_install:
+- openssl aes-256-cbc -K $encrypted_3dc1d5f3264d_key -iv $encrypted_3dc1d5f3264d_iv
+  -in travis/develop.pem.enc -out ~/.ssh/develop.pem -d
+
+env:
+  global:
+    secure: ENgu79oh0P4PuSPk4HtqTRq5iTqtLyVMTj4OH1jwBadfTzQx1jrvmbdVE16fWup9l/6vrP4QOfY09OXtIovMFjuQy9cUnf+SmkoQcoOw6NgXfALYDU7vdFgKBPkdwBjHudOVO76BgGZCZDP2zF4LYUHtDf+z/dC1AYa5iDZq173mvf65rHduJEVNfTA+RK0kcrqI4YA13ADIX0YRMhlZMF2ZrZNUIq+9emeCaT3wyGn0UI3pEK/B5h92xj+X3hU4mUBh4UyVpYZwuMe/BZ7QHY/iYCiBNWyslw4iFouR1bR7xuGJ0pfJUKsvw9nncYeB9PCPHceS/4lLk01SBzAlFJb7LOxQ+J1vP1oZT8fCa41uOSd7VbqkmeU9wdI1jQBRVLn8w8oAuYOu7mKcmQO0bIs/lU3grgot87rRs396d72qyP+zytmDN4OXoKbZZVltfPc5G5++jLU6vVEcSA/lwBFKJs3ig/SZd2hKyGLFzWG/bymMUYYi6R3LlI8tz+GxVcUgLluJp/YVmDagrKaYmEtPiml+IWLfEPyJgCgmXl52GEBNCQSyVqEylB8s2ngIULLYE5yPLu1s9EH4JlKa2r+yAW8j+Hec0m5/GFI6G4sxvBqggv3veRtcRVJWhX1KsZtyNCnLXEQO893I8AHy35ojwg3f+OR38MIDbqNZ/7A=

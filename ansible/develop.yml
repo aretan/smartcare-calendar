@@ -1,0 +1,19 @@
+---
+- hosts: all
+  become: yes
+  vars:
+    machine_name: web.develop
+    machine_name_s: web
+    api_environment: development
+    mysql_hostname: develop.cy0zmnm42u0g.ap-northeast-1.rds.amazonaws.com
+    mysql_database: smartcare
+    mysql_username: smartcare
+    mysql_password: ABaBhyQOEHp6wC6vyjGb
+    datadog_apikey: b5bf83818c93e58db07c347d5a50ce09
+  roles:
+    - common
+    - php
+    - nginx
+    - mysql_config
+    - phpmyadmin
+    - datadog

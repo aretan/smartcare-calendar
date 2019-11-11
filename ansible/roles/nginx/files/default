@@ -1,0 +1,98 @@
+server {
+       listen 80 default_server;
+       server_name _;
+       root /var/www/html;
+}
+
+# for Vagrant
+server {
+       listen 80;
+       server_name 192.168.33.10;
+       index index.html index.php;
+
+       location / {
+           root /var/www/smartcare-calendar/public;
+       }
+
+       location /swagger {
+           root /var/www/smartcare-calendar;
+       }
+
+       location /api {
+           root /var/www/smartcare-calendar;
+           try_files $uri $uri/ /api/index.php$is_args$args;
+           location ~ \.php$ {
+               include snippets/fastcgi-php.conf;
+               fastcgi_pass   unix:/run/php/php7.3-fpm.sock;
+               include        fastcgi_params;
+           }
+       }
+
+       location /phpmyadmin {
+           root /usr/share;
+           location ~ \.php$ {
+               include snippets/fastcgi-php.conf;
+               fastcgi_pass   unix:/run/php/php7.3-fpm.sock;
+               include        fastcgi_params;
+           }
+       }
+}
+
+# for Develop (master)
+server {
+       listen 80;
+       server_name smartcare-calendar.net;
+       index index.html index.php;
+
+       location / {
+           root /var/www/smartcare-calendar/master/current/public;
+       }
+
+       location /swagger {
+           root /var/www/smartcare-calendar/master/current;
+       }
+
+       location /api {
+           root /var/www/smartcare-calendar/master/current;
+           try_files $uri $uri/ /api/index.php$is_args$args;
+           location ~ \.php$ {
+               include snippets/fastcgi-php.conf;
+               fastcgi_pass   unix:/run/php/php7.2-fpm.sock;
+               include        fastcgi_params;
+           }
+       }
+
+       location /phpmyadmin {
+           root /usr/share;
+           location ~ \.php$ {
+               include snippets/fastcgi-php.conf;
+               fastcgi_pass   unix:/run/php/php7.2-fpm.sock;
+               include        fastcgi_params;
+           }
+       }
+}
+
+# for Develop (branches)
+server {
+       listen 80;
+       server_name ~^(?<branch>.+)\.smartcare-calendar\.net$;
+       index index.html index.php;
+
+       location / {
+           root /var/www/smartcare-calendar/$branch/current/public;
+       }
+
+       location /swagger {
+           root /var/www/smartcare-calendar/$branch/current;
+       }
+
+       location /api {
+           root /var/www/smartcare-calendar/$branch/current;
+           try_files $uri $uri/ /api/index.php$is_args$args;
+           location ~ \.php$ {
+               include snippets/fastcgi-php.conf;
+               fastcgi_pass   unix:/run/php/php7.2-fpm.sock;
+               include        fastcgi_params;
+           }
+       }
+}

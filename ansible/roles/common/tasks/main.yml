@@ -1,0 +1,20 @@
+- hostname:
+    name: "{{ machine_name }}"
+- template:
+    src: hosts
+    dest: /etc/hosts
+- apt:
+    upgrade: yes
+    update_cache: yes
+- apt:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - emacs25-nox
+    - vim
+    - ruby
+    - ansible
+- gem:
+    name: bundler
+- timezone:
+    name: Asia/Tokyo

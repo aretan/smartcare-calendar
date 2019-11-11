@@ -1,0 +1,19 @@
+- apt_key:
+    keyserver: hkp://keyserver.ubuntu.com:80
+    id: A2923DFF56EDA6E76E55E492D3A80E30382E94DE
+
+- apt_repository:
+    repo: deb https://apt.datadoghq.com/ stable 6
+
+- apt: update_cache=yes
+
+- apt:
+    name: datadog-agent
+
+- template:
+    src: datadog.yaml
+    dest: /etc/datadog-agent/datadog.yaml
+
+- service:
+    name: datadog-agent
+    state: started
