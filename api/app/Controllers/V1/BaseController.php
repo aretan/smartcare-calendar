@@ -51,7 +51,12 @@ class BaseController extends ResourceController
      */
     public function show($id = null)
     {
-        return $this->respond($this->_getModel()->find($id), 200);
+        $model = $this->_getModel();
+        $parents = $this->_getParentId();
+        if (count($parents)) {
+            $model->where($parents);
+        }
+        return $this->respond($this->_getModel()->find($parents['id']), 200);
     }
 
     /**
@@ -100,14 +105,13 @@ class BaseController extends ResourceController
     protected function _getParentId()
     {
         $segments = $this->request->uri->getSegments();
-        $parents = [];
 
-        if (isset($segments[1]) && isset($segments[2])) {
-            $parents["{$segments[1]}_id"] = $segments[2];
-        }
-
-        if (isset($segments[3]) && isset($segments[4])) {
-            $parents["{$segments[3]}_id"] = $segments[4];
+        for ($i=1; isset($segments[$i]); $i=$i+2) {
+            if (strtolower(substr(strrchr(get_class($this), '\\'), 1)) == $segments[$i]) {
+                $parents['id'] = $segments[$i+1];
+            } else {
+                $parents["{$segments[$i]}_id"] = $segments[$i+1];
+            }
         }
 
         return $parents;
