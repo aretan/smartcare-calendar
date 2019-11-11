@@ -69,11 +69,11 @@ $routes->setAutoRoute(false);
  * Route Definitions
  * --------------------------------------------------------------------
  */
-$routes->group('v1', ['namespace' => 'App\Controllers\v1'], function($routes)
+$routes->group('v1', ['namespace' => 'App\Controllers\V1'], function($routes)
 {
-    $routes->group('shoken/(:any)', ['namespace' => 'App\Controllers\v1'], function($routes)
+    $routes->group('shoken/(:any)', ['namespace' => 'App\Controllers\V1'], function($routes)
     {
-        $routes->group('ukeban/(:any)', ['namespace' => 'App\Controllers\v1'], function($routes)
+        $routes->group('ukeban/(:any)', ['namespace' => 'App\Controllers\V1'], function($routes)
         {
             $routes->resource('shujutsu', ['only' => ['create', 'update', 'delete']]);
             $routes->resource('tsuin', ['only' => ['create', 'update', 'delete']]);
