@@ -69,7 +69,7 @@ $routes->setAutoRoute(false);
  * Route Definitions
  * --------------------------------------------------------------------
  */
-$routes->add('/', 'App\Controllers\Index');
+$routes->add('/', 'App\Controllers\Calendar');
 
 $routes->group('api/v1', ['namespace' => 'App\Controllers\Api\V1'], function($routes)
 {
