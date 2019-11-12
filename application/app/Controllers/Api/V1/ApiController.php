@@ -116,7 +116,7 @@ class ApiController extends ResourceController
         $segments = $class->request->uri->getSegments();
         $parents = [];
 
-        for ($i=1; isset($segments[$i]) && isset($segments[$i+1]); $i=$i+2) {
+        for ($i=2; isset($segments[$i]) && isset($segments[$i+1]); $i=$i+2) {
             if (strtolower(substr(strrchr(get_class($class), '\\'), 1)) == $segments[$i]) {
                 $parents['id'] = $segments[$i+1];
             } else {

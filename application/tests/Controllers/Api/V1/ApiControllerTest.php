@@ -70,11 +70,11 @@ class ApiControllerTest extends CIDatabaseTestCase
     {
         return [
             [ // standard
-                ['v1', 'test', '10', 'ff', '100'],
+                ['api', 'v1', 'test', '10', 'ff', '100'],
                 ['test_id' => '10', 'ff_id' => '100'],
             ],
             [ // if mock_id included
-                ['v1', 'mock', '10', 'ff', '100'],
+                ['api', 'v1', 'mock', '10', 'ff', '100'],
                 ['id' => '10', 'ff_id' => '100'],
             ],
         ];

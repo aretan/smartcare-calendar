@@ -10,11 +10,11 @@
     state: link
   when: # when vagrant
    - ansible_distribution == "Debian"
-- file: path=/var/www/smartcare-calendar/api state=directory owner=ubuntu group=ubuntu mode=0755
+- file: path=/var/www/smartcare-calendar/application state=directory owner=ubuntu group=ubuntu mode=0755
   when: # for capistrano
    - ansible_distribution == "Ubuntu"
 - template:
-    src: api-env
-    dest: /var/www/smartcare-calendar/api/.env
+    src: application-env
+    dest: /var/www/smartcare-calendar/application/.env
   when: # for capistrano
    - ansible_distribution == "Ubuntu"

@@ -5,7 +5,7 @@ set :repo_url, "git@github.com:aretan/smartcare-calendar.git"
 set :branch, ENV["branch"] || "master"
 set :deploy_to, "/var/www/smartcare-calendar/#{fetch(:branch).tr("/", "-")}"
 
-set :file_permissions_paths, ["api/writable/debugbar", "api/writable/cache", "api/writable/uploads", "api/writable/logs", "api/writable/session"]
+set :file_permissions_paths, ["application/writable/debugbar", "application/writable/cache", "application/writable/uploads", "application/writable/logs", "application/writable/session"]
 set :file_permissions_users, ["www-data"]
 before "deploy:updated", "deploy:set_permissions:acl"
 set :keep_releases, 1
@@ -17,11 +17,11 @@ set :ssh_options, {
 }
 
 namespace :deploy do
-  task :api_env_file do
+  task :application_env_file do
     on roles(:web) do
-      execute "ln -fns /var/www/smartcare-calendar/api/.env #{release_path}/api/.env"
+      execute "ln -fns /var/www/smartcare-calendar/application/.env #{release_path}/application/.env"
     end
   end
 end
 
-after 'deploy:updated', 'deploy:api_env_file'
+after 'deploy:updated', 'deploy:application_env_file'
