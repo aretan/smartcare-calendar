@@ -12,8 +12,7 @@ $ vagrant up
 
 ### URL
 
-* Frontend - http://192.168.33.10/
-* Backend - http://192.168.33.10/api/v1/
+* Application - http://192.168.33.10/
 * Database - http://192.168.33.10/phpmyadmin/
 
 ### Directory
@@ -21,6 +20,6 @@ $ vagrant up
 + ansible - `実行環境の設定スクリプト（Vagrant環境、Development環境、Production環境）`
 + capistrano - `デプロイスクリプト`
 + travis - `CI/CD関連の資材`
-+ api - `API本体`
-+ public - `静的コンテンツ (Bootstrap)`
++ application - `PHPアプリケーション（API含む）`
++ public - `公開ディレクトリ（Bootstrap）`
 + Vagrantfile - `Vagrant環境の立上げスクリプト`
