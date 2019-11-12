@@ -69,8 +69,6 @@ $routes->setAutoRoute(false);
  * Route Definitions
  * --------------------------------------------------------------------
  */
-$routes->add('/', 'App\Controllers\Calendar::show');
-
 $routes->group('api/v1', ['namespace' => 'App\Controllers\Api\V1'], function($routes)
 {
     $routes->group('shoken/(:any)', ['namespace' => 'App\Controllers\Api\V1'], function($routes)
@@ -86,6 +84,9 @@ $routes->group('api/v1', ['namespace' => 'App\Controllers\Api\V1'], function($ro
     });
     $routes->resource('shoken', ['only' => ['index', 'create', 'show', 'update', 'delete']]);
 });
+
+$routes->add('/', 'App\Controllers\Calendar::show');
+$routes->add('/(:any)', 'App\Controllers\Calendar::show/$1');
 
 /**
  * --------------------------------------------------------------------

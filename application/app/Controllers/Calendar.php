@@ -2,7 +2,7 @@
 
 class Calendar extends WebController
 {
-    public function show()
+    public function show($shoken_id=null)
     {
         return view('calendar');
     }

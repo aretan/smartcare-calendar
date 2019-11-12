@@ -6,23 +6,24 @@
   <title>スマケアカレンダー</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-  <link rel="stylesheet" href="vendor/adminlte-2.4.18/bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/vendor/adminlte-2.4.18/bower_components/bootstrap/dist/css/bootstrap.min.css">
 
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="vendor/adminlte-2.4.18/bower_components/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/vendor/adminlte-2.4.18/bower_components/font-awesome/css/font-awesome.min.css">
 
   <!-- bootstrap datepicker -->
-  <link rel="stylesheet" href="vendor/adminlte-2.4.18/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+  <link rel="stylesheet" href="/vendor/adminlte-2.4.18/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
   <!-- daterange picker -->
-  <link rel="stylesheet" href="vendor/adminlte-2.4.18/bower_components/bootstrap-daterangepicker/daterangepicker.css">
+  <link rel="stylesheet" href="/vendor/adminlte-2.4.18/bower_components/bootstrap-daterangepicker/daterangepicker.css">
+  <link rel="stylesheet" href="/vendor/adminlte-2.4.18/bower_components/bootstrap-monthrangepicker/daterangepicker.css">
   <!-- Ionicons -->
-  <link rel="stylesheet" href="vendor/adminlte-2.4.18/bower_components/Ionicons/css/ionicons.min.css">
+  <link rel="stylesheet" href="/vendor/adminlte-2.4.18/bower_components/Ionicons/css/ionicons.min.css">
   <!-- fullCalendar -->
-  <link rel="stylesheet" href="vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/fullcalendar.min.css">
-  <link rel="stylesheet" href="vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/fullcalendar.print.min.css" media="print">
+  <link rel="stylesheet" href="/vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/fullcalendar.min.css">
+  <link rel="stylesheet" href="/vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/fullcalendar.print.min.css" media="print">
   <!-- Theme style -->
-  <link rel="stylesheet" href="vendor/adminlte-2.4.18/dist/css/AdminLTE.min.css">
-  <link rel="stylesheet" href="vendor/adminlte-2.4.18/dist/css/skins/skin-green.min.css">
+  <link rel="stylesheet" href="/vendor/adminlte-2.4.18/dist/css/AdminLTE.min.css">
+  <link rel="stylesheet" href="/vendor/adminlte-2.4.18/dist/css/skins/skin-green.min.css">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -134,37 +135,20 @@ desired effect
                     年間カレンダー
                   </a>
                 </h4>
+
+                <div class="box-tools pull-right" style="width:250px;">
+                  <div class="input-group input-group-sm">
+                    <input type="text" class="form-control" id="monthrange" name="monthrange" value="2019/01 - 2020/01">
+                    <span class="input-group-btn">
+                      <button type="submit" class="btn btn-info btn-flat">反映</button>
+                    </span>
+                  </div>
+                </div>
               </div>
               <div id="collapseOne" class="panel-collapse collapse in">
 
                 <div class="box-body no-padding">
-                  <table class="table table-bordered">
-                    <?php $year = 2019; $month = 5; $year_printed = false; ?>
-                    <?php for($j=0; $j<12; $j++) { ?>
-                    <tr>
-                      <td rowspan="2" style="width: 10%; text-align: center; vertical-align: middle;">
-                        <?php $year_print = date("Y", mktime(0, 0, 0, $month+$j, 1, $year)) ?>
-                        <?php if($year_print != $year_printed){ ?>
-                        <?=date("Y", mktime(0, 0, 0, $month+$j, 1, $year)) ?>年<br />
-                        <?php $year_printed = $year_print; ?>
-                        <?php } ?>
-                        <?=date("n", mktime(0, 0, 0, $month+$j, 1, $year)) ?>月
-                      </td>
-                      <?php for($i=1; $i<=16; $i++){ ?>
-                      <td style="text-align: center;"><?=$i ?></td>
-                      <?php } ?>
-                      <td rowspan="2" style="width: 10% text-align: center; vertical-align: middle;"></td>
-                    </tr>
-                    <tr>
-                      <?php while (date("d", mktime(0, 0, 0, $month+$j, $i, $year)) > 15) { ?>
-                      <td style="text-align: center;"><?=$i ?></td>
-                      <?php $i++; } ?>
-                      <?php while ($i<=32){ ?>
-                      <td style="background-color:black;"></td>
-                      <?php $i++; } ?>
-                    </tr>
-                    <?php } ?>
-                  </table>
+                  <?php (new \App\Libraries\Calendar)->render(2017, 10, 2020, 10); ?>
                 </div>
                 <!-- /.box-body -->
               </div>
@@ -216,54 +200,36 @@ desired effect
             <div class="tab-content">
               <div class="active tab-pane" id="activity">
 
+                <strong><i class="fa fa-hotel margin-r-5"></i>入院：2018/08/05</strong>
+                <p>4日間 (8/12 8/15 8/20 9/10)</p>
 
-              <strong><i class="fa fa-file-text-o margin-r-5"></i> Notes</strong>
+                <strong><i class="fa fa-calendar-plus-o margin-r-5"></i>手術：2018/08/05</strong>
+                <p>0日間</p>
 
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam fermentum enim neque.</p>
-                <!-- Post -->
-                <div class="post">
-                  <p>
-                    Lorem ipsum represents a long-held tradition for designers,
-                    typographers and the like. Some people hate it and argue for
-                    its demise, but others ignore the hate as they create awesome
-                    tools to help create filler text for everyone from bacon lovers
-                    to Charlie Sheen fans.
-                  </p>
-                </div>
-                <!-- /.post -->
-
-                <!-- Post -->
-                <div class="post">
-                  <div class="user-block">
-                    <img class="img-circle img-bordered-sm" src="vendor/adminlte-2.4.18/dist/img/user6-128x128.jpg" alt="User Image">
-                        <span class="username">
-                          <a href="#">入院</a>
-                        </span>
-                    <span class="description">2019/01/05</span>
-                  </div>
-                  <!-- /.user-block -->
-                  <p>
-                    2019/01/10, 2019/01/20, 2019/01/30<br />
-                    (3/30)
-                  </p>
-                </div>
-                <!-- /.post -->
               </div>
               <!-- /.tab-pane -->
               <div class="tab-pane" id="timeline">
                 <!-- The timeline -->
                 <ul class="timeline timeline-inverse">
+
+                  <!-- timeline time label -->
+                  <li class="time-label">
+                    <span class="bg-red">
+                      契約日：2018/05/24
+                    </span>
+                  </li>
+                  <!-- /.timeline-label -->
                   <!-- timeline item -->
                   <li>
                     <i class="fa fa-envelope bg-blue"></i>
 
                     <div class="timeline-item">
-                      <span class="time"><i class="fa fa-clock-o"></i> 2019/10/10</span>
+                      <span class="time"><i class="fa fa-clock-o"></i> 2019/8/10</span>
                       <h3 class="timeline-header">E01-1908-8178901</h3>
                       <div class="timeline-body">
-                        2019/10/10 手術<br />
-                        2019/10/10 手術<br />
-                        2019/10/10 手術<br />
+                        2019/08/12 通院<br />
+                        2019/08/15 通院<br />
+                        2019/08/20 通院<br />
                       </div>
                       <div class="timeline-footer">
                         <a class="btn btn-primary btn-xs">結果表示</a>
@@ -280,9 +246,9 @@ desired effect
                       <span class="time"><i class="fa fa-clock-o"></i> 2019/10/05</span>
                       <h3 class="timeline-header">E01-1908-8178901</h3>
                       <div class="timeline-body">
-                        2019/10/10 手術<br />
-                        2019/10/10 手術<br />
-                        2019/10/10 手術<br />
+                        2019/09/10 通院<br />
+                        2019/08/05 手術<br />
+                        2019/08/05 - 2019/08-10 入院<br />
                       </div>
                       <div class="timeline-footer">
                         <a class="btn btn-primary btn-xs">結果表示</a>
@@ -291,10 +257,7 @@ desired effect
                     </div>
                   </li>
                   <!-- END timeline item -->
-                  <!-- /.timeline-label -->
-                  <li>
-                    <i class="fa fa-clock-o bg-gray"></i>
-                  </li>
+
                 </ul>
               </div>
               <!-- /.tab-pane -->
@@ -384,25 +347,27 @@ desired effect
 <!-- REQUIRED JS SCRIPTS -->
 
 <!-- jQuery 3 -->
-<script src="vendor/adminlte-2.4.18/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="/vendor/adminlte-2.4.18/bower_components/jquery/dist/jquery.min.js"></script>
 <!-- Bootstrap 3.3.7 -->
-<script src="vendor/adminlte-2.4.18/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/vendor/adminlte-2.4.18/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- jQuery UI 1.11.4 -->
-<script src="vendor/adminlte-2.4.18/bower_components/jquery-ui/jquery-ui.min.js"></script>
+<script src="/vendor/adminlte-2.4.18/bower_components/jquery-ui/jquery-ui.min.js"></script>
 <!-- Slimscroll -->
-<script src="vendor/adminlte-2.4.18/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<script src="/vendor/adminlte-2.4.18/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
 <!-- FastClick -->
-<script src="vendor/adminlte-2.4.18/bower_components/fastclick/lib/fastclick.js"></script>
+<script src="/vendor/adminlte-2.4.18/bower_components/fastclick/lib/fastclick.js"></script>
 <!-- AdminLTE App -->
-<script src="vendor/adminlte-2.4.18/dist/js/adminlte.min.js"></script>
+<script src="/vendor/adminlte-2.4.18/dist/js/adminlte.min.js"></script>
 <!-- fullCalendar -->
-<script src="vendor/adminlte-2.4.18/bower_components/moment/moment.js"></script>
-<script src="vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
-<script src="vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/locale-all.js"></script>
+<script src="/vendor/adminlte-2.4.18/bower_components/moment/moment.js"></script>
+<script src="/vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
+<script src="/vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/locale-all.js"></script>
 <!-- bootstrap datepicker -->
-<script src="vendor/adminlte-2.4.18/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+<script src="/vendor/adminlte-2.4.18/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+<script src="/vendor/adminlte-2.4.18/bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.ja.min.js"></script>
 <!-- bootstrap daterangepicker -->
-<script src="vendor/adminlte-2.4.18/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script src="/vendor/adminlte-2.4.18/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script src="/vendor/adminlte-2.4.18/bower_components/bootstrap-monthrangepicker/daterangepicker.js"></script>
 <script>
   $(function () {
       $('#calendar').fullCalendar({
@@ -466,18 +431,32 @@ desired effect
       //Date range picker
       $('#nyuin').daterangepicker({
           autoApply: true,
+          drops: 'down',
           locale: {
               format:'YYYY/MM/DD',
               applyLabel: '反映',
               cancelLabel: '取消',
-              fromLabel: '開始日',
-              toLabel: '終了日',
+              monthNames: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
           },
       });
 
       //Date picker
       $('.datepicker').datepicker({
           autoclose: true,
+          orientation: 'bottom',
+          language: 'ja',
+      })
+
+      //Date picker
+      $('#monthrange').monthrangepicker({
+          autoApply: true,
+          drops: 'down',
+          locale: {
+              format:'YYYY/MM',
+              applyLabel: '反映',
+              cancelLabel: '取消',
+              monthNames: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+          }
       })
   })
 </script>
