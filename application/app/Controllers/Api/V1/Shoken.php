@@ -1,6 +1,6 @@
-<?php namespace App\Controllers\V1;
+<?php namespace App\Controllers\Api\V1;
 
-class Shoken extends BaseController
+class Shoken extends ApiController
 {
     /**
      * 証券に紐づくデータ全部もってくる

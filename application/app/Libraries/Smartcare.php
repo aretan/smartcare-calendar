@@ -3,6 +3,18 @@
 class Smartcare
 {
     /**
+     * 入院の保証期間と保証回数を埋める
+     */
+    public function addWarranty($nyuin)
+    {
+        $nyuin['warrantyStart'] = '2019/11/10';
+        $nyuin['warrantyEnd'] = '2019/11/20';
+        $nyuin['warrantyMax'] = '5';
+
+        return $nyuin;
+    }
+
+    /**
      * 入院と入院が近いとき、一つの入院とみなされ、同一初回となる
      *
      * @param array $nyuinList

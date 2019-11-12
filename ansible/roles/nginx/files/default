@@ -12,15 +12,7 @@ server {
 
        location / {
            root /var/www/smartcare-calendar/public;
-       }
-
-       location /swagger {
-           root /var/www/smartcare-calendar;
-       }
-
-       location /api {
-           root /var/www/smartcare-calendar;
-           try_files $uri $uri/ /api/index.php$is_args$args;
+           try_files $uri $uri/ /index.php$is_args$args;
            location ~ \.php$ {
                include snippets/fastcgi-php.conf;
                fastcgi_pass   unix:/run/php/php7.3-fpm.sock;
@@ -46,15 +38,7 @@ server {
 
        location / {
            root /var/www/smartcare-calendar/master/current/public;
-       }
-
-       location /swagger {
-           root /var/www/smartcare-calendar/master/current;
-       }
-
-       location /api {
-           root /var/www/smartcare-calendar/master/current;
-           try_files $uri $uri/ /api/index.php$is_args$args;
+           try_files $uri $uri/ /index.php$is_args$args;
            location ~ \.php$ {
                include snippets/fastcgi-php.conf;
                fastcgi_pass   unix:/run/php/php7.2-fpm.sock;
@@ -80,15 +64,7 @@ server {
 
        location / {
            root /var/www/smartcare-calendar/$branch/current/public;
-       }
-
-       location /swagger {
-           root /var/www/smartcare-calendar/$branch/current;
-       }
-
-       location /api {
-           root /var/www/smartcare-calendar/$branch/current;
-           try_files $uri $uri/ /api/index.php$is_args$args;
+           try_files $uri $uri/ /index.php$is_args$args;
            location ~ \.php$ {
                include snippets/fastcgi-php.conf;
                fastcgi_pass   unix:/run/php/php7.2-fpm.sock;

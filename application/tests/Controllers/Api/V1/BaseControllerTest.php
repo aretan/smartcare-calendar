@@ -3,7 +3,7 @@
 use CodeIgniter\Test\CIDatabaseTestCase;
 use CodeIgniter\Test\ControllerTester;
 
-class BaseControllerTest extends CIDatabaseTestCase
+class ApiControllerTest extends CIDatabaseTestCase
 {
     use ControllerTester;
 
@@ -14,7 +14,7 @@ class BaseControllerTest extends CIDatabaseTestCase
      */
     public function testGetModel($controller, $expected)
     {
-        $base = new \App\Controllers\V1\BaseController();
+        $base = new \App\Controllers\Api\V1\ApiController();
         $method = $this->getPrivateMethodInvoker($base, '_getModel');
 
         $actual = $method(new $controller());
@@ -30,7 +30,7 @@ class BaseControllerTest extends CIDatabaseTestCase
      */
     public function testGetEntity($controller, $expected)
     {
-        $base = new \App\Controllers\V1\BaseController();
+        $base = new \App\Controllers\Api\V1\ApiController();
         $method = $this->getPrivateMethodInvoker($base, '_getEntity');
 
         $actual = $method(new $controller());
@@ -42,12 +42,12 @@ class BaseControllerTest extends CIDatabaseTestCase
     public function getControllerProvider()
     {
         return [
-            ['\\App\\Controllers\\V1\\Shoken', 'Shoken'],
-            ['\\App\\Controllers\\V1\\Ukeban', 'Ukeban'],
-            ['\\App\\Controllers\\V1\\Shujutsu', 'Shujutsu'],
-            ['\\App\\Controllers\\V1\\Nyuin', 'Nyuin'],
-            ['\\App\\Controllers\\V1\\Tsuin', 'Tsuin'],
-            ['\\App\\Controllers\\V1\\Result', 'Result'],
+            ['\\App\\Controllers\\Api\\V1\\Shoken', 'Shoken'],
+            ['\\App\\Controllers\\Api\\V1\\Ukeban', 'Ukeban'],
+            ['\\App\\Controllers\\Api\\V1\\Shujutsu', 'Shujutsu'],
+            ['\\App\\Controllers\\Api\\V1\\Nyuin', 'Nyuin'],
+            ['\\App\\Controllers\\Api\\V1\\Tsuin', 'Tsuin'],
+            ['\\App\\Controllers\\Api\\V1\\Result', 'Result'],
         ];
     }
 
@@ -59,7 +59,7 @@ class BaseControllerTest extends CIDatabaseTestCase
     public function testGetParentId($uri, $expected)
     {
         $mock = new Mock($uri);
-        $base = new \App\Controllers\V1\BaseController();
+        $base = new \App\Controllers\Api\V1\ApiController();
         $method = $this->getPrivateMethodInvoker($base, '_getParentId');
         $actual = $method($mock);
 

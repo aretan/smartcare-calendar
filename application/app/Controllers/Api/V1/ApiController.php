@@ -1,20 +1,20 @@
-<?php
-namespace App\Controllers\V1;
+<?php namespace App\Controllers\Api\V1;
 
 use CodeIgniter\RESTful\ResourceController;
-use CodeIgniter\Controller;
 use CodeIgniter\API\ResponseTrait;
 
-class BaseController extends ResourceController
+class ApiController extends ResourceController
 {
     use ResponseTrait;
     protected $helpers = [];
+    protected $smartcare;
 
     public function initController(\CodeIgniter\HTTP\RequestInterface $request,
                                    \CodeIgniter\HTTP\ResponseInterface $response,
                                    \Psr\Log\LoggerInterface $logger)
     {
         parent::initController($request, $response, $logger);
+        $this->smartcare = new \App\Libraries\Smartcare();
     }
 
     /**
@@ -38,9 +38,12 @@ class BaseController extends ResourceController
      */
     public function create()
     {
-        $model = $this->_getModel($this);
-        $data = array_merge($this->_getParentId($this), $this->request->getJSON(true));
-        $model->insert($this->_getEntity($this, $data));
+        $request = $this->request->getJSON(true);
+        if (!$request) {
+            $request = $this->request->getPost();
+        }
+        $data = array_merge($this->_getParentId($this), $request);
+        $this->_getModel($this)->insert($data);
         return $this->respondCreated();
     }
 

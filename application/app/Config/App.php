@@ -266,4 +266,8 @@ class App extends BaseConfig
     */
     public $CSPEnabled = false;
 
+    public function __construct() {
+        $this->baseURL = "http://{$_SERVER['HTTP_HOST']}/";
+        parent::__construct();
+    }
 }

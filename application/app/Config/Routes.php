@@ -57,9 +57,9 @@ if (file_exists(SYSTEMPATH . 'Config/Routes.php'))
  * Controllers when no specific route has been defined. If false,
  * only routes that have been defined here will be available.
  */
-$routes->setDefaultNamespace('App\Controllers');
-$routes->setDefaultController('Home');
-$routes->setDefaultMethod('index');
+// $routes->setDefaultNamespace('App\Controllers');
+// $routes->setDefaultController('Index');
+// $routes->setDefaultMethod('index');
 $routes->setTranslateURIDashes(false);
 $routes->set404Override();
 $routes->setAutoRoute(false);
@@ -69,15 +69,17 @@ $routes->setAutoRoute(false);
  * Route Definitions
  * --------------------------------------------------------------------
  */
-$routes->group('v1', ['namespace' => 'App\Controllers\V1'], function($routes)
+$routes->add('/', 'App\Controllers\Index');
+
+$routes->group('api/v1', ['namespace' => 'App\Controllers\Api\V1'], function($routes)
 {
-    $routes->group('shoken/(:any)', ['namespace' => 'App\Controllers\V1'], function($routes)
+    $routes->group('shoken/(:any)', ['namespace' => 'App\Controllers\Api\V1'], function($routes)
     {
-        $routes->group('ukeban/(:any)', ['namespace' => 'App\Controllers\V1'], function($routes)
+        $routes->group('ukeban/(:any)', ['namespace' => 'App\Controllers\Api\V1'], function($routes)
         {
-            $routes->resource('shujutsu', ['only' => ['create', 'update', 'delete']]);
-            $routes->resource('tsuin', ['only' => ['create', 'update', 'delete']]);
-            $routes->resource('nyuin', ['only' => ['create', 'update', 'delete']]);
+            $routes->resource('shujutsu', ['only' => ['create', 'update', 'delete'], 'websafe' => 1]);
+            $routes->resource('tsuin', ['only' => ['create', 'update', 'delete'], 'websafe' => 1]);
+            $routes->resource('nyuin', ['only' => ['create', 'update', 'delete'], 'websafe' => 1]);
             $routes->resource('result', ['only' => ['create', 'show']]);
         });
         $routes->resource('ukeban', ['only' => ['create', 'show', 'update', 'delete']]);
