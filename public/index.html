@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!--
-This is a starter template page. Use this page to start your new project from
-scratch. This page gets rid of all links and provides the needed markup only.
--->
 <html>
 <head>
   <meta charset="utf-8">
@@ -11,13 +7,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <link rel="stylesheet" href="vendor/adminlte-2.4.18/bower_components/bootstrap/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
   <!-- Font Awesome -->
- <link rel="stylesheet" href="vendor/adminlte-2.4.18/bower_components/font-awesome/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+  <link rel="stylesheet" href="vendor/adminlte-2.4.18/bower_components/font-awesome/css/font-awesome.min.css">
 
+  <!-- bootstrap datepicker -->
+  <link rel="stylesheet" href="vendor/adminlte-2.4.18/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+  <!-- daterange picker -->
+  <link rel="stylesheet" href="vendor/adminlte-2.4.18/bower_components/bootstrap-daterangepicker/daterangepicker.css">
   <!-- Ionicons -->
   <link rel="stylesheet" href="vendor/adminlte-2.4.18/bower_components/Ionicons/css/ionicons.min.css">
   <!-- fullCalendar -->
@@ -25,13 +22,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" href="vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/fullcalendar.print.min.css" media="print">
   <!-- Theme style -->
   <link rel="stylesheet" href="vendor/adminlte-2.4.18/dist/css/AdminLTE.min.css">
-  <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
-        page. However, you can choose any other skin. Make sure you
-        apply the skin class to the body tag so the changes take effect. -->
-  <link rel="stylesheet" href="vendor/adminlte-2.4.18/dist/css/skins/skin-blue.min.css">
+  <link rel="stylesheet" href="vendor/adminlte-2.4.18/dist/css/skins/skin-green.min.css">
 
-<!--vue.js読み込み-->
-  <!--<script src="https://cdn.jsdelivr.net/vue/latest/vue.js"></script>-->
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
@@ -41,14 +33,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-
-  <!--カレンダー表示に必要なライブラリ -->
-  <!--<script src="https://unpkg.com/js-year-calendar@latest/dist/js-year-calendar.min.js"></script>-->
-  <!--<script src="https://unpkg.com/js-year-calendar@latest/locales/js-year-calendar.ja.js"></script>-->
-<link rel="stylesheet" type="text/css" href="https://unpkg.com/js-year-calendar@latest/dist/js-year-calendar.min.css" />
-<script src="https://unpkg.com/js-year-calendar@latest/dist/js-year-calendar.min.js"></script>
-
-
 </head>
 <!--
 BODY TAG OPTIONS:
@@ -70,18 +54,18 @@ desired effect
 |               | sidebar-mini                            |
 |---------------------------------------------------------|
 -->
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-green sidebar-mini">
 <div class="wrapper">
 
   <!-- Main Header -->
   <header class="main-header">
 
     <!-- Logo -->
-    <a href="index2.html" class="logo">
+    <a href="/" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini"><b>SC</b>C</span>
+      <span class="logo-mini"><b>通</b></span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>入院</b>カレンダー</span>
+      <span class="logo-lg"><b>通院</b>カレンダー</span>
     </a>
 
     <!-- Header Navbar -->
@@ -90,109 +74,6 @@ desired effect
       <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
         <span class="sr-only">Toggle navigation</span>
       </a>
-      <!-- Navbar Right Menu -->
-      <div class="navbar-custom-menu">
-        <ul class="nav navbar-nav">
-          <!-- Messages: style can be found in dropdown.less-->
-          <li class="dropdown messages-menu">
-            <!-- Menu toggle button -->
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <i class="fa fa-envelope-o"></i>
-              <span class="label label-success">4</span>
-            </a>
-            <ul class="dropdown-menu">
-              <li class="header">Awaiting 20 customers</li>
-              <li>
-                <!-- inner menu: contains the messages -->
-                <ul class="menu">
-                  <li><!-- start message -->
-                    <a href="#">
-                      <!-- Message title and timestamp -->
-                      <h4 style="margin-left:0px">
-                        Yuji Nomura
-                        <small><i class="fa fa-clock-o"></i> 360 mins</small>
-                      </h4>
-                      <!-- The message -->
-                      <p style="margin-left:0px">046-2301302</p>
-                    </a>
-                  </li>
-                  <!-- end message -->
-                </ul>
-                <!-- /.menu -->
-              </li>
-              <li>
-                <!-- inner menu: contains the messages -->
-                <ul class="menu">
-                  <li><!-- start message -->
-                    <a href="#">
-                      <!-- Message title and timestamp -->
-                      <h4 style="margin-left:0px">
-                        Hiroki Yoshida
-                        <small><i class="fa fa-clock-o"></i> 360 mins</small>
-                      </h4>
-                      <!-- The message -->
-                      <p style="margin-left:0px">046-2301302</p>
-                    </a>
-                  </li>
-                  <!-- end message -->
-                </ul>
-                <!-- /.menu -->
-              </li>
-            </ul>
-          </li>
-          <!-- /.messages-menu -->
-
-          <!-- Tasks Menu -->
-          <li class="dropdown tasks-menu">
-            <!-- Menu Toggle Button -->
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <i class="fa fa-flag-o"></i>
-              <span class="label label-danger">9</span>
-            </a>
-            <ul class="dropdown-menu">
-              <li class="header">Achivement</li>
-              <li>
-                <!-- Inner menu: contains the tasks -->
-                <ul class="menu">
-                  <li><!-- Task item -->
-                    <a href="#">
-                      <!-- Task title and progress text -->
-                      <h3>
-                        Daily
-                        <small class="pull-right">10/50</small>
-                      </h3>
-                      <!-- The progress bar -->
-                      <div class="progress xs">
-                        <!-- Change the css width attribute to simulate progress -->
-                        <div class="progress-bar progress-bar-aqua" style="width: 20%" role="progressbar"
-                             aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                        </div>
-                      </div>
-                    </a>
-                  </li>1
-                  <li><!-- Task item -->
-                    <a href="#">
-                      <!-- Task title and progress text -->
-                      <h3>
-                        Monthly
-                        <small class="pull-right">800/1000</small>
-                      </h3>
-                      <!-- The progress bar -->
-                      <div class="progress xs">
-                        <!-- Change the css width attribute to simulate progress -->
-                        <div class="progress-bar progress-bar-aqua" style="width: 80%" role="progressbar"
-                             aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">
-                        </div>
-                      </div>
-                    </a>
-                  </li>
-                  <!-- end task item -->
-                </ul>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
     </nav>
   </header>
   <!-- Left side column. contains the logo and sidebar -->
@@ -243,178 +124,186 @@ desired effect
     <!-- Main content -->
     <section class="content container-fluid">
       <div class="row">
-        <div class="col-md-7">
+        <div class="col-md-8">
           <div class="box box-primary">
             <div class="box-body no-padding">
               <!-- THE CALENDAR -->
-                <div class='calendar'></div>
-                
-                <!--モーダル表示のテスト必要-->
-
+              <div id="calendar"></div>
             </div>
             <!-- /.box-body -->
-            <div class="box-footer box-comments">
-              <div id="external-events">
-                <span class="external-event bg-green">通院</span>
-                <span class="external-event bg-yellow">手術</span>
-                <span class="external-event bg-aqua">入院</span>
-                <i id="calendar_trash" class="fa fa-trash fa-5x" aria-hidden="true"></i>
+            <div class="box-footer">
+              <div class="form-group">
+                <textarea class="form-control" rows="3" placeholder="Enter ..."></textarea>
               </div>
+              <button type="submit" class="btn btn-info pull-right">Save</button>
             </div>
+            <!-- /.box-footer -->
           </div>
           <!-- /. box -->
         </div>
         <!-- /.col -->
-      
-        <div class="col-md-5">
-          <!-- DIRECT CHAT PRIMARY -->
-          <div class="box box-primary direct-chat direct-chat-primary collapsed-box">
-            <div class="box-header with-border">
-              <h3 class="box-title">Comment</h3>
 
-              <div class="box-tools pull-right">
-                <span data-toggle="tooltip" title="3 New Messages" class="badge bg-light-blue">3</span>
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
-                </button>
-              </div>
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-              <!-- Conversations are loaded here -->
-              <div class="direct-chat-messages">
-                <!-- Message. Default to the left -->
-                <div class="direct-chat-msg">
-                  <div class="direct-chat-info clearfix">
-                    <span class="direct-chat-name pull-left">Alexander Pierce</span>
-                    <span class="direct-chat-timestamp pull-right">23 Jan 2:00 pm</span>
-                  </div>
-                  <!-- /.direct-chat-info -->
-                  <div class="direct-chat-text">
-                    Is this template really for free? That's unbelievable!
-                  </div>
-                  <!-- /.direct-chat-text -->
+        <div class="col-md-4">
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#activity" data-toggle="tab">通院数</a></li>
+              <li><a href="#timeline" data-toggle="tab">受付番号</a></li>
+              <li><a href="#settings" data-toggle="tab">カレンダー</a></li>
+            </ul>
+            <div class="tab-content">
+              <div class="active tab-pane" id="activity">
+
+
+              <strong><i class="fa fa-file-text-o margin-r-5"></i> Notes</strong>
+
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam fermentum enim neque.</p>
+                <!-- Post -->
+                <div class="post">
+                  <p>
+                    Lorem ipsum represents a long-held tradition for designers,
+                    typographers and the like. Some people hate it and argue for
+                    its demise, but others ignore the hate as they create awesome
+                    tools to help create filler text for everyone from bacon lovers
+                    to Charlie Sheen fans.
+                  </p>
                 </div>
-                <!-- /.direct-chat-msg -->
+                <!-- /.post -->
 
-                <!-- Message to the right -->
-                <div class="direct-chat-msg right">
-                  <div class="direct-chat-info clearfix">
-                    <span class="direct-chat-name pull-right">Sarah Bullock</span>
-                    <span class="direct-chat-timestamp pull-left">23 Jan 2:05 pm</span>
+                <!-- Post -->
+                <div class="post">
+                  <div class="user-block">
+                    <img class="img-circle img-bordered-sm" src="vendor/adminlte-2.4.18/dist/img/user6-128x128.jpg" alt="User Image">
+                        <span class="username">
+                          <a href="#">入院</a>
+                        </span>
+                    <span class="description">2019/01/05</span>
                   </div>
-                  <!-- /.direct-chat-info -->
-                  <div class="direct-chat-text">
-                    You better believe it!
-                  </div>
-                  <!-- /.direct-chat-text -->
+                  <!-- /.user-block -->
+                  <p>
+                    2019/01/10, 2019/01/20, 2019/01/30<br />
+                    (3/30)
+                  </p>
                 </div>
-                <!-- /.direct-chat-msg -->
+                <!-- /.post -->
               </div>
-              <!--/.direct-chat-messages-->
-
-              <!-- Contacts are loaded here -->
-              <div class="direct-chat-contacts">
-                <ul class="contacts-list">
+              <!-- /.tab-pane -->
+              <div class="tab-pane" id="timeline">
+                <!-- The timeline -->
+                <ul class="timeline timeline-inverse">
+                  <!-- timeline item -->
                   <li>
-                    <a href="#">
-                      <!--<img class="contacts-list-img" src="../dist/img/user1-128x128.jpg" alt="User Image">-->
+                    <i class="fa fa-envelope bg-blue"></i>
 
-                      <div class="contacts-list-info">
-                            <span class="contacts-list-name">
-                              Count Dracula
-                              <small class="contacts-list-date pull-right">2/28/2015</small>
-                            </span>
-                        <span class="contacts-list-msg">How have you been? I was...</span>
+                    <div class="timeline-item">
+                      <span class="time"><i class="fa fa-clock-o"></i> 2019/10/10</span>
+                      <h3 class="timeline-header">E01-1908-8178901</h3>
+                      <div class="timeline-body">
+                        2019/10/10 手術<br />
+                        2019/10/10 手術<br />
+                        2019/10/10 手術<br />
                       </div>
-                      <!-- /.contacts-list-info -->
-                    </a>
+                      <div class="timeline-footer">
+                        <a class="btn btn-primary btn-xs">結果表示</a>
+                        <a class="btn btn-danger btn-xs">これだけ</a>
+                      </div>
+                    </div>
                   </li>
-                  <!-- End Contact Item -->
+                  <!-- END timeline item -->
+                  <!-- timeline item -->
+                  <li>
+                    <i class="fa fa-envelope bg-blue"></i>
+
+                    <div class="timeline-item">
+                      <span class="time"><i class="fa fa-clock-o"></i> 2019/10/05</span>
+                      <h3 class="timeline-header">E01-1908-8178901</h3>
+                      <div class="timeline-body">
+                        2019/10/10 手術<br />
+                        2019/10/10 手術<br />
+                        2019/10/10 手術<br />
+                      </div>
+                      <div class="timeline-footer">
+                        <a class="btn btn-primary btn-xs">結果表示</a>
+                        <a class="btn btn-danger btn-xs">これだけ</a>
+                      </div>
+                    </div>
+                  </li>
+                  <!-- END timeline item -->
+                  <!-- /.timeline-label -->
+                  <li>
+                    <i class="fa fa-clock-o bg-gray"></i>
+                  </li>
                 </ul>
-                <!-- /.contatcts-list -->
               </div>
-              <!-- /.direct-chat-pane -->
-            </div>
-            <!-- /.box-body -->
-            <div class="box-footer">
-              <form action="#" method="post">
-                <div class="input-group">
-                  <input type="text" name="message" placeholder="Type Message ..." class="form-control">
-                      <span class="input-group-btn">
-                        <button type="submit" class="btn btn-primary btn-flat">Send</button>
-                      </span>
+              <!-- /.tab-pane -->
+
+              <div class="tab-pane" id="settings">
+                <div class="box-header with-border">
+                  <h3 class="box-title">E01-1908-8178901 (最新)</h3>
                 </div>
-              </form>
-            </div>
-            <!-- /.box-footer-->
-          </div>
-          <!--/.direct-chat -->
+            <div class="box-body">
+                <form class="form-horizontal">
+                  <!-- Date -->
+                  <div class="form-group">
+                    <label for="tsuin" class="col-sm-2 control-label">通院</label>
 
-          <!-- The time line -->
-          <ul class="timeline">
-            <!-- timeline time label -->
-            <li class="time-label">
-                  <span class="bg-red">
-                    10 Feb. 2019
-                  </span>
-            </li>
-            <!-- /.timeline-label -->
-            <!-- timeline item -->
-            <li>
-              <i class="fa fa-procedures bg-aqua"></i>
-
-              <div class="timeline-item">
-                <span class="time bg-aqua"><i class="fa fa-clock-o"></i> 15 Feb. 2019 ~ 20 Feb. 2019</span>
-                <h3 class="timeline-header"><a href="#">入院</a></h3>
-
-                <div class="timeline-body">
-                  <div class="timeline-item">
-                    通院日：10/20, 10/21<br>
-                    残日数：28日/30日
+                    <div class="col-sm-10">
+                      <div class="input-group input-group-sm">
+                        <input type="text" class="form-control pull-right datepicker" id="tsuin" data-date-format="yyyy/mm/dd" name="date">
+                        <span class="input-group-btn">
+                          <button type="button" class="btn btn-info btn-flat">登録</button>
+                        </span>
+                      </div>
+                    </div>
+                    <!-- /.input group -->
                   </div>
+                  <!-- /.form group -->
+                </form>
 
-                </div>
+                <form class="form-horizontal">
+                  <!-- Date -->
+                  <div class="form-group">
+                    <label for="shujutsu" class="col-sm-2 control-label">手術</label>
+
+                    <div class="col-sm-10">
+                      <div class="input-group input-group-sm">
+                        <input type="text" class="form-control pull-right datepicker" id="shujutsu" data-date-format="yyyy/mm/dd" name="date">
+                        <span class="input-group-btn">
+                          <button type="button" class="btn btn-info btn-flat">登録</button>
+                        </span>
+                      </div>
+                    </div>
+                    <!-- /.input group -->
+                  </div>
+                  <!-- /.form group -->
+                </form>
+
+                <form class="form-horizontal" action="api/v1/shoken/825-5678901/ukeban/E01-1908-8178903/nyuin" method="POST">
+                  <!-- Date range -->
+                  <div class="form-group">
+                    <label for="nyuin" class="col-sm-2 control-label">入院</label>
+
+                    <div class="col-sm-10">
+                      <div class="input-group input-group-sm">
+                        <input type="text" class="form-control pull-right" id="nyuin" name="daterange">
+                        <span class="input-group-btn">
+                          <button type="submit" class="btn btn-info btn-flat">登録</button>
+                        </span>
+                      </div>
+                    </div>
+                    <!-- /.input group -->
+                  </div>
+                  <!-- /.form group -->
+                </form>
+
               </div>
-            </li>
-            <!-- END timeline item -->
-            <!-- timeline item -->
-            <li>
-              <i class="fa fa-procedures bg-aqua"></i>
-
-              <div class="timeline-item">
-
-                <span class="time bg-aqua"><i class="fa fa-clock-o"></i> 20 Feb. 2019〜 22 Feb. 2019</span>
-
-                <h3 class="timeline-header no-border"><a href="#">入院</a></h3>
-              </div>
-            </li>
-            <!-- END timeline item -->
-            <!-- timeline item -->
-            <li>
-              <i class="fa fa-user-md bg-yellow"></i>
-              <div class="timeline-item">
-                <span class="time bg-yellow"><i class="fa fa-clock-o"></i> 25 Feb. 2019</span>
-
-                <h3 class="timeline-header"><a href="#">手術</a></h3>
-
-                <div class="timeline-body">
-                  aaa
-                </div>
-              </div>
-            </li>
-            <!-- END timeline item -->
-            <!-- timeline time label -->
-
-            <!-- /.timeline-label -->
-            <!-- timeline item -->
-
-            <!-- END timeline item -->
-            <li>
-              <i class="fa fa-clock-o bg-gray"></i>
-            </li>
-          </ul>
+              <!-- /.tab-pane -->
+            </div>
+            <!-- /.tab-content -->
+          </div>
+          <!-- /.nav-tabs-custom -->
         </div>
         <!-- /.col -->
+
       </div>
       <!-- /.row -->
     </section>
@@ -428,372 +317,95 @@ desired effect
 </div>
 <!-- ./wrapper -->
 
+
 <!-- REQUIRED JS SCRIPTS -->
 
 <!-- jQuery 3 -->
-<!--<script src="vendor/adminlte-2.4.18/bower_components/jquery/dist/jquery.min.js"></script>-->
+<script src="vendor/adminlte-2.4.18/bower_components/jquery/dist/jquery.min.js"></script>
 <!-- Bootstrap 3.3.7 -->
-<!--<script src="vendor/adminlte-2.4.18/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>-->
+<script src="vendor/adminlte-2.4.18/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- jQuery UI 1.11.4 -->
-<!--<script src="vendor/adminlte-2.4.18/bower_components/jquery-ui/jquery-ui.min.js"></script>-->
+<script src="vendor/adminlte-2.4.18/bower_components/jquery-ui/jquery-ui.min.js"></script>
 <!-- Slimscroll -->
-<!--<script src="vendor/adminlte-2.4.18/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>-->
+<script src="vendor/adminlte-2.4.18/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
 <!-- FastClick -->
-<!--<script src="vendor/adminlte-2.4.18/bower_components/fastclick/lib/fastclick.js"></script>-->
+<script src="vendor/adminlte-2.4.18/bower_components/fastclick/lib/fastclick.js"></script>
 <!-- AdminLTE App -->
-<!--<script src="vendor/adminlte-2.4.18/dist/js/adminlte.min.js"></script>-->
+<script src="vendor/adminlte-2.4.18/dist/js/adminlte.min.js"></script>
 <!-- fullCalendar -->
-<!--<script src="vendor/adminlte-2.4.18/bower_components/moment/moment.js"></script>-->
-<!--<script src="vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>-->
-<!--<script src='vendor/core/main.js'></script>-->
-<!--<script src='vendor/interaction/main.js'></script>-->
-<!--<script src='vendor/daygrid/main.js'></script>-->
-<!-- <script src='vendor/src/basic/YearView.js'></script> -->
-<!--<script src="https://unpkg.com/js-year-calendar@latest/dist/js-year-calendar.min.js"></script>-->
+<script src="vendor/adminlte-2.4.18/bower_components/moment/moment.js"></script>
+<script src="vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
+<!-- bootstrap datepicker -->
+<script src="vendor/adminlte-2.4.18/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+<!-- bootstrap daterangepicker -->
+<script src="vendor/adminlte-2.4.18/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script>
+  $(function () {
+      $('#calendar').fullCalendar({
+      events    : [
+        {
+          title          : '通院',
+          start          : "2019-10-10",
+          end            : "2019-10-10",
+          backgroundColor: '#00a65a', //Success (green)
+          borderColor    : '#00a65a' //Success (green)
+        },
+        {
+          title          : '通院',
+          start          : "2019-10-17",
+          end            : "2019-10-17",
+          backgroundColor: '#00a65a', //Success (green)
+          borderColor    : '#00a65a' //Success (green)
+        },
+        {
+          title          : '通院',
+          start          : "2019-10-24",
+          end            : "2019-10-24",
+          backgroundColor: '#00a65a', //Success (green)
+          borderColor    : '#00a65a' //Success (green)
+        },
+        {
+          title          : '手術',
+          start          : "2019-10-15",
+          end            : "2019-10-15",
+          backgroundColor: '#f39c12', //yellow
+          borderColor    : '#f39c12' //yellow
+        },
+        {
+          title          : '入院',
+          start          : "2019-10-15",
+          end            : "2019-10-20",
+          backgroundColor: '#00c0ef', //Info (aqua)
+          borderColor    : '#00c0ef' //Info (aqua)
+        },
+        {
+          title          : '通院',
+          start          : "2019-10-30",
+          end            : "2019-10-30",
+          backgroundColor: '#00a65a', //Success (green)
+          borderColor    : '#00a65a' //Success (green)
+        },
+      ],
+      });
 
+      //Date range picker
+      $('#nyuin').daterangepicker({
+          autoApply: true,
+          locale: {
+              format:'YYYY/MM/DD',
+              applyLabel: '反映',
+              cancelLabel: '取消',
+              fromLabel: '開始日',
+              toLabel: '終了日',
+          },
+      });
 
+      //Date picker
+      $('.datepicker').datepicker({
+          autoclose: true,
+      })
+  })
+</script>
 
-<!--カレンダー表示スクリプト 全てコメントアウト-->
-
-<script type="text/javascript" src="main.js"></script>
-
-
-// <script>
-//     new Calendar('.calendar');
-//     document.querySelector('.calendar').addEventListener('selectRange', function(e) {
-//     console.log("Select the range: " + e.startDate + " - " + e.endDate);
-// });
-// </script>
-// <script>
-//   const currentYear = new Date().getFullYear();
-
-// const { Modal, Button } = ReactBootstrap;
-
-// class MyCalendar extends React.Component {
-//   constructor() {
-//     super();
-//     this.state = {
-//       dataSource: [
-//         {
-//           id: 0,
-//           name: 'Google I/O',
-//           location: 'San Francisco, CA',
-//           startDate: new Date(currentYear, 4, 28),
-//           endDate: new Date(currentYear, 4, 29)
-//         },
-//         {
-//           id: 1,
-//           name: 'Microsoft Convergence',
-//           location: 'New Orleans, LA',
-//           startDate: new Date(currentYear, 2, 16),
-//           endDate: new Date(currentYear, 2, 19)
-//         },
-//         {
-//           id: 2,
-//           name: 'Microsoft Build Developer Conference',
-//           location: 'San Francisco, CA',
-//           startDate: new Date(currentYear, 3, 29),
-//           endDate: new Date(currentYear, 4, 1)
-//         },
-//         {
-//           id: 3,
-//           name: 'Apple Special Event',
-//           location: 'San Francisco, CA',
-//           startDate: new Date(currentYear, 8, 1),
-//           endDate: new Date(currentYear, 8, 1)
-//         },
-//         {
-//           id: 4,
-//           name: 'Apple Keynote',
-//           location: 'San Francisco, CA',
-//           startDate: new Date(currentYear, 8, 9),
-//           endDate: new Date(currentYear, 8, 9)
-//         },
-//         {
-//           id: 5,
-//           name: 'Chrome Developer Summit',
-//           location: 'Mountain View, CA',
-//           startDate: new Date(currentYear, 10, 17),
-//           endDate: new Date(currentYear, 10, 18)
-//         },
-//         {
-//           id: 6,
-//           name: 'F8 2015',
-//           location: 'San Francisco, CA',
-//           startDate: new Date(currentYear, 2, 25),
-//           endDate: new Date(currentYear, 2, 26)
-//         },
-//         {
-//           id: 7,
-//           name: 'Yahoo Mobile Developer Conference',
-//           location: 'New York',
-//           startDate: new Date(currentYear, 7, 25),
-//           endDate: new Date(currentYear, 7, 26)
-//         },
-//         {
-//           id: 8,
-//           name: 'Android Developer Conference',
-//           location: 'Santa Clara, CA',
-//           startDate: new Date(currentYear, 11, 1),
-//           endDate: new Date(currentYear, 11, 4)
-//         },
-//         {
-//           id: 9,
-//           name: 'LA Tech Summit',
-//           location: 'Los Angeles, CA',
-//           startDate: new Date(currentYear, 10, 17),
-//           endDate: new Date(currentYear, 10, 17)
-//         }
-//       ],
-//       currentEvent: null
-//     };
-//   }
-  
-//   saveCurrentEvent() {
-//     if (this.state.currentEvent.id === undefined) {
-//       // Add event
-//       this.state.currentEvent.id = Math.max(...this.state.dataSource.map(evt => evt.id)) + 1;
-//       this.setState({ dataSource: this.state.dataSource.concat([this.state.currentEvent]), currentEvent: null });
-//     }
-//     else {
-//       // Update event
-//       var ds = this.state.dataSource;
-//       var index = ds.findIndex(evt => evt.id == this.state.currentEvent.id);
-//       ds[index] = this.state.currentEvent;
-//       this.setState({ dataSource: ds, currentEvent: null });
-//     }
-    
-//     this.setState({ currentEvent: null });
-//   }
-
-//   render() {
-//     return (
-//       <div>
-//         <Calendar
-//           enableRangeSelection={true}
-//           enableContextMenu={true}
-//           contextMenuItems={[
-//             { text: "Update", click: evt => this.setState({ currentEvent: evt }) },
-//             { text: "Delete", click: evt => this.setState({ dataSource: this.state.dataSource.filter(item => item.id != evt.id) }) }
-//           ]}
-//           onRangeSelected={e => this.setState({ currentEvent: { startDate: e.startDate, endDate: e.endDate } })} 
-//           dataSource={this.state.dataSource}
-//           />
-//           <Modal show={this.state.currentEvent} onHide={() => this.setState({ currentEvent: null })}>
-//             {this.state.currentEvent && (
-//               <div>
-//                 <Modal.Header closeButton>
-//                   <Modal.Title>{this.state.currentEvent.id !== undefined ? "Update event" : "Add event"}</Modal.Title>
-//                 </Modal.Header>
-//                 <Modal.Body>
-//                   <form className="form-horizontal">
-//                     <div className="form-group row">
-//                       <label htmlFor="event-name" className="col-sm-2 control-label">Name</label>
-//                       <div className="col-sm-10">
-//                         <input id="event-name" type="text" className="form-control" value={this.state.currentEvent.name} onChange={e => this.setState({ currentEvent: { ...this.state.currentEvent, name: e.target.value } })} />
-//                       </div>
-//                     </div>
-//                     <div className="form-group row">
-//                       <label htmlFor="event-location" className="col-sm-2 control-label">Location</label>
-//                       <div className="col-sm-10">
-//                         <input id="event-location" type="text" className="form-control" value={this.state.currentEvent.location} onChange={e => this.setState({ currentEvent: { ...this.state.currentEvent, location: e.target.value } })} />
-//                       </div>
-//                     </div>
-//                     <div className="form-group row">
-//                       <label htmlFor="min-date" className="col-sm-2 control-label">Dates</label>
-//                       <div className="col-sm-10">
-//                         <div className="input-group input-daterange">
-//                           <input id="min-date" type="date" className="form-control" value={this.state.currentEvent.startDate.toISOString().substr(0,10)} onChange={e => this.setState({ currentEvent: { ...this.state.currentEvent, startDate: e.target.valueAsDate } })} />
-//                           <div className="input-group-prepend input-group-append">
-//                               <div className="input-group-text">to</div>
-//                           </div>
-//                           <input type="date" className="form-control" value={this.state.currentEvent.endDate.toISOString().substr(0,10)} onChange={e => this.setState({ currentEvent: { ...this.state.currentEvent, endDate: e.target.valueAsDate } })} />
-//                         </div>
-//                       </div>
-//                     </div>
-//                   </form>
-//                 </Modal.Body>
-
-//                 <Modal.Footer>
-//                   <Button variant="secondary" onClick={() => this.setState({ currentEvent: null })}>Close</Button>
-//                   <Button variant="primary" onClick={() => this.saveCurrentEvent()}>Save event</Button>
-//                 </Modal.Footer>
-//               </div>
-//             )}
-//           </Modal>
-//       </div>
-//     );
-//   }
-// }
-
-// ReactDOM.render(<MyCalendar />, document.getElementById('calendar'));
-// </script>   
-// <script>
-//   $(function () {
-
-//     /* initialize the external events
-//     -----------------------------------------------------------------*/
-//     function init_events(ele) {
-//       ele.each(function () {
-
-//         // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
-//         // it doesn't need to have a start or end
-//         var eventObject = {
-//           title: $.trim($(this).text()) // use the element's text as the event title
-//         }
-
-//         // store the Event Object in the DOM element so we can get to it later
-//         $(this).data('eventObject', eventObject)
-
-//         // make the event draggable using jQuery UI
-//         $(this).draggable({
-//           zIndex        : 1070,
-//           revert        : true, // will cause the event to go back to its
-//           revertDuration: 0  //  original position after the drag
-//         })
-
-//       })
-//     }
-
-//     init_events($('#external-events span.external-event'))
-
-//     /* initialize the calendar
-//     -----------------------------------------------------------------*/
-//     //Date for the calendar events (dummy data)
-//     var date = new Date()
-//     var d    = date.getDate(),
-//         m    = date.getMonth(),
-//         y    = date.getFullYear()
-//     $('#calendar').fullCalendar({
-//       events    : [
-//         {
-//           title          : '通院',
-//           start          : "2019-10-10",
-//           end            : "2019-10-10",
-//           backgroundColor: '#00a65a', //Success (green)
-//           borderColor    : '#00a65a' //Success (green)
-//         },
-//         {
-//           title          : '通院',
-//           start          : "2019-10-17",
-//           end            : "2019-10-17",
-//           backgroundColor: '#00a65a', //Success (green)
-//           borderColor    : '#00a65a' //Success (green)
-//         },
-//         {
-//           title          : '通院',
-//           start          : "2019-10-24",
-//           end            : "2019-10-24",
-//           backgroundColor: '#00a65a', //Success (green)
-//           borderColor    : '#00a65a' //Success (green)
-//         },
-//         {
-//           title          : '手術',
-//           start          : "2019-10-15",
-//           end            : "2019-10-15",
-//           backgroundColor: '#f39c12', //yellow
-//           borderColor    : '#f39c12' //yellow
-//         },
-//         {
-//           title          : '入院',
-//           start          : "2019-10-15",
-//           end            : "2019-10-20",
-//           backgroundColor: '#00c0ef', //Info (aqua)
-//           borderColor    : '#00c0ef' //Info (aqua)
-//         },
-//         {
-//           title          : '通院',
-//           start          : "2019-10-30",
-//           end            : "2019-10-30",
-//           backgroundColor: '#00a65a', //Success (green)
-//           borderColor    : '#00a65a' //Success (green)
-//         },
-//       ],
-
-//       editable  : true,
-//       droppable : true, // this allows things to be dropped onto the calendar !!!
-//       selectable: true, //this allows things to be selectable in the calendar !!!
-//       // plugins: ['interaction', 'dayGrid','timeGrid'],
-//       defaultview: 'year',
-      
-
-//       select: function (start, end, jsEvent, view) {
-//             //        var abc = prompt('Enter Title','入院');
-//                     var allDay = !start.hasTime && !end.hasTime;
-//                     var newEvent = new Object();
-//                     newEvent.start = moment(start).format();
-//                     newEvent.end = moment(end).format();
-                    
-//                     if(end.diff(start,"days")>1){
-//                       newEvent.title = "入院" ;
-//                       newEvent.backgroundColor = '#00c0ef',
-//                       newEvent.borderColor = '#00c0ef';
-//                     }
-                    
-//                     else{
-//                       newEvent.title = "通院";
-//                       newEvent.backgroundColor = '#00a65a',
-//                       newEvent.borderColor = '#00a65a';                    
-//                     }
-                    
-//                     newEvent.allDay = false;
-
-//                     $('#calendar').fullCalendar('renderEvent', newEvent);
-//                 },
-//       drop      : function (date, allDay) { // this function is called when something is dropped
-
-//         // retrieve the dropped element's stored Event Object
-//         var originalEventObject = $(this).data('eventObject')
-        
-//         console.log("$(this)",$(this))
-//         console.log("$(this).data(eventObject)",$(this).data('eventObject'))
-        
-//         console.log("$(this).attr(data-eventObject)",$(this).attr('data-eventObject'))
-
-
-//         // we need to copy it, so that multiple events don't have a reference to the same object
-//         var copiedEventObject = $.extend({}, originalEventObject)
-
-//         // assign it the date that was reported
-//         copiedEventObject.start           = date
-//         copiedEventObject.allDay          = allDay
-//         copiedEventObject.backgroundColor = $(this).css('background-color')
-//         copiedEventObject.borderColor     = $(this).css('border-color')
-
-//         console.log("copiedEventObject",copiedEventObject)
-
-//         // render the event on the calendar
-//         // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
-//         $('#calendar').fullCalendar('renderEvent', copiedEventObject, true)
-
-//       },
-//       eventDragStop : function(event,jsEvent) {
-
-//         var trashEl = jQuery('#calendar_trash');
-//         console.log(trashEl);
-//         var ofs = trashEl.offset();
-
-//         var x1 = ofs.left;
-//         var x2 = ofs.left + trashEl.outerWidth(true);
-//         var y1 = ofs.top;
-//         var y2 = ofs.top + trashEl.outerHeight(true);
-
-//         if (jsEvent.pageX >= x1 && jsEvent.pageX<= x2 &&
-//             jsEvent.pageY >= y1 && jsEvent.pageY <= y2) {
-//             // alert('削除しました');
-
-//             $('#calendar').fullCalendar('removeEvents', event._id);
-
-//             console.log(event._id);
-//             console.log(event);
-//             console.log(events);
-
-//         }
-// },
-//     });
-
-//   });
-
-// </script>
 </body>
 </html>
