@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> <!-- -*- mode:html -*- -->
 <html>
 <head>
   <meta charset="utf-8">
@@ -125,21 +125,84 @@ desired effect
     <section class="content container-fluid">
       <div class="row">
         <div class="col-md-8">
-          <div class="box box-primary">
-            <div class="box-body no-padding">
-              <!-- THE CALENDAR -->
-              <div id="calendar"></div>
-            </div>
-            <!-- /.box-body -->
-            <div class="box-footer">
-              <div class="form-group">
-                <textarea class="form-control" rows="3" placeholder="Enter ..."></textarea>
+          <div class="box-group" id="accordion">
+            <!-- we are adding the .panel class so bootstrap.js collapse plugin detects it -->
+            <div class="panel box box-primary">
+              <div class="box-header with-border">
+                <h4 class="box-title">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                    年間カレンダー
+                  </a>
+                </h4>
               </div>
-              <button type="submit" class="btn btn-info pull-right">Save</button>
+              <div id="collapseOne" class="panel-collapse collapse in">
+
+                <div class="box-body no-padding">
+                  <table class="table table-bordered">
+                    <?php $year = 2019; $month = 5; $year_printed = false; ?>
+                    <?php for($j=0; $j<12; $j++) { ?>
+                    <tr>
+                      <td rowspan="2" style="width: 10%; text-align: center; vertical-align: middle;">
+                        <?php $year_print = date("Y", mktime(0, 0, 0, $month+$j, 1, $year)) ?>
+                        <?php if($year_print != $year_printed){ ?>
+                        <?=date("Y", mktime(0, 0, 0, $month+$j, 1, $year)) ?>年<br />
+                        <?php $year_printed = $year_print; ?>
+                        <?php } ?>
+                        <?=date("n", mktime(0, 0, 0, $month+$j, 1, $year)) ?>月
+                      </td>
+                      <?php for($i=1; $i<=16; $i++){ ?>
+                      <td style="text-align: center;"><?=$i ?></td>
+                      <?php } ?>
+                      <td rowspan="2" style="width: 10% text-align: center; vertical-align: middle;"></td>
+                    </tr>
+                    <tr>
+                      <?php while (date("d", mktime(0, 0, 0, $month+$j, $i, $year)) > 15) { ?>
+                      <td style="text-align: center;"><?=$i ?></td>
+                      <?php $i++; } ?>
+                      <?php while ($i<=32){ ?>
+                      <td style="background-color:black;"></td>
+                      <?php $i++; } ?>
+                    </tr>
+                    <?php } ?>
+                  </table>
+                </div>
+                <!-- /.box-body -->
+              </div>
+              <!-- /.box -->
+
             </div>
-            <!-- /.box-footer -->
+            <div class="panel box box-danger">
+              <div class="box-header with-border">
+                <h4 class="box-title">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                    月間カレンダー
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseTwo" class="panel-collapse collapse">
+                <!-- THE CALENDAR -->
+                <div id="calendar"></div>
+              </div>
+            </div>
+            <div class="panel box box-success">
+              <div class="box-header with-border">
+                <h4 class="box-title">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                    コメント
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseThree" class="panel-collapse collapse">
+                <div class="box-body">
+                  <div class="form-group">
+                    <textarea class="form-control" rows="3" placeholder="Enter ..."></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-info pull-right">Save</button>
+                </div>
+              </div>
+            </div>
           </div>
-          <!-- /. box -->
+
         </div>
         <!-- /.col -->
 
@@ -240,7 +303,7 @@ desired effect
                 <div class="box-header with-border">
                   <h3 class="box-title">E01-1908-8178901 (最新)</h3>
                 </div>
-            <div class="box-body">
+                <div class="box-body">
                 <form class="form-horizontal">
                   <!-- Date -->
                   <div class="form-group">
@@ -335,6 +398,7 @@ desired effect
 <!-- fullCalendar -->
 <script src="vendor/adminlte-2.4.18/bower_components/moment/moment.js"></script>
 <script src="vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
+<script src="vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/locale-all.js"></script>
 <!-- bootstrap datepicker -->
 <script src="vendor/adminlte-2.4.18/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 <!-- bootstrap daterangepicker -->
@@ -342,7 +406,18 @@ desired effect
 <script>
   $(function () {
       $('#calendar').fullCalendar({
-      events    : [
+    views: {
+      month: {
+        columnFormat: 'ddd',
+        titleFormat: 'YYYY年M月',
+      },
+    },
+    buttonText: {
+      today: '今日',
+    },
+    dayNames: ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'],
+    dayNamesShort: ['日', '月', '火', '水', '木', '金', '土'],
+  events    : [
         {
           title          : '通院',
           start          : "2019-10-10",
