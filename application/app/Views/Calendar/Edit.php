@@ -23,7 +23,7 @@
           <div class="box-body">
             <div class="form-group<?=(!$validation->hasError('id'))?'': ' has-error' ?>">
               <label for="inputId">証券番号</label>
-              <input type="text" class="form-control" name="id" id="inputId" placeholder="825-1234567" value="<?= set_value('id', $id) ?>" aria-readonly="true">
+              <input type="text" class="form-control" name="id" id="inputId" placeholder="825-1234567" value="<?= set_value('id', $id) ?>" readonly>
               <span class="help-block"><?= $validation->showError('id') ?></span>
             </div>
             <div class="form-group<?=(!$validation->hasError('name'))?'': ' has-error' ?>">
@@ -45,7 +45,7 @@
           <!-- /.box-body -->
 
           <div class="box-footer">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">登録</button>
           </div>
         </form>
       </div>

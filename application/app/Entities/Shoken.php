@@ -1,8 +1,5 @@
 <?php namespace App\Entities;
 
-use CodeIgniter\Entity;
-
-class Shoken extends Entity
+class Shoken extends BaseEntity
 {
-    //
 }

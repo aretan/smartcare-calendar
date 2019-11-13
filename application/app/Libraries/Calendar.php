@@ -8,7 +8,11 @@ class Calendar
     public $day_attr = 'style="text-align:center;"';
     public $non_attr = 'style="background-color:black;"';
 
-    public function render($year, $month, $end_year, $end_month) {
+    public function render($start, $end) {
+        $start = str_replace('-', '/', $start);
+        list($year, $month) = explode('/', $start);
+        list($end_year, $end_month) = explode('/', $end);
+
         echo $this->header();
 
         $prev = false;

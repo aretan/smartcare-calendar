@@ -8,7 +8,7 @@
   </h1>
 
   <div class="breadcrumb" style="padding:0; top:10px; right:15px;">
-    <a class="btn btn-success" href="<?= site_url("calendar/edit/{$shoken['id']}/") ?>" role="button">編集</a>
+    <a class="btn btn-success" href="<?= site_url("calendar/edit/{$shoken['id']}/") ?>" role="button">証券編集</a>
   </div>
 </section>
 
@@ -22,13 +22,13 @@
           <div class="box-header with-border">
             <h4 class="box-title">
               <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                年間カレンダー
+                年間カレンダー (未実装)
               </a>
             </h4>
 
             <div class="box-tools pull-right" style="width:250px;">
               <div class="input-group input-group-sm">
-                <input type="text" class="form-control" id="monthrange" name="monthrange" value="2019/01 - 2020/01">
+                <input type="text" class="form-control" id="monthrange" name="monthrange" value="<?= $shoken['date'] ?> - <?= date('Y/m') ?>">
                 <span class="input-group-btn">
                   <button type="submit" class="btn btn-info btn-flat">反映</button>
                 </span>
@@ -38,7 +38,7 @@
           <div id="collapseOne" class="panel-collapse collapse in">
 
             <div class="box-body no-padding">
-              <?php (new \App\Libraries\Calendar)->render(2017, 10, 2020, 10); ?>
+              <?php (new \App\Libraries\Calendar)->render($shoken['date'], date('Y/m')); ?>
             </div>
             <!-- /.box-body -->
           </div>
@@ -49,7 +49,7 @@
           <div class="box-header with-border">
             <h4 class="box-title">
               <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
-                月間カレンダー
+                月間カレンダー (未実装)
               </a>
             </h4>
           </div>
@@ -71,7 +71,7 @@
       <?php } ?>
       <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
-          <li class="active"><a href="#activity" data-toggle="tab">通院数</a></li>
+          <li class="active"><a href="#activity" data-toggle="tab">通院数 (未実装)</a></li>
           <li><a href="#timeline" data-toggle="tab">受付番号</a></li>
           <li><a href="#settings" data-toggle="tab">カレンダー</a></li>
         </ul>
@@ -92,103 +92,81 @@
 
               <!-- timeline time label -->
               <li class="time-label">
-                <span class="bg-red">
-                  契約日：2018/05/24
-                </span>
+                <a class="btn-warning btn btn-block" href="<?= site_url("calendar/edit/{$shoken['id']}/") ?>" role="button">
+                  <i class="fa fa-pencil margin-r-5"></i>契約日 (<?= $shoken['date'] ?>)
+                </a>
               </li>
               <!-- /.timeline-label -->
+              <?php foreach($ukeban as $line){ ?>
               <!-- timeline item -->
               <li>
                 <i class="fa fa-envelope bg-blue"></i>
-
                 <div class="timeline-item">
-                  <span class="time"><i class="fa fa-clock-o"></i> 2019/8/10</span>
-                  <h3 class="timeline-header">E01-1908-8178901</h3>
+                  <span class="time"><i class="fa fa-clock-o"></i> <?= $line['date'] ?></span>
+                  <h3 class="timeline-header"><?= $line['id'] ?></h3>
                   <div class="timeline-body">
-                    2019/08/12 通院<br />
-                    2019/08/15 通院<br />
-                    2019/08/20 通院<br />
+                    <?php if(isset($nyuin[$line['id']])){ ?>
+                    <i class="fa fa-hotel margin-r-5"></i>入院：
+                    <p>
+                      <?php foreach($nyuin[$line['id']] as $i){ ?>
+                      <?= str_replace('-', '/', $i['start']) ?> -
+                      <?= str_replace('-', '/', $i['end']) ?><br />
+                      <?php } ?>
+                    </p>
+                    <?php } ?>
+                    <?php if(isset($shujutsu[$line['id']])){ ?>
+                    <i class="fa fa-calendar-plus-o margin-r-5"></i>手術：
+                    <p>
+                      <?php foreach($shujutsu[$line['id']] as $i){ ?>
+                      <?= str_replace('-', '/', $i['date']) ?><br />
+                      <?php } ?>
+                    </p>
+                    <?php } ?>
+                    <?php if(isset($tsuin[$line['id']])){ ?>
+                    <i class="fa fa-stethoscope margin-r-5"></i>通院：
+                    <p>
+                      <?php foreach($tsuin[$line['id']] as $i){ ?>
+                      <?= str_replace('-', '/', $i['date']) ?><br />
+                      <?php } ?>
+                    </p>
+                    <?php } ?>
                   </div>
+                  <!--
                   <div class="timeline-footer">
                     <a class="btn btn-primary btn-xs">結果表示</a>
                     <a class="btn btn-danger btn-xs">これだけ</a>
                   </div>
+                  -->
                 </div>
               </li>
               <!-- END timeline item -->
-              <!-- timeline item -->
-              <li>
-                <i class="fa fa-envelope bg-blue"></i>
+              <?php } ?>
 
-                <div class="timeline-item">
-                  <span class="time"><i class="fa fa-clock-o"></i> 2019/10/05</span>
-                  <h3 class="timeline-header">E01-1908-8178901</h3>
-                  <div class="timeline-body">
-                    2019/09/10 通院<br />
-                    2019/08/05 手術<br />
-                    2019/08/05 - 2019/08-10 入院<br />
-                  </div>
-                  <div class="timeline-footer">
-                    <a class="btn btn-primary btn-xs">結果表示</a>
-                    <a class="btn btn-danger btn-xs">これだけ</a>
-                  </div>
-                </div>
+              <!-- timeline time label -->
+              <li class="time-label">
+                <a class="btn btn-success btn-block" href="<?= site_url("calendar/ukeban/{$shoken['id']}") ?>" role="button">
+                  <i class="fa fa-envelope-o margin-r-5"></i>受付番号 登録
+                </a>
               </li>
-              <!-- END timeline item -->
-
+              <!-- /.timeline-label -->
             </ul>
           </div>
           <!-- /.tab-pane -->
 
           <div class="tab-pane" id="settings">
+            <?php if(isset($line)){ ?>
             <div class="box-header with-border">
-              <h3 class="box-title">E01-1908-8178901 (最新)</h3>
+              <h3 class="box-title"><?= $line['id'] ?> (最新)</h3>
             </div>
             <div class="box-body">
-              <form class="form-horizontal">
+              <form class="form-horizontal" action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/{$line['id']}/tsuin") ?>" method="POST">
                 <!-- Date -->
                 <div class="form-group">
-                  <label for="tsuin" class="col-sm-2 control-label">通院</label>
+                  <label for="tsuin" class="col-sm-3 control-label"><i class="fa fa-stethoscope margin-r-5"></i>通院</label>
 
-                  <div class="col-sm-10">
+                  <div class="col-sm-9">
                     <div class="input-group input-group-sm">
-                      <input type="text" class="form-control pull-right datepicker" id="tsuin" data-date-format="yyyy/mm/dd" name="date">
-                      <span class="input-group-btn">
-                        <button type="button" class="btn btn-info btn-flat">登録</button>
-                      </span>
-                    </div>
-                  </div>
-                  <!-- /.input group -->
-                </div>
-                <!-- /.form group -->
-              </form>
-
-              <form class="form-horizontal">
-                <!-- Date -->
-                <div class="form-group">
-                  <label for="shujutsu" class="col-sm-2 control-label">手術</label>
-
-                  <div class="col-sm-10">
-                    <div class="input-group input-group-sm">
-                      <input type="text" class="form-control pull-right datepicker" id="shujutsu" data-date-format="yyyy/mm/dd" name="date">
-                      <span class="input-group-btn">
-                        <button type="button" class="btn btn-info btn-flat">登録</button>
-                      </span>
-                    </div>
-                  </div>
-                  <!-- /.input group -->
-                </div>
-                <!-- /.form group -->
-              </form>
-
-              <form class="form-horizontal" action="api/v1/shoken/825-5678901/ukeban/E01-1908-8178903/nyuin" method="POST">
-                <!-- Date range -->
-                <div class="form-group">
-                  <label for="nyuin" class="col-sm-2 control-label">入院</label>
-
-                  <div class="col-sm-10">
-                    <div class="input-group input-group-sm">
-                      <input type="text" class="form-control pull-right" id="nyuin" name="daterange">
+                      <input type="text" class="form-control pull-right datepicker" id="tsuin" data-date-format="yyyy/mm/dd" name="date" required>
                       <span class="input-group-btn">
                         <button type="submit" class="btn btn-info btn-flat">登録</button>
                       </span>
@@ -199,8 +177,48 @@
                 <!-- /.form group -->
               </form>
 
+              <form class="form-horizontal" action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/{$line['id']}/shujutsu") ?>" method="POST">
+                <!-- Date -->
+                <div class="form-group">
+                  <label for="shujutsu" class="col-sm-3 control-label"><i class="fa fa-calendar-plus-o margin-r-5"></i>手術</label>
+
+                  <div class="col-sm-9">
+                    <div class="input-group input-group-sm">
+                      <input type="text" class="form-control pull-right datepicker" id="shujutsu" data-date-format="yyyy/mm/dd" name="date" required>
+                      <span class="input-group-btn">
+                        <button type="submit" class="btn btn-info btn-flat">登録</button>
+                      </span>
+                    </div>
+                  </div>
+                  <!-- /.input group -->
+                </div>
+                <!-- /.form group -->
+              </form>
+
+              <form class="form-horizontal" action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/{$line['id']}/nyuin") ?>" method="POST">
+                <!-- Date range -->
+                <div class="form-group">
+                  <label for="nyuin" class="col-sm-3 control-label"><i class="fa fa-hotel margin-r-5"></i>入院</label>
+
+                  <div class="col-sm-9">
+                    <div class="input-group input-group-sm">
+                      <input type="text" class="form-control pull-right" id="nyuin" name="daterange" required>
+                      <span class="input-group-btn">
+                        <button type="submit" class="btn btn-info btn-flat">登録</button>
+                      </span>
+                    </div>
+                  </div>
+                  <!-- /.input group -->
+                </div>
+                <!-- /.form group -->
+              </form>
             </div>
             <!-- /.box-body -->
+            <?php } else { ?>
+            <a class="btn btn-success btn-block" href="<?= site_url("calendar/ukeban/{$shoken['id']}") ?>" role="button">
+              <i class="fa fa-envelope-o margin-r-5"></i>受付番号 登録
+            </a>
+            <?php } ?>
           </div>
           <!-- /.tab-pane -->
         </div>

@@ -79,7 +79,7 @@ desired effect
         <div class="input-group">
           <input type="text" name="id" class="form-control" placeholder="証券番号入力..." onkeyup="filter(this)">
           <span class="input-group-btn">
-              <button type="submit" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+              <button type="submit" id="search-btn" class="btn btn-flat"><i class="fa fa-user-plus"></i>
               </button>
             </span>
         </div>

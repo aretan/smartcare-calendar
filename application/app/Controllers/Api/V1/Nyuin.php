@@ -26,7 +26,7 @@ class Nyuin extends ApiController
         if ($this->request->isAJAX()) {
             return $this->respondCreated();
         } else {
-            return redirect()->to('/');
+            return redirect()->to("/{$data['shoken_id']}");
         }
     }
 }

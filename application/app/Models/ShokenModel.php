@@ -2,7 +2,6 @@
 
 class ShokenModel extends BaseModel
 {
-    protected $primaryKey = 'id';
     protected $table = 'shoken';
     protected $allowedFields = ['id', 'name', 'date', 'comment'];
 
