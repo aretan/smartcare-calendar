@@ -2,9 +2,7 @@
 <?= $this->section('content') ?>
 <!-- Content Header (Page header) -->
 <section class="content-header">
-  <h1>
-    ダッシュボード
-  </h1>
+  <h1>ダッシュボード</h1>
 </section>
 
 <!-- Main content -->
@@ -12,7 +10,7 @@
 
   <div class="callout callout-info">
     <h4>状況</h4>
-    特に計算の難しい証券が選定され、データベースに登録されています。
+    特に計算に時間がかかる証券が選定され、データベースに登録されています。
   </div>
 
   <div class="row">
