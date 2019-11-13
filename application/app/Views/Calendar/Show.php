@@ -30,7 +30,7 @@
               <div class="input-group input-group-sm" style="width:200px;">
                 <input type="text" class="form-control" id="monthrange" name="monthrange" value="<?= date('Y/m', strtotime($shoken['date'])) ?> - <?= date('Y/m') ?>" onchange="nenview(this.value)">
                 <span class="input-group-btn">
-                  <button type="button" class="btn btn-info btn-flat" onclick="$('#monthrange').val('<?= date('Y/m', strtotime($shoken['date'])) ?> - <?= date('Y/m') ?>').change()">解除</button>
+                  <button type="button" class="btn btn-info btn-flat" onclick="nenview_reset()">解除</button>
                 </span>
               </div>
             </div>
@@ -343,8 +343,8 @@
       $('#monthrange').monthrangepicker({
           autoApply: true,
           drops: 'down',
-          minDate: '<?= $shoken['date'] ?>',
-          maxDate: '<?= date('Y/m') ?>',
+          minYear: <?= date('Y', strtotime($shoken['date'])) ?>,
+          maxYear: <?= date('Y') ?>,
           locale: {
               format:'YYYY/MM',
               applyLabel: '反映',
@@ -375,6 +375,10 @@
                   $(element).hide();
               }
           });
+  }
+  function nenview_reset() {
+      $('#monthrange').data('daterangepicker').setStartDate('<?= date('Y/m', strtotime($shoken['date'])) ?>');
+      $('#monthrange').data('daterangepicker').setEndDate('<?= date('Y/m') ?>');
   }
 </script>
 <?= $this->endSection() ?>
