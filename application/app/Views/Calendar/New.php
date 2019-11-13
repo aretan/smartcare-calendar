@@ -27,7 +27,7 @@
               <span class="help-block"><?= $validation->showError('id') ?></span>
             </div>
             <div class="form-group<?=(!$validation->hasError('name'))?'': ' has-error' ?>">
-              <label for="inputDate">被保険者名</label>
+              <label for="inputName">ニックネーム</label>
               <input type="text" class="form-control" name="name" id="inputName" placeholder="アクサ 太郎" value="<?= set_value('name') ?>">
               <span class="help-block"><?= $validation->showError('name') ?></span>
             </div>
