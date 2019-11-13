@@ -1,3 +1,10 @@
 <?php foreach ($shoken as $value) { ?>
-<li><a href="<?=site_url("{$value['id']}/") ?>"><i class="fa fa-circle-o"></i><span><?=$value['id'] ?></span></a></li>
+<li <?=(strpos(current_url(), $value['id']) === false)?'': ' class="active"' ?>>
+  <a href="<?=site_url("{$value['id']}/") ?>">
+    <span><?=$value['name'] ?></span>
+    <span class="pull-right-container">
+      <span class="label label-success pull-right"><?=$value['id'] ?></span>
+    </span>
+  </a>
+</li>
 <?php } ?>

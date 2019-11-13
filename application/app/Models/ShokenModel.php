@@ -2,13 +2,14 @@
 
 class ShokenModel extends BaseModel
 {
+    protected $primaryKey = 'id';
     protected $table = 'shoken';
     protected $allowedFields = ['id', 'name', 'date', 'comment'];
 
     protected $validationRules    = [
-        'id'      => 'required|regex_match[/[0-9]{3}-[0-9]{7}/]|is_unique[shoken.id]',
+        'id'      => 'required|regex_match[/[0-9]{3}-[0-9]{7}/]',
         'name'    => 'required|max_length[255]',
-        'date'    => 'required|regex_match[/[0-9]{4}\/[0-9]{2}\/[0-9]{2}/]',
+        'date'    => 'required|regex_match[/[0-9]{4}[\/-][0-9]{2}[\/-][0-9]{2}/]',
         'comment' => 'max_length[65535]'
     ];
 

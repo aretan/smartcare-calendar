@@ -3,12 +3,12 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
   <h1>
-    <?=$shoken['id'] ?>
-    <small><?=$shoken['name'] ?></small>
+    <?=$shoken['name'] ?>
+    <small><?=$shoken['id'] ?></small>
   </h1>
 
   <div class="breadcrumb" style="padding:0; top:10px; right:15px;">
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <a class="btn btn-success" href="<?= site_url("calendar/edit/{$shoken['id']}/") ?>" role="button">編集</a>
   </div>
 </section>
 
@@ -58,29 +58,17 @@
             <div id="calendar"></div>
           </div>
         </div>
-        <div class="panel box box-success">
-          <div class="box-header with-border">
-            <h4 class="box-title">
-              <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-                コメント
-              </a>
-            </h4>
-          </div>
-          <div id="collapseThree" class="panel-collapse collapse">
-            <div class="box-body">
-              <div class="form-group">
-                <textarea class="form-control" rows="3" placeholder="Enter ..."></textarea>
-              </div>
-              <button type="submit" class="btn btn-info pull-right">Save</button>
-            </div>
-          </div>
-        </div>
       </div>
 
     </div>
     <!-- /.col -->
 
     <div class="col-md-4">
+      <?php if($shoken['comment']){ ?>
+      <div class="callout callout-info">
+        <?=$shoken['comment'] ?>
+      </div>
+      <?php } ?>
       <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
           <li class="active"><a href="#activity" data-toggle="tab">通院数</a></li>

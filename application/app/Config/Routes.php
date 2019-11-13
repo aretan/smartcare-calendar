@@ -85,6 +85,8 @@ $routes->group('api/v1', ['namespace' => 'App\Controllers\Api\V1'], function($ro
 $routes->group('/', ['namespace' => 'App\Controllers'], function($routes)
 {
     $routes->post('calendar/create', 'Calendar::create');
+    $routes->add('calendar/edit/(:any)', 'Calendar::edit/$1');
+    $routes->post('calendar/update/(:any)', 'Calendar::update/$1');
     $routes->add('', 'Calendar::index');
     $routes->add('/(:any)', 'Calendar::show/$1');
 });

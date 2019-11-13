@@ -3,7 +3,7 @@ START TRANSACTION;
 CREATE TABLE `shoken` (
   `id` char(11) NOT NULL PRIMARY KEY COMMENT '証券番号',
   `name` varchar(255) NOT NULL COMMENT '被保険者名',
-  `birthday` date NOT NULL COMMENT '被保険者誕生日',
+  `date` date NOT NULL COMMENT '契約開始日',
   `comment` text DEFAULT NULL COMMENT '査定者コメント',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

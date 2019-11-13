@@ -31,11 +31,26 @@ class Calendar extends WebController
             $data['validation'] = $model->getValidation();
             return view('Calendar/New', $data);
         }
-        return redirect()->to("{$data['id']}/");
+        return redirect()->to("/{$data['id']}/");
     }
 
-    public function update()
+    public function edit($shoken_id=null)
     {
-        return view('Calendar/New');
+        $model = new \App\Models\ShokenModel();
+        $data = $model->find($shoken_id);
+        $data['validation'] = $model->getValidation();
+        return view('Calendar/Edit', $data);
+    }
+
+    public function update($shoken_id=null)
+    {
+        $model = new \App\Models\ShokenModel();
+        $data = $this->request->getPost();
+        $model->save($data);
+        if ($model->errors()) {
+            $data['validation'] = $model->getValidation();
+            return view('Calendar/Edit', $data);
+        }
+        return redirect()->to("/{$data['id']}/");
     }
 }
