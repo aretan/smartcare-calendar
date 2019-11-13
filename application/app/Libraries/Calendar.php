@@ -2,7 +2,7 @@
 
 class Calendar
 {
-    public $table_attr = 'class="table table-bordered table-striped"';
+    public $table_attr = 'id="nenview" class="table table-bordered table-striped"';
     public $month_attr = 'rowspan="2" style="width:10%; text-align:center; vertical-align:middle;"';
     public $count_attr = 'rowspan="2" style="width:10%; text-align:center; vertical-align:middle;"';
     public $day_attr = 'style="text-align:center;"';
@@ -33,7 +33,7 @@ class Calendar
     }
 
     public function line($year, $month, $print_year) {
-        $data = '<tr>';
+        $data = "<tr id='nen-{$year}-{$month}-1'>";
         $data .= "<td {$this->month_attr}>";
         if ($print_year) {
             $data .= date('Y', mktime(0, 0, 0, $month, 1, $year)) . '年<br />';
@@ -46,7 +46,7 @@ class Calendar
         }
 
         $data .= "<td {$this->count_attr}>10</td>";
-        $data .= '</tr><tr>';
+        $data .= "</tr><tr id='nen-{$year}-{$month}-2'>";
 
         for (; date('d', mktime(0, 0, 0, $month, $i, $year)) > 16; $i++) {
             $data .= "<td {$this->day_attr}>{$i}</td>";

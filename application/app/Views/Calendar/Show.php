@@ -26,11 +26,11 @@
               </a>
             </h4>
 
-            <div class="box-tools pull-right" style="width:250px;">
-              <div class="input-group input-group-sm">
-                <input type="text" class="form-control" id="monthrange" name="monthrange" value="<?= $shoken['date'] ?> - <?= date('Y/m') ?>">
+            <div class="box-tools pull-right">
+              <div class="input-group input-group-sm" style="width:200px;">
+                <input type="text" class="form-control" id="monthrange" name="monthrange" value="<?= date('Y/m', strtotime($shoken['date'])) ?> - <?= date('Y/m') ?>" onchange="nenview(this.value)">
                 <span class="input-group-btn">
-                  <button type="submit" class="btn btn-info btn-flat">反映</button>
+                  <button type="button" class="btn btn-info btn-flat" onclick="$('#monthrange').val('<?= date('Y/m', strtotime($shoken['date'])) ?> - <?= date('Y/m') ?>').change()">解除</button>
                 </span>
               </div>
             </div>
@@ -343,6 +343,8 @@
       $('#monthrange').monthrangepicker({
           autoApply: true,
           drops: 'down',
+          minDate: '<?= $shoken['date'] ?>',
+          maxDate: '<?= date('Y/m') ?>',
           locale: {
               format:'YYYY/MM',
               applyLabel: '反映',
@@ -352,5 +354,27 @@
       });
 
   });
+
+  function nenview(range) {
+      s_range = range.split(' - ');
+      start = s_range[0].split('/');
+      start = new Date(start[0], start[1]);
+      end = s_range[1].split('/');
+      end = new Date(end[0], end[1]);
+
+      $('#nenview tr').each(
+          function(index, element){
+              line = $(element).attr('id').split('-');
+              line = new Date(line[1], line[2])
+              console.log(start + ':' + line + ':' + end);
+              if (start <= line && line <= end) {
+                  console.log('show');
+                  $(element).show();
+              } else {
+                  console.log('hide');
+                  $(element).hide();
+              }
+          });
+  }
 </script>
 <?= $this->endSection() ?>
