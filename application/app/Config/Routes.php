@@ -57,9 +57,6 @@ if (file_exists(SYSTEMPATH . 'Config/Routes.php'))
  * Controllers when no specific route has been defined. If false,
  * only routes that have been defined here will be available.
  */
-// $routes->setDefaultNamespace('App\Controllers');
-// $routes->setDefaultController('Index');
-// $routes->setDefaultMethod('index');
 $routes->setTranslateURIDashes(false);
 $routes->set404Override();
 $routes->setAutoRoute(false);
@@ -85,8 +82,12 @@ $routes->group('api/v1', ['namespace' => 'App\Controllers\Api\V1'], function($ro
     $routes->resource('shoken', ['only' => ['index', 'create', 'show', 'update', 'delete']]);
 });
 
-$routes->add('/', 'App\Controllers\Calendar::show');
-$routes->add('/(:any)', 'App\Controllers\Calendar::show/$1');
+$routes->group('/', ['namespace' => 'App\Controllers'], function($routes)
+{
+    $routes->post('calendar/create', 'Calendar::create');
+    $routes->add('', 'Calendar::index');
+    $routes->add('/(:any)', 'Calendar::show/$1');
+});
 
 /**
  * --------------------------------------------------------------------

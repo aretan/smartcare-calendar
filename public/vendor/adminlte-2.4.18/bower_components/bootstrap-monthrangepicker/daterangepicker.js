@@ -665,7 +665,7 @@
             if(this.monthOrQuarter==2){
                 var dateHtml = calendar[0][0].format("YYYY")+'-'+ calendar[0][0].clone().add(11,'year').format("YYYY");
             }else{
-                var dateHtml = calendar[0][0].format("YYYY");
+                var dateHtml = calendar[0][0].format("YYYY")+'年';
             }
 
 

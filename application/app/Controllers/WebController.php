@@ -4,7 +4,7 @@ use CodeIgniter\Controller;
 
 class WebController extends Controller
 {
-    protected $helpers = [];
+    protected $helpers = ['form'];
 
     public function initController(\CodeIgniter\HTTP\RequestInterface $request,
                                    \CodeIgniter\HTTP\ResponseInterface $response,

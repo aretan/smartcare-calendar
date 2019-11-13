@@ -23,4 +23,9 @@ class BaseModel extends Model
         }
         return $data;
     }
+
+    public function getValidation()
+    {
+        return $this->validation;
+    }
 }
