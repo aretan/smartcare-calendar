@@ -81,7 +81,7 @@
             <strong><i class="fa fa-hotel margin-r-5"></i>入院：2018/08/05</strong>
             <p>4日間 (8/12 8/15 8/20 9/10)</p>
 
-            <strong><i class="fa fa-calendar-plus-o margin-r-5"></i>手術：2018/08/05</strong>
+            <strong><i class="fa fa-calendar-times-o margin-r-5"></i>手術：2018/08/05</strong>
             <p>0日間</p>
 
           </div>
@@ -115,7 +115,7 @@
                     </p>
                     <?php } ?>
                     <?php if(isset($shujutsu[$line['id']])){ ?>
-                    <i class="fa fa-calendar-plus-o margin-r-5"></i>手術：
+                    <i class="fa fa-calendar-times-o margin-r-5"></i>手術：
                     <p>
                       <?php foreach($shujutsu[$line['id']] as $i){ ?>
                       <?= str_replace('-', '/', $i['date']) ?><br />
@@ -123,7 +123,7 @@
                     </p>
                     <?php } ?>
                     <?php if(isset($tsuin[$line['id']])){ ?>
-                    <i class="fa fa-stethoscope margin-r-5"></i>通院：
+                    <i class="fa fa-taxi margin-r-5"></i>通院：
                     <p>
                       <?php foreach($tsuin[$line['id']] as $i){ ?>
                       <?= str_replace('-', '/', $i['date']) ?><br />
@@ -162,7 +162,7 @@
               <form class="form-horizontal" action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/{$line['id']}/tsuin") ?>" method="POST">
                 <!-- Date -->
                 <div class="form-group">
-                  <label for="tsuin" class="col-sm-3 control-label"><i class="fa fa-stethoscope margin-r-5"></i>通院</label>
+                  <label for="tsuin" class="col-sm-3 control-label"><i class="fa fa-taxi margin-r-5"></i>通院</label>
 
                   <div class="col-sm-9">
                     <div class="input-group input-group-sm">
@@ -180,7 +180,7 @@
               <form class="form-horizontal" action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/{$line['id']}/shujutsu") ?>" method="POST">
                 <!-- Date -->
                 <div class="form-group">
-                  <label for="shujutsu" class="col-sm-3 control-label"><i class="fa fa-calendar-plus-o margin-r-5"></i>手術</label>
+                  <label for="shujutsu" class="col-sm-3 control-label"><i class="fa fa-calendar-times-o margin-r-5"></i>手術</label>
 
                   <div class="col-sm-9">
                     <div class="input-group input-group-sm">

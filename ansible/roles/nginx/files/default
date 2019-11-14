@@ -13,18 +13,24 @@ server {
            root /var/www/smartcare-calendar/public;
            try_files $uri $uri/ /index.php$is_args$args;
            location ~ \.php$ {
-               include snippets/fastcgi-php.conf;
-               fastcgi_pass   unix:/run/php/php7.3-fpm.sock;
-               include        fastcgi_params;
+               include       snippets/fastcgi-php.conf;
+               fastcgi_pass  unix:/run/php/php7.3-fpm.sock;
+               include       fastcgi_params;
+               fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+               fastcgi_param DOCUMENT_ROOT $realpath_root;
+               internal;
            }
        }
 
        location /phpmyadmin {
            root /usr/share;
            location ~ \.php$ {
-               include snippets/fastcgi-php.conf;
-               fastcgi_pass   unix:/run/php/php7.3-fpm.sock;
-               include        fastcgi_params;
+               include       snippets/fastcgi-php.conf;
+               fastcgi_pass  unix:/run/php/php7.3-fpm.sock;
+               include       fastcgi_params;
+               fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+               fastcgi_param DOCUMENT_ROOT $realpath_root;
+               internal;
            }
        }
 }
@@ -44,18 +50,24 @@ server {
            root /var/www/smartcare-calendar/master/current/public;
            try_files $uri $uri/ /index.php$is_args$args;
            location ~ \.php$ {
-               include snippets/fastcgi-php.conf;
-               fastcgi_pass   unix:/run/php/php7.2-fpm.sock;
-               include        fastcgi_params;
+               include       snippets/fastcgi-php.conf;
+               fastcgi_pass  unix:/run/php/php7.2-fpm.sock;
+               include       fastcgi_params;
+               fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+               fastcgi_param DOCUMENT_ROOT $realpath_root;
+               internal;
            }
        }
 
        location /phpmyadmin {
            root /usr/share;
            location ~ \.php$ {
-               include snippets/fastcgi-php.conf;
-               fastcgi_pass   unix:/run/php/php7.2-fpm.sock;
-               include        fastcgi_params;
+               include       snippets/fastcgi-php.conf;
+               fastcgi_pass  unix:/run/php/php7.2-fpm.sock;
+               include       fastcgi_params;
+               fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+               fastcgi_param DOCUMENT_ROOT $realpath_root;
+               internal;
            }
        }
 }
@@ -75,9 +87,12 @@ server {
            root /var/www/smartcare-calendar/$branch/current/public;
            try_files $uri $uri/ /index.php$is_args$args;
            location ~ \.php$ {
-               include snippets/fastcgi-php.conf;
-               fastcgi_pass   unix:/run/php/php7.2-fpm.sock;
-               include        fastcgi_params;
+               include       snippets/fastcgi-php.conf;
+               fastcgi_pass  unix:/run/php/php7.2-fpm.sock;
+               include       fastcgi_params;
+               fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+               fastcgi_param DOCUMENT_ROOT $realpath_root;
+               internal;
            }
        }
 }

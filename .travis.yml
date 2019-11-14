@@ -2,7 +2,7 @@ language: php
 os: linux
 
 script:
-- true
+- cd application && ./vendor/phpunit/phpunit/phpunit
 after_success:
 - ./travis/deploy.sh
 before_install:
