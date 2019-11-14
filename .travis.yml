@@ -1,5 +1,6 @@
 language: php
 os: linux
+
 script:
 - true
 after_success:
