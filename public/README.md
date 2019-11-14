@@ -1,24 +1,20 @@
-## story-1.html
+## Framework & Document
 
-検索画面
-証券番号を入力して決定すると、story-2.htmlに遷移する
+AdminLTE - `Free admin dashboard template based on Bootstrap 3`
 
-## story-2.html
+https://adminlte.io/docs/
 
-カレンダーが表示される。
-825-013499 ハルキトシオ
-１・２回目のデータは入力済みである。
-３回目のデータを入力することができる。
+## Development
 
-入力すると、右のタイムライン上の数字がポコポコリアルタイムでかわる
+on PHP Framework.
 
-完了ボタンを押すと、story-3.htmlに遷移する
-
-## story-3.html
-
-モーダルで支払える日のリストが表示される
-で、確定ボタンを押すと、story-4.htmlに遷移する
-
-## story-4.html
-
-さっき未確定だったのが、全部確定になっている。
+```
+bash-3.2$ find application/app/Views -type f
+application/app/Views/Calendar/Index.php
+application/app/Views/Calendar/Show.php
+application/app/Views/Calendar/Ukeban.php
+application/app/Views/Calendar/New.php
+application/app/Views/Calendar/Edit.php
+application/app/Views/Layouts/Main.php
+application/app/Views/Partials/ListShoken.php
+```

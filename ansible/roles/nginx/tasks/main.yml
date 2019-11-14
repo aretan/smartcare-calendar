@@ -1,20 +1,32 @@
 - apt:
-    name: nginx-light
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - nginx-light
+    - ssl-cert
+    - apache2-utils
+    - python-passlib
 - copy:
     src=default
     dest=/etc/nginx/sites-enabled/default
+- htpasswd:
+    path: /etc/nginx/htpasswd
+    name: "{{ basic_username }}"
+    password: "{{ basic_password }}"
+    owner: www-data
+    group: www-data
 - service: name=nginx state=reloaded
 - file:
     src: /vagrant
     dest: /var/www/smartcare-calendar
     state: link
   when: # when vagrant
-   - ansible_distribution == "Debian"
+  - ansible_distribution == "Debian"
 - file: path=/var/www/smartcare-calendar/application state=directory owner=ubuntu group=ubuntu mode=0755
   when: # for capistrano
-   - ansible_distribution == "Ubuntu"
+  - ansible_distribution == "Ubuntu"
 - template:
     src: application-env
     dest: /var/www/smartcare-calendar/application/.env
   when: # for capistrano
-   - ansible_distribution == "Ubuntu"
+  - ansible_distribution == "Ubuntu"

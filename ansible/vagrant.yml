@@ -4,6 +4,8 @@
   vars:
     machine_name: "{{ lookup('env', 'LOGNAME') }}.vagrant"
     machine_name_s: "{{ lookup('env', 'LOGNAME') }}"
+    basic_username: smartcare
+    basic_password: smartcare
     api_environment: development
     mysql_hostname: localhost
     mysql_database: smartcare
