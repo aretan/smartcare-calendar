@@ -9,8 +9,8 @@ class Smartcare
     {
         $ref = strtotime($nyuin['start']);
 
-        $nyuin['warrantyStart'] = date('Y/m/d' $ref - 60 * 60 * 24 * 120);
-        $nyuin['warrantyStart'] = date('Y/m/d' $ref + 60 * 60 * 24 * 120);
+        $nyuin['warrantyStart'] = date('Y/m/d', $ref - 60 * 60 * 24 * 120);
+        $nyuin['warrantyStart'] = date('Y/m/d', $ref + 60 * 60 * 24 * 120);
         $nyuin['warrantyMax'] = '30';
 
         return $nyuin;
@@ -19,15 +19,15 @@ class Smartcare
     /**
      * 手術の保証期間と保証回数を埋める
      */
-    public function addShujutsuWarranty($nyuin)
+    public function addShujutsuWarranty($shujutsu)
     {
-        $ref = strtotime($nyuin['date']);
+        $ref = strtotime($shujutsu['date']);
 
-        $nyuin['warrantyStart'] = date('Y/m/d' $ref - 60 * 60 * 24 * 120);
-        $nyuin['warrantyStart'] = date('Y/m/d' $ref + 60 * 60 * 24 * 120);
-        $nyuin['warrantyMax'] = '30';
+        $shujutsu['warrantyStart'] = date('Y/m/d', $ref - 60 * 60 * 24 * 120);
+        $shujutsu['warrantyStart'] = date('Y/m/d', $ref + 60 * 60 * 24 * 120);
+        $shujutsu['warrantyMax'] = '30';
 
-        return $nyuin;
+        return $shujutsu;
     }
 
     /**
