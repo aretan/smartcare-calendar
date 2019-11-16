@@ -15,15 +15,15 @@ class Calendar extends WebController
                 'shoken_id' => $shoken_id,
             ])->orderBy('date')->findAll();
 
-            $data['nyuin'] = \App\Libraries\Common::groupByKey('ukeban_id',
+            $data['shoken']['nyuin'] = \App\Libraries\Common::groupByKey('ukeban_id',
                 (new \App\Models\NyuinModel())->where([
                     'shoken_id' => $shoken_id,
                 ])->findAll());
-            $data['shujutsu'] = \App\Libraries\Common::groupByKey('ukeban_id',
+            $data['shoken']['shujutsu'] = \App\Libraries\Common::groupByKey('ukeban_id',
                 (new \App\Models\ShujutsuModel())->where([
                     'shoken_id' => $shoken_id,
                 ])->findAll());
-            $data['tsuin'] = \App\Libraries\Common::groupByKey('ukeban_id',
+            $data['shoken']['tsuin'] = \App\Libraries\Common::groupByKey('ukeban_id',
                 (new \App\Models\TsuinModel())->where([
                     'shoken_id' => $shoken_id,
                 ])->findAll());

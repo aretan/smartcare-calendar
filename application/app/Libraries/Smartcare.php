@@ -5,11 +5,27 @@ class Smartcare
     /**
      * 入院の保証期間と保証回数を埋める
      */
-    public function addWarranty($nyuin)
+    public function addNyuinWarranty($nyuin)
     {
-        $nyuin['warrantyStart'] = '2019/11/10';
-        $nyuin['warrantyEnd'] = '2019/11/20';
-        $nyuin['warrantyMax'] = '5';
+        $ref = strtotime($nyuin['start']);
+
+        $nyuin['warrantyStart'] = date('Y/m/d' $ref - 60 * 60 * 24 * 120);
+        $nyuin['warrantyStart'] = date('Y/m/d' $ref + 60 * 60 * 24 * 120);
+        $nyuin['warrantyMax'] = '30';
+
+        return $nyuin;
+    }
+
+    /**
+     * 手術の保証期間と保証回数を埋める
+     */
+    public function addShujutsuWarranty($nyuin)
+    {
+        $ref = strtotime($nyuin['date']);
+
+        $nyuin['warrantyStart'] = date('Y/m/d' $ref - 60 * 60 * 24 * 120);
+        $nyuin['warrantyStart'] = date('Y/m/d' $ref + 60 * 60 * 24 * 120);
+        $nyuin['warrantyMax'] = '30';
 
         return $nyuin;
     }

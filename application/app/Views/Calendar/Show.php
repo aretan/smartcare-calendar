@@ -105,27 +105,27 @@
                   <span class="time"><i class="fa fa-clock-o"></i> <?= $line['date'] ?></span>
                   <h3 class="timeline-header"><?= $line['id'] ?></h3>
                   <div class="timeline-body">
-                    <?php if(isset($nyuin[$line['id']])){ ?>
+                    <?php if(isset($shoken['nyuin'][$line['id']])){ ?>
                     <i class="fa fa-hotel margin-r-5"></i>入院：
                     <p>
-                      <?php foreach($nyuin[$line['id']] as $i){ ?>
+                      <?php foreach($shoken['nyuin'][$line['id']] as $i){ ?>
                       <?= str_replace('-', '/', $i['start']) ?> -
                       <?= str_replace('-', '/', $i['end']) ?><br />
                       <?php } ?>
                     </p>
                     <?php } ?>
-                    <?php if(isset($shujutsu[$line['id']])){ ?>
+                    <?php if(isset($shoken['shujutsu'][$line['id']])){ ?>
                     <i class="fa fa-calendar-times-o margin-r-5"></i>手術：
                     <p>
-                      <?php foreach($shujutsu[$line['id']] as $i){ ?>
+                      <?php foreach($shoken['shujutsu'][$line['id']] as $i){ ?>
                       <?= str_replace('-', '/', $i['date']) ?><br />
                       <?php } ?>
                     </p>
                     <?php } ?>
-                    <?php if(isset($tsuin[$line['id']])){ ?>
+                    <?php if(isset($shoken['tsuin'][$line['id']])){ ?>
                     <i class="fa fa-taxi margin-r-5"></i>通院：
                     <p>
-                      <?php foreach($tsuin[$line['id']] as $i){ ?>
+                      <?php foreach($shoken['tsuin'][$line['id']] as $i){ ?>
                       <?= str_replace('-', '/', $i['date']) ?><br />
                       <?php } ?>
                     </p>

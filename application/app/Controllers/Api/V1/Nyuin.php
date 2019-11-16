@@ -17,7 +17,7 @@ class Nyuin extends ApiController
                 'start' => $matches['start'],
                 'end' => $matches['end'],
             ];
-            $request = $this->smartcare->addWarranty($request);
+            $request = $this->smartcare->addNyuinWarranty($request);
         }
 
         $data = array_merge($this->_getParentId($this), $request);

@@ -12,7 +12,7 @@ class Shujutsu extends ApiController
         $request = $this->request->getJSON(true);
         if (!$request) {
             $request = $this->request->getPost();
-            $request = $this->smartcare->addWarranty($request);
+            $request = $this->smartcare->addShujutsuWarranty($request);
         }
 
         $data = array_merge($this->_getParentId($this), $request);

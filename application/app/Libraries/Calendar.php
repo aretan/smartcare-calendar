@@ -42,14 +42,14 @@ class Calendar
         $data .= '</td>';
 
         for ($i=1; $i<=16; $i++) {
-            $data .= "<td {$this->day_attr}>{$i}</td>";
+            $data .= "<td id='day-{$year}-{$month}-{$i}' {$this->day_attr}>{$i}</td>";
         }
 
         $data .= "<td {$this->count_attr}>10</td>";
         $data .= "</tr><tr id='nen-{$year}-{$month}-2'>";
 
         for (; date('d', mktime(0, 0, 0, $month, $i, $year)) > 16; $i++) {
-            $data .= "<td {$this->day_attr}>{$i}</td>";
+            $data .= "<td id='day-{$year}-{$month}-{$i}' {$this->day_attr}>{$i}</td>";
         }
 
         for (; $i<=32; $i++) {
