@@ -2,10 +2,19 @@
 
 class Smartcare
 {
+    public static function groupByUkebanId($array)
+    {
+        $result = [];
+        foreach ($array as $line) {
+            $result[$line['ukeban_id']][] = $line;
+        }
+        return $result;
+    }
+
     /**
      * 入院の保証期間と保証回数を埋める
      */
-    public function addNyuinWarranty($nyuin)
+    public static function addNyuinWarranty($nyuin)
     {
         $ref = strtotime($nyuin['start']);
 
@@ -19,7 +28,7 @@ class Smartcare
     /**
      * 手術の保証期間と保証回数を埋める
      */
-    public function addShujutsuWarranty($shujutsu)
+    public static function addShujutsuWarranty($shujutsu)
     {
         $ref = strtotime($shujutsu['date']);
 
@@ -37,7 +46,7 @@ class Smartcare
      *
      * @return array $nyuinList
      */
-    public function conbineNyuin($nyuinList)
+    public static function conbineNyuin($nyuinList)
     {
         $nyuinList = [
             new \App\Entities\Nyuin(),
@@ -56,7 +65,7 @@ class Smartcare
      *
      * @return array $result
      */
-    public function separateTsuin($tsuinList, $nyuinList, $shujutsuList)
+    public static function separateTsuin($tsuinList, $nyuinList, $shujutsuList)
     {
         $result = [
             'nyuin' => [
@@ -73,5 +82,22 @@ class Smartcare
             ],
         ];
         return $result;
+    }
+
+    public static function toJsonEvents($data)
+    {
+        $events = [];
+
+        foreach ($data as $line) {
+            $event = [];
+            $event['start'] = isset($line['start']) ? $line['start'] : $line['date'];
+            $event['end'] = isset($line['end']) ? $line['end'] : $line['date'];
+            // Note: This value is exclusive. For example, if you have an all-day event that has an end of 2018-09-03, then it will span through 2018-09-02 and end before the start of 2018-09-03.
+            $event['end'] = date('Y-m-d', strtotime($event['end']) + 60 * 60 * 24);
+            $event['title'] = $line['ukeban_id'];
+            $event['description'] = 'てすと';
+            $events[] = $event;
+        }
+        return json_encode($events);
     }
 }

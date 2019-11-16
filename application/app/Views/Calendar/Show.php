@@ -22,7 +22,7 @@
           <div class="box-header with-border">
             <h4 class="box-title">
               <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                年間カレンダー (未実装)
+                年間カレンダー
               </a>
             </h4>
 
@@ -35,7 +35,7 @@
               </div>
             </div>
           </div>
-          <div id="collapseOne" class="panel-collapse collapse in">
+          <div id="collapseOne" class="panel-collapse collapse">
 
             <div class="box-body no-padding">
               <?php (new \App\Libraries\Calendar)->render($shoken['date'], date('Y/m')); ?>
@@ -49,11 +49,11 @@
           <div class="box-header with-border">
             <h4 class="box-title">
               <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
-                月間カレンダー (未実装)
+                月間カレンダー
               </a>
             </h4>
           </div>
-          <div id="collapseTwo" class="panel-collapse collapse">
+          <div id="collapseTwo" class="panel-collapse collapse in">
             <!-- THE CALENDAR -->
             <div id="calendar"></div>
           </div>
@@ -97,7 +97,7 @@
                 </a>
               </li>
               <!-- /.timeline-label -->
-              <?php foreach($ukeban as $line){ ?>
+              <?php foreach($shoken['ukeban'] as $line){ ?>
               <!-- timeline item -->
               <li>
                 <i class="fa fa-envelope bg-blue"></i>
@@ -105,27 +105,30 @@
                   <span class="time"><i class="fa fa-clock-o"></i> <?= $line['date'] ?></span>
                   <h3 class="timeline-header"><?= $line['id'] ?></h3>
                   <div class="timeline-body">
-                    <?php if(isset($shoken['nyuin'][$line['id']])){ ?>
+                    <?php $nyuin = \App\Libraries\Smartcare::groupByUkebanId($shoken['nyuin']) ?>
+                    <?php if(isset($nyuin[$line['id']])){ ?>
                     <i class="fa fa-hotel margin-r-5"></i>入院：
                     <p>
-                      <?php foreach($shoken['nyuin'][$line['id']] as $i){ ?>
+                      <?php foreach($nyuin[$line['id']] as $i){ ?>
                       <?= str_replace('-', '/', $i['start']) ?> -
                       <?= str_replace('-', '/', $i['end']) ?><br />
                       <?php } ?>
                     </p>
                     <?php } ?>
-                    <?php if(isset($shoken['shujutsu'][$line['id']])){ ?>
+                    <?php $shujutsu = \App\Libraries\Smartcare::groupByUkebanId($shoken['shujutsu']) ?>
+                    <?php if(isset($shujutsu[$line['id']])){ ?>
                     <i class="fa fa-calendar-times-o margin-r-5"></i>手術：
                     <p>
-                      <?php foreach($shoken['shujutsu'][$line['id']] as $i){ ?>
+                      <?php foreach($shujutsu[$line['id']] as $i){ ?>
                       <?= str_replace('-', '/', $i['date']) ?><br />
                       <?php } ?>
                     </p>
                     <?php } ?>
-                    <?php if(isset($shoken['tsuin'][$line['id']])){ ?>
+                    <?php $tsuin = \App\Libraries\Smartcare::groupByUkebanId($shoken['tsuin']) ?>
+                    <?php if(isset($tsuin[$line['id']])){ ?>
                     <i class="fa fa-taxi margin-r-5"></i>通院：
                     <p>
-                      <?php foreach($shoken['tsuin'][$line['id']] as $i){ ?>
+                      <?php foreach($tsuin[$line['id']] as $i){ ?>
                       <?= str_replace('-', '/', $i['date']) ?><br />
                       <?php } ?>
                     </p>
@@ -258,9 +261,43 @@
 <!-- fullCalendar -->
 <script src="/vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
 <script src="/vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/locale-all.js"></script>
+<script src="/vendor/adminlte-2.4.18/bower_components/bootstrap/js/tooltip.js"></script>
 
 <script>
   $(function () {
+      var eventData = [
+          {
+              events: <?= (new \App\Libraries\Smartcare)->toJsonEvents($shoken['tsuin']) ?>,
+              color: "#00a65a",
+          },
+          {
+              events: <?= (new \App\Libraries\Smartcare)->toJsonEvents($shoken['nyuin']) ?>,
+              color: "#00c0ef",
+          },
+          {
+              events: <?= (new \App\Libraries\Smartcare)->toJsonEvents($shoken['shujutsu']) ?>,
+              color: "#f39c12",
+          },
+      ];
+      eventData.forEach(function(events){
+          events.events.forEach(function(event){
+              start = event.start.split('-');
+              end = event.end.split('-');
+
+              start = new Date(start[0], start[1]-1, start[2]);
+              end = new Date(end[0], end[1]-1, end[2]);
+
+              while (start < end) {
+                  $("#day-"+$.datepicker.formatDate("yy-mm-dd", start)).css("background-color", events.color);
+                  start.setDate(start.getDate() + 1);
+                  if (events.color == "#00a65a") {
+                      $("#sum-"+$.datepicker.formatDate("yy-mm", start)).text(
+                          parseInt($("#sum-"+$.datepicker.formatDate("yy-mm", start)).text(), 10) + 1
+                      );
+                  }
+              }
+          });
+      });
       $('#calendar').fullCalendar({
           views: {
               month: {
@@ -273,50 +310,16 @@
           },
           dayNames: ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'],
           dayNamesShort: ['日', '月', '火', '水', '木', '金', '土'],
-          events    : [
-              {
-                  title          : '通院',
-                  start          : "2019-10-10",
-                  end            : "2019-10-10",
-                  backgroundColor: '#00a65a', //Success (green)
-                  borderColor    : '#00a65a' //Success (green)
-              },
-              {
-                  title          : '通院',
-                  start          : "2019-10-17",
-                  end            : "2019-10-17",
-                  backgroundColor: '#00a65a', //Success (green)
-                  borderColor    : '#00a65a' //Success (green)
-              },
-              {
-                  title          : '通院',
-                  start          : "2019-10-24",
-                  end            : "2019-10-24",
-                  backgroundColor: '#00a65a', //Success (green)
-                  borderColor    : '#00a65a' //Success (green)
-              },
-              {
-                  title          : '手術',
-                  start          : "2019-10-15",
-                  end            : "2019-10-15",
-                  backgroundColor: '#f39c12', //yellow
-                  borderColor    : '#f39c12' //yellow
-              },
-              {
-                  title          : '入院',
-                  start          : "2019-10-15",
-                  end            : "2019-10-20",
-                  backgroundColor: '#00c0ef', //Info (aqua)
-                  borderColor    : '#00c0ef' //Info (aqua)
-              },
-              {
-                  title          : '通院',
-                  start          : "2019-10-30",
-                  end            : "2019-10-30",
-                  backgroundColor: '#00a65a', //Success (green)
-                  borderColor    : '#00a65a' //Success (green)
-              },
-          ],
+          eventSources: eventData,
+          eventRender: function (info, element) {
+              element.find('.fc-title').html(info.title);
+              element.tooltip({
+                  title: info.description,
+                  placement: 'top',
+                  trigger: 'hover',
+                  container: 'body'
+              }).tooltip('show');
+          }
       });
 
       //Date range picker

@@ -10,27 +10,21 @@ class Calendar extends WebController
     public function show($shoken_id=null)
     {
         $data['shoken'] = (new \App\Models\ShokenModel())->find($shoken_id);
-        if ($data['shoken']) {
-            $data['ukeban'] = (new \App\Models\UkebanModel())->where([
-                'shoken_id' => $shoken_id,
-            ])->orderBy('date')->findAll();
-
-            $data['shoken']['nyuin'] = \App\Libraries\Common::groupByKey('ukeban_id',
-                (new \App\Models\NyuinModel())->where([
-                    'shoken_id' => $shoken_id,
-                ])->findAll());
-            $data['shoken']['shujutsu'] = \App\Libraries\Common::groupByKey('ukeban_id',
-                (new \App\Models\ShujutsuModel())->where([
-                    'shoken_id' => $shoken_id,
-                ])->findAll());
-            $data['shoken']['tsuin'] = \App\Libraries\Common::groupByKey('ukeban_id',
-                (new \App\Models\TsuinModel())->where([
-                    'shoken_id' => $shoken_id,
-                ])->findAll());
-
-            return view('Calendar/Show', $data);
+        if (!$data['shoken']) {
+            return redirect()->to('/');
         }
-        redirect()->to('/');
+
+        $condition = [
+            'shoken_id' => $shoken_id,
+        ];
+
+        $data['shoken']['ukeban'] = (new \App\Models\UkebanModel())->where($condition)->orderBy('date')->findAll();
+
+        $data['shoken']['nyuin'] = (new \App\Models\NyuinModel())->where($condition)->findAll();
+        $data['shoken']['shujutsu'] = (new \App\Models\ShujutsuModel())->where($condition)->findAll();
+        $data['shoken']['tsuin'] = (new \App\Models\TsuinModel())->where($condition)->findAll();
+
+        return view('Calendar/Show', $data);
     }
 
     public function new()
