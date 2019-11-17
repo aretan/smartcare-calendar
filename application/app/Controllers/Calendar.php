@@ -7,22 +7,22 @@ class Calendar extends WebController
         return view('Calendar/Index');
     }
 
-    public function show($shoken_id=null)
+    public function show($shoken_id=null, $ukeban_id=null)
     {
         $data['shoken'] = (new \App\Models\ShokenModel())->find($shoken_id);
         if (!$data['shoken']) {
             return redirect()->to('/');
         }
 
-        $condition = [
-            'shoken_id' => $shoken_id,
-        ];
+        $condition['shoken_id'] = $shoken_id;
 
         $data['shoken']['ukeban'] = (new \App\Models\UkebanModel())->where($condition)->orderBy('date')->findAll();
 
         $data['shoken']['nyuin'] = (new \App\Models\NyuinModel())->where($condition)->findAll();
         $data['shoken']['shujutsu'] = (new \App\Models\ShujutsuModel())->where($condition)->findAll();
         $data['shoken']['tsuin'] = (new \App\Models\TsuinModel())->where($condition)->findAll();
+
+        $data['ukeban_id'] = $ukeban_id;
 
         return view('Calendar/Show', $data);
     }

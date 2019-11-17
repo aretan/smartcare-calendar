@@ -84,11 +84,17 @@ class Smartcare
         return $result;
     }
 
-    public static function toJsonEvents($data)
+    public static function toJsonEvents($data, $filter)
     {
         $events = [];
 
         foreach ($data as $line) {
+            foreach ($filter as $key => $value) {
+                if (!empty($value) &&$line[$key] != $value) {
+                    continue 2;
+                }
+            }
+
             $event = [];
             $event['start'] = isset($line['start']) ? $line['start'] : $line['date'];
             $event['end'] = isset($line['end']) ? $line['end'] : $line['date'];
@@ -96,6 +102,7 @@ class Smartcare
             $event['end'] = date('Y-m-d', strtotime($event['end']) + 60 * 60 * 24);
             $event['title'] = $line['ukeban_id'];
             $event['description'] = 'てすと';
+
             $events[] = $event;
         }
         return json_encode($events);

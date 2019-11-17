@@ -91,6 +91,7 @@ $routes->group('/', ['namespace' => 'App\Controllers'], function($routes)
     $routes->add('calendar/ukeban/(:any)', 'Calendar::ukeban/$1');
     $routes->post('calendar/ukeban/', 'Calendar::ukeban');
     $routes->add('', 'Calendar::index');
+    $routes->add('/(:any)/(:any)', 'Calendar::show/$1/$2');
     $routes->add('/(:any)', 'Calendar::show/$1');
 });
 

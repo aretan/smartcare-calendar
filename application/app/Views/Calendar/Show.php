@@ -27,15 +27,28 @@
             </h4>
 
             <div class="box-tools pull-right">
-              <div class="input-group input-group-sm" style="width:200px;">
-                <input type="text" class="form-control" id="monthrange" name="monthrange" value="<?= date('Y/m', strtotime($shoken['date'])) ?> - <?= date('Y/m') ?>" onchange="nenview(this.value)">
-                <span class="input-group-btn">
-                  <button type="button" class="btn btn-info btn-flat" onclick="nenview_reset()">解除</button>
-                </span>
+
+              <div class="row">
+                <div class="col-lg-6">
+                  <!-- checkbox -->
+                  <div class="form-group" style="margin:4px 0px 0px 0px;">
+                    <label>
+                      <input type="checkbox" class="flat-red" id="no-data" checked> 全表示
+                    </label>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="input-group input-group-sm" style="width:200px; float:right;">
+                    <input type="text" class="form-control" id="monthrange" name="monthrange" value="<?= date('Y/m', strtotime($shoken['date'])) ?> - <?= date('Y/m') ?>" onchange="nenview()">
+                    <span class="input-group-btn">
+                      <button type="button" class="btn btn-info btn-flat" onclick="nenview_reset()">解除</button>
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div id="collapseOne" class="panel-collapse collapse">
+          <div id="collapseOne" class="panel-collapse collapse in">
 
             <div class="box-body no-padding">
               <?php (new \App\Libraries\Calendar)->render($shoken['date'], date('Y/m')); ?>
@@ -53,7 +66,7 @@
               </a>
             </h4>
           </div>
-          <div id="collapseTwo" class="panel-collapse collapse in">
+          <div id="collapseTwo" class="panel-collapse collapse">
             <!-- THE CALENDAR -->
             <div id="calendar"></div>
           </div>
@@ -71,22 +84,12 @@
       <?php } ?>
       <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
-          <li class="active"><a href="#activity" data-toggle="tab">通院数 (未実装)</a></li>
-          <li><a href="#timeline" data-toggle="tab">受付番号</a></li>
+          <li class="active"><a href="#timeline" data-toggle="tab">受付番号</a></li>
+          <li><a href="#activity" data-toggle="tab">通院数 (未実装)</a></li>
           <li><a href="#settings" data-toggle="tab">カレンダー</a></li>
         </ul>
         <div class="tab-content">
-          <div class="active tab-pane" id="activity">
-
-            <strong><i class="fa fa-hotel margin-r-5"></i>入院：2018/08/05</strong>
-            <p>4日間 (8/12 8/15 8/20 9/10)</p>
-
-            <strong><i class="fa fa-calendar-times-o margin-r-5"></i>手術：2018/08/05</strong>
-            <p>0日間</p>
-
-          </div>
-          <!-- /.tab-pane -->
-          <div class="tab-pane" id="timeline">
+          <div class="active tab-pane" id="timeline">
             <!-- The timeline -->
             <ul class="timeline timeline-inverse">
 
@@ -104,7 +107,7 @@
                 <div class="timeline-item">
                   <span class="time"><i class="fa fa-clock-o"></i> <?= $line['date'] ?></span>
                   <h3 class="timeline-header"><?= $line['id'] ?></h3>
-                  <div class="timeline-body">
+                  <div class="timeline-body" style="padding-bottom: 0px;">
                     <?php $nyuin = \App\Libraries\Smartcare::groupByUkebanId($shoken['nyuin']) ?>
                     <?php if(isset($nyuin[$line['id']])){ ?>
                     <i class="fa fa-hotel margin-r-5"></i>入院：
@@ -134,12 +137,9 @@
                     </p>
                     <?php } ?>
                   </div>
-                  <!--
                   <div class="timeline-footer">
-                    <a class="btn btn-primary btn-xs">結果表示</a>
-                    <a class="btn btn-danger btn-xs">これだけ</a>
+                    <a href="<?= site_url("{$shoken['id']}/{$line['id']}/") ?>" class="btn btn-danger btn-xs">これだけカレンダーに表示</a>
                   </div>
-                  -->
                 </div>
               </li>
               <!-- END timeline item -->
@@ -153,6 +153,14 @@
               </li>
               <!-- /.timeline-label -->
             </ul>
+          </div>
+          <!-- /.tab-pane -->
+
+          <div class="tab-pane" id="activity">
+            <strong><i class="fa fa-hotel margin-r-5"></i>入院：2018/08/05</strong>
+            <p>4日間 (8/12 8/15 8/20 9/10)</p>
+            <strong><i class="fa fa-calendar-times-o margin-r-5"></i>手術：2018/08/05</strong>
+            <p>0日間</p>
           </div>
           <!-- /.tab-pane -->
 
@@ -246,6 +254,8 @@
 <!-- fullCalendar -->
 <link rel="stylesheet" href="/vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/fullcalendar.min.css">
 <link rel="stylesheet" href="/vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/fullcalendar.print.min.css" media="print">
+<!-- iCheck for checkboxes and radio inputs -->
+<link rel="stylesheet" href="/vendor/adminlte-2.4.18/plugins/iCheck/all.css">
 <?= $this->endSection() ?>
 
 <?= $this->section('javascripts') ?>
@@ -262,20 +272,22 @@
 <script src="/vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
 <script src="/vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/locale-all.js"></script>
 <script src="/vendor/adminlte-2.4.18/bower_components/bootstrap/js/tooltip.js"></script>
-
+<!-- iCheck 1.0.1 -->
+<script src="/vendor/adminlte-2.4.18/plugins/iCheck/icheck.min.js"></script>
 <script>
   $(function () {
+      // ２つのカレンダーに表示するために、Ajaxをあきらめた（言い訳）
       var eventData = [
           {
-              events: <?= (new \App\Libraries\Smartcare)->toJsonEvents($shoken['tsuin']) ?>,
+              events: <?= (new \App\Libraries\Smartcare)->toJsonEvents($shoken['tsuin'], ['ukeban_id' => $ukeban_id]) ?>,
               color: "#00a65a",
           },
           {
-              events: <?= (new \App\Libraries\Smartcare)->toJsonEvents($shoken['nyuin']) ?>,
+              events: <?= (new \App\Libraries\Smartcare)->toJsonEvents($shoken['nyuin'], ['ukeban_id' => $ukeban_id]) ?>,
               color: "#00c0ef",
           },
           {
-              events: <?= (new \App\Libraries\Smartcare)->toJsonEvents($shoken['shujutsu']) ?>,
+              events: <?= (new \App\Libraries\Smartcare)->toJsonEvents($shoken['shujutsu'], ['ukeban_id' => $ukeban_id]) ?>,
               color: "#f39c12",
           },
       ];
@@ -295,6 +307,7 @@
                           parseInt($("#sum-"+$.datepicker.formatDate("yy-mm", start)).text(), 10) + 1
                       ).addClass('bg-red');
                   }
+                  $("#sum-"+$.datepicker.formatDate("yy-mm", start)).removeClass('no-data');
               }
           });
       });
@@ -340,7 +353,7 @@
           autoclose: true,
           orientation: 'bottom',
           language: 'ja',
-      })
+      });
 
       //Date picker
       $('#monthrange').monthrangepicker({
@@ -356,10 +369,21 @@
           }
       });
 
+      $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+          checkboxClass: 'icheckbox_flat-green',
+          radioClass   : 'iradio_flat-green'
+      });
+
+      $('#no-data').on('ifChanged', function(){
+          nenview();
+      });
   });
 
-  function nenview(range) {
-      s_range = range.split(' - ');
+  function nenview() {
+      $('.no-data').parent().parent().show();
+      $('.no-data').parent().parent().next().show();
+
+      s_range = $('#monthrange').val().split(' - ');
       start = s_range[0].split('/');
       start = new Date(start[0], start[1]);
       end = s_range[1].split('/');
@@ -369,19 +393,28 @@
           function(index, element){
               line = $(element).attr('id').split('-');
               line = new Date(line[1], line[2])
-              console.log(start + ':' + line + ':' + end);
               if (start <= line && line <= end) {
-                  console.log('show');
                   $(element).show();
               } else {
-                  console.log('hide');
                   $(element).hide();
               }
           });
+
+      if (!$('#no-data').prop("checked")) {
+          $('.no-data').parent().parent().hide();
+          $('.no-data').parent().parent().next().hide();
+      }
   }
+
   function nenview_reset() {
       $('#monthrange').data('daterangepicker').setStartDate('<?= date('Y/m', strtotime($shoken['date'])) ?>');
       $('#monthrange').data('daterangepicker').setEndDate('<?= date('Y/m') ?>');
+  }
+
+  function month(target) {
+      $('#collapseOne').collapse('hide');
+      $('#collapseTwo').collapse('show');
+      $('#calendar').fullCalendar('gotoDate', target);
   }
 </script>
 <?= $this->endSection() ?>

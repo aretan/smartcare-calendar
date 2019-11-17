@@ -5,7 +5,7 @@ class Calendar
     public $table_attr = 'id="nenview" class="table table-bordered table-striped"';
     public $month_attr = 'rowspan="2" style="width:10%; text-align:center; vertical-align:middle;"';
     public $count_attr = 'rowspan="2" style="width:10%; text-align:center; vertical-align:middle;"';
-    public $day_attr = 'style="text-align:center;"';
+    public $day_attr = 'style="text-align:center; padding:3px;"';
     public $non_attr = 'style="background-color:black;"';
 
     public function render($start, $end) {
@@ -34,7 +34,7 @@ class Calendar
 
     public function line($year, $month, $print_year) {
         $data = "<tr id='nen-{$year}-{$month}-1'>";
-        $data .= "<td {$this->month_attr}>";
+        $data .= "<td {$this->month_attr}><a href=\"javascript:month('{$year}-{$month}')\">";
         if ($print_year) {
             $data .= date('Y', mktime(0, 0, 0, $month, 1, $year)) . '年<br />';
         }
@@ -46,7 +46,7 @@ class Calendar
             $data .= "<td id='day-{$year}-{$month}-{$zeroi}' {$this->day_attr}>{$i}</td>";
         }
 
-        $data .= "<td {$this->count_attr}><span id='sum-{$year}-{$month}' class='badge'>0</span></td>";
+        $data .= "<td {$this->count_attr}><span id='sum-{$year}-{$month}' class='badge no-data'>0</span></td>";
         $data .= "</tr><tr id='nen-{$year}-{$month}-2'>";
 
         for (; date('d', mktime(0, 0, 0, $month, $i, $year)) > 16; $i++) {
