@@ -293,7 +293,7 @@
                   if (events.color == "#00a65a") {
                       $("#sum-"+$.datepicker.formatDate("yy-mm", start)).text(
                           parseInt($("#sum-"+$.datepicker.formatDate("yy-mm", start)).text(), 10) + 1
-                      );
+                      ).addClass('bg-red');
                   }
               }
           });

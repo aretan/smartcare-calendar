@@ -46,7 +46,7 @@ desired effect
 |               | sidebar-mini                            |
 |---------------------------------------------------------|
 -->
-<body class="hold-transition skin-green sidebar-mini">
+<body class="hold-transition skin-green sidebar-mini fixed">
 <div class="wrapper">
 
   <!-- Main Header -->
@@ -123,6 +123,8 @@ desired effect
 
 <?= $this->renderSection('javascripts') ?>
 <script>
+  $(function () {
+  });
   function filter(element) {
       var value = $(element).val();
       $('#shoken > li:not(:contains(' + value + '))').hide();

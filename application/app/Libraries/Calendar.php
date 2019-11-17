@@ -46,7 +46,7 @@ class Calendar
             $data .= "<td id='day-{$year}-{$month}-{$zeroi}' {$this->day_attr}>{$i}</td>";
         }
 
-        $data .= "<td id='sum-{$year}-{$month}' {$this->count_attr}>0</td>";
+        $data .= "<td {$this->count_attr}><span id='sum-{$year}-{$month}' class='badge'>0</span></td>";
         $data .= "</tr><tr id='nen-{$year}-{$month}-2'>";
 
         for (; date('d', mktime(0, 0, 0, $month, $i, $year)) > 16; $i++) {
