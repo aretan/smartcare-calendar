@@ -18,9 +18,9 @@ class Calendar extends WebController
 
         $data['shoken']['ukeban'] = (new \App\Models\UkebanModel())->where($condition)->orderBy('date')->findAll();
 
-        $data['shoken']['nyuin'] = (new \App\Models\NyuinModel())->where($condition)->orderBy('start')->findAll();
-        $data['shoken']['shujutsu'] = (new \App\Models\ShujutsuModel())->where($condition)->findAll();
-        $data['shoken']['tsuin'] = (new \App\Models\TsuinModel())->where($condition)->findAll();
+        $data['shoken']['nyuin'] = (new \App\Models\NyuinModel())->where($condition)->orderBy('warrantyStart')->findAll();
+        $data['shoken']['shujutsu'] = (new \App\Models\ShujutsuModel())->where($condition)->orderBy('warrantyStart')->findAll();
+        $data['shoken']['tsuin'] = (new \App\Models\TsuinModel())->where($condition)->orderBy('date')->findAll();
 
         $data['ukeban_id'] = $ukeban_id;
 

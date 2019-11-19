@@ -84,12 +84,12 @@
       <?php } ?>
       <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
-          <li><a href="#timeline" data-toggle="tab">受付番号</a></li>
-          <li class="active"><a href="#activity" data-toggle="tab">通院数</a></li>
+          <li class="active"><a href="#timeline" data-toggle="tab">受付番号</a></li>
+          <li><a href="#activity" data-toggle="tab">通院数</a></li>
           <li><a href="#settings" data-toggle="tab">カレンダー</a></li>
         </ul>
         <div class="tab-content">
-          <div class="tab-pane" id="timeline">
+          <div class="tab-pane active" id="timeline">
             <!-- The timeline -->
             <ul class="timeline timeline-inverse">
 
@@ -156,13 +156,13 @@
           </div>
           <!-- /.tab-pane -->
 
-          <div class="active tab-pane" id="activity">
-            <strong><i class="fa fa-hotel margin-r-5"></i>入院：2018/08/05</strong>
-            <p>4日間 (8/12 8/15 8/20 9/10)</p>
-            <strong><i class="fa fa-calendar-times-o margin-r-5"></i>手術：2018/08/05</strong>
-            <p>0日間</p>
-            <strong><i class="fa fa-times-circle margin-r-5"></i>計算外</strong>
-            <p>0日間</p>
+          <div class="tab-pane" id="activity">
+            <?php foreach (\App\Libraries\Smartcare::tsuinResult($shoken['tsuin'], $shoken['nyuin'], $shoken['shujutsu']) as $key => $value) { ?>
+            <?php foreach ($value as $warranty => $tsuin) { ?>
+            <strong><?= $key ?><?php if ($warranty) { ?>：<?=$warranty ?><?php } ?> ＠<?= count($tsuin) ?>日</strong>
+            <p><small><?= implode(', ', $tsuin) ?></small></p>
+            <?php } ?>
+            <?php } ?>
           </div>
           <!-- /.tab-pane -->
 
@@ -294,7 +294,7 @@
           },
           {
               events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['shujutsu'], ['ukeban_id' => $ukeban_id]) ?>,
-              color: "#f39c12",
+              color: "#dd4b39",
           },
       ];
       eventData.forEach(function(events){
@@ -312,7 +312,7 @@
                       $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).css("color", 'green');
                   } else {
                       color = event.color ? event.color : events.color;
-                      if (events.color == "#f39c12") { // 手術
+                      if (events.color == "#dd4b39") { // 手術
                           $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).css("font-weight", 'bold');
                           $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).css("color", 'red');
                       } else {

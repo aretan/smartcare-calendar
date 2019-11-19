@@ -32,7 +32,7 @@ class Smartcare
     {
         $ref = strtotime($shujutsu['date']);
 
-        $shujutsu['warrantyStart'] = date('Y/m/d', $ref - 60 * 60 * 24 * 60);
+        $shujutsu['warrantyStart'] = date('Y/m/d', $ref + 60 * 60 * 24 * 1);
         $shujutsu['warrantyEnd'] = date('Y/m/d', $ref + 60 * 60 * 24 * 120);
         $shujutsu['warrantyMax'] = '30';
 
@@ -72,22 +72,52 @@ class Smartcare
      *
      * @return array $result
      */
-    public static function separateTsuin($tsuinList, $nyuinList, $shujutsuList)
+    public static function tsuinResult($tsuinList, $nyuinList, $shujutsuList)
     {
+        $nyuin_key    = '<i class="fa fa-hotel margin-r-5"></i>入院';
+        $shujutsu_key = '<i class="fa fa-calendar-times-o margin-r-5"></i>手術';
+        $other_key    = '<i class="fa fa-times-circle margin-r-5"></i>保障外';
+
+        self::conbineNyuin($nyuinList);
+
         $result = [
-            'nyuin' => [
-                '123' => ['123', '124', '125'],
-                '124' => ['126', '127', '128'],
-            ],
-            'shujutsu' => [
-                '123' => ['129', '130', '131'],
-                '124' => ['132', '133', '134'],
-            ],
-            'others' => [
-                '135',
-                '136',
-            ],
+            $nyuin_key    => [],
+            $shujutsu_key => [],
+            $other_key    => [],
         ];
+
+        foreach ($shujutsuList as $i => $shujutsu) {
+            foreach ($tsuinList as $j => $tsuin) {
+                if ($shujutsu['warrantyStart'] <= $tsuin['date'] &&
+                    $tsuin['date'] <= $shujutsu['warrantyEnd']) {
+                    $result[$shujutsu_key][$shujutsu['date']][] = $tsuin['date'];
+                    $shujutsuList[$i]['warrantyMax'] --;
+                    unset($tsuinList[$j]);
+                }
+                if ($shujutsuList[$i]['warrantyMax'] == 0) {
+                    continue 2;
+                }
+            }
+        }
+
+        foreach ($nyuinList as $i => $nyuin) {
+            foreach ($tsuinList as $j => $tsuin) {
+                if ($nyuin['warrantyStart'] <= $tsuin['date'] &&
+                    $tsuin['date'] <= $nyuin['warrantyEnd']) {
+                    $result[$nyuin_key][$nyuin['start']][] = $tsuin['date'];
+                    $nyuinList[$i]['warrantyMax'] --;
+                    unset($tsuinList[$j]);
+                }
+                if ($nyuinList[$i]['warrantyMax'] == 0) {
+                    continue 2;
+                }
+            }
+        }
+
+        foreach ($tsuinList as $i => $tsuin) {
+            $result[$other_key][''][] = $tsuin['date'];
+        }
+
         return $result;
     }
 
