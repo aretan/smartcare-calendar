@@ -74,6 +74,7 @@ class Smartcare
      */
     public static function tsuinResult($tsuinList, $nyuinList, $shujutsuList)
     {
+        $result = [];
         $nyuinList = self::conbineNyuin($nyuinList);
 
         $warrantyList = [];
