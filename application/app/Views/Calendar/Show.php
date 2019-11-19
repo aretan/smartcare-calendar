@@ -307,20 +307,20 @@
 
               while (start < end) {
                   if (events.rendering) {
-                      $("#day-"+$.datepicker.formatDate("yy-mm-dd", start)).css("text-decoration", 'underline');
-                      $("#day-"+$.datepicker.formatDate("yy-mm-dd", start)).css("font-weight", 'bold');
-                      $("#day-"+$.datepicker.formatDate("yy-mm-dd", start)).css("color", 'green');
+                      $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).css("text-decoration", 'underline');
+                      $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).css("font-weight", 'bold');
+                      $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).css("color", 'green');
                   } else {
                       color = event.color ? event.color : events.color;
                       if (events.color == "#f39c12") { // 手術
-                          $("#day-"+$.datepicker.formatDate("yy-mm-dd", start)).css("font-weight", 'bold');
-                          $("#day-"+$.datepicker.formatDate("yy-mm-dd", start)).css("color", 'red');
+                          $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).css("font-weight", 'bold');
+                          $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).css("color", 'red');
                       } else {
-                          $("#day-"+$.datepicker.formatDate("yy-mm-dd", start)).css("background-color", color);
+                          $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).css("background-color", color);
                       }
                   }
                   if (event.description) {
-                      $("#day-"+$.datepicker.formatDate("yy-mm-dd", start)).tooltip({
+                      $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).tooltip({
                           title: event.description,
                           placement: 'top',
                           trigger: 'hover',
@@ -329,11 +329,11 @@
                   }
                   start.setDate(start.getDate() + 1);
                   if (events.color == "#00a65a") { // 通院
-                      $("#sum-"+$.datepicker.formatDate("yy-mm", start)).text(
-                          parseInt($("#sum-"+$.datepicker.formatDate("yy-mm", start)).text(), 10) + 1
+                      $("#sum-"+$.datepicker.formatDate("yy-m", start)).text(
+                          parseInt($("#sum-"+$.datepicker.formatDate("yy-m", start)).text(), 10) + 1
                       ).addClass('bg-red');
                   }
-                  $("#sum-"+$.datepicker.formatDate("yy-mm", start)).removeClass('no-data');
+                  $("#sum-"+$.datepicker.formatDate("yy-m", start)).removeClass('no-data');
               }
           });
       });
