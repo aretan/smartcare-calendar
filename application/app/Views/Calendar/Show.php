@@ -327,13 +327,13 @@
                           container: 'body'
                       });
                   }
-                  start.setDate(start.getDate() + 1);
                   if (events.color == "#00a65a") { // 通院
                       $("#sum-"+$.datepicker.formatDate("yy-m", start)).text(
                           parseInt($("#sum-"+$.datepicker.formatDate("yy-m", start)).text(), 10) + 1
                       ).addClass('bg-red');
                   }
                   $("#sum-"+$.datepicker.formatDate("yy-m", start)).removeClass('no-data');
+                  start.setDate(start.getDate() + 1);
               }
           });
       });
