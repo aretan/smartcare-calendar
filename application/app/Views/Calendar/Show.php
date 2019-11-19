@@ -279,6 +279,10 @@
       // ２つのカレンダーに表示するために、Ajaxをあきらめた（言い訳）
       var eventData = [
           {
+              events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['shujutsu'], ['ukeban_id' => $ukeban_id], 'warrantyStart', 'warrantyEnd') ?>,
+              rendering: 'background',
+          },
+          {
               events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['nyuin'], ['ukeban_id' => $ukeban_id], 'warrantyStart', 'warrantyEnd') ?>,
               rendering: 'background',
           },
