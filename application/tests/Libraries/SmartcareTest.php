@@ -26,8 +26,7 @@ class SmartcareTest extends \CIUnitTestCase
             ],
         ];
 
-        $smartcare = new Smartcare();
-        $nyuinList = $smartcare->conbineNyuin($nyuinList);
+        Smartcare::conbineNyuin($nyuinList);
 
         $this->assertEquals(30, $nyuinList[0]['warrantyMax']);
         $this->assertEquals(30, $nyuinList[1]['warrantyMax']);
@@ -35,14 +34,39 @@ class SmartcareTest extends \CIUnitTestCase
     }
 
     /**
-     * function separateTsuin
+     * function tsuinResult
      * othersに２つ入ってるケース
      */
-    public function testSeparateTsuinCase1()
+    public function testTsuinResultCase1()
     {
-        $smartcare = new Smartcare();
-        $result = $smartcare->separateTsuin(null, null, null);
+        $nyuinList = [
+            [
+                'warrantyStart' => '2019-01-01',
+                'warrantyEnd' => '2019-10-01',
+                'warrantyMax' => 30,
+                'start' => '2019-03-01',
+            ],
+        ];
+        $shujutsuList = [
+            [
+                'warrantyStart' => '2019-03-01',
+                'warrantyEnd' => '2019-10-01',
+                'warrantyMax' => 30,
+                'date' => '2019-02-28',
+            ],
+        ];
+        for ($i=1; $i<=15; $i++) {
+            $tsuinList[] = [
+                'date' => "2019-01-{$i}",
+            ];
+        }
+        for ($i=1; $i<=16; $i++) {
+            $tsuinList[] = [
+                'date' => "2019-02-{$i}",
+            ];
+        }
+        $result = Smartcare::tsuinResult($tsuinList, $nyuinList, $shujutsuList);
 
-        $this->assertEquals(2, count($result['others']));
+        $this->assertEquals(1, count($result['<i class="fa fa-times-circle margin-r-5"></i>保障外']));
     }
 }
