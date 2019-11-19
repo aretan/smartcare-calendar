@@ -84,12 +84,12 @@
       <?php } ?>
       <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
-          <li class="active"><a href="#timeline" data-toggle="tab">受付番号</a></li>
-          <li><a href="#activity" data-toggle="tab">通院数 (未実装)</a></li>
+          <li><a href="#timeline" data-toggle="tab">受付番号</a></li>
+          <li class="active"><a href="#activity" data-toggle="tab">通院数</a></li>
           <li><a href="#settings" data-toggle="tab">カレンダー</a></li>
         </ul>
         <div class="tab-content">
-          <div class="active tab-pane" id="timeline">
+          <div class="tab-pane" id="timeline">
             <!-- The timeline -->
             <ul class="timeline timeline-inverse">
 
@@ -156,10 +156,12 @@
           </div>
           <!-- /.tab-pane -->
 
-          <div class="tab-pane" id="activity">
+          <div class="active tab-pane" id="activity">
             <strong><i class="fa fa-hotel margin-r-5"></i>入院：2018/08/05</strong>
             <p>4日間 (8/12 8/15 8/20 9/10)</p>
             <strong><i class="fa fa-calendar-times-o margin-r-5"></i>手術：2018/08/05</strong>
+            <p>0日間</p>
+            <strong><i class="fa fa-times-circle margin-r-5"></i>計算外</strong>
             <p>0日間</p>
           </div>
           <!-- /.tab-pane -->
@@ -279,15 +281,19 @@
       // ２つのカレンダーに表示するために、Ajaxをあきらめた（言い訳）
       var eventData = [
           {
-              events: <?= (new \App\Libraries\Smartcare)->toJsonEvents($shoken['tsuin'], ['ukeban_id' => $ukeban_id]) ?>,
+              events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['nyuin'], ['ukeban_id' => $ukeban_id], 'warrantyStart', 'warrantyEnd') ?>,
+              rendering: 'background',
+          },
+          {
+              events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['tsuin'], ['ukeban_id' => $ukeban_id]) ?>,
               color: "#00a65a",
           },
           {
-              events: <?= (new \App\Libraries\Smartcare)->toJsonEvents($shoken['nyuin'], ['ukeban_id' => $ukeban_id]) ?>,
+              events: <?= \App\Libraries\Smartcare::toJsonEvents(\App\Libraries\Smartcare::conbineNyuin($shoken['nyuin']), ['ukeban_id' => $ukeban_id]) ?>,
               color: "#00c0ef",
           },
           {
-              events: <?= (new \App\Libraries\Smartcare)->toJsonEvents($shoken['shujutsu'], ['ukeban_id' => $ukeban_id]) ?>,
+              events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['shujutsu'], ['ukeban_id' => $ukeban_id]) ?>,
               color: "#f39c12",
           },
       ];
@@ -300,9 +306,29 @@
               end = new Date(end[0], end[1]-1, end[2]);
 
               while (start < end) {
-                  $("#day-"+$.datepicker.formatDate("yy-mm-dd", start)).css("background-color", events.color);
+                  if (events.rendering) {
+                      $("#day-"+$.datepicker.formatDate("yy-mm-dd", start)).css("text-decoration", 'underline');
+                      $("#day-"+$.datepicker.formatDate("yy-mm-dd", start)).css("font-weight", 'bold');
+                      $("#day-"+$.datepicker.formatDate("yy-mm-dd", start)).css("color", 'green');
+                  } else {
+                      color = event.color ? event.color : events.color;
+                      if (events.color == "#f39c12") { // 手術
+                          $("#day-"+$.datepicker.formatDate("yy-mm-dd", start)).css("font-weight", 'bold');
+                          $("#day-"+$.datepicker.formatDate("yy-mm-dd", start)).css("color", 'red');
+                      } else {
+                          $("#day-"+$.datepicker.formatDate("yy-mm-dd", start)).css("background-color", color);
+                      }
+                  }
+                  if (event.description) {
+                      $("#day-"+$.datepicker.formatDate("yy-mm-dd", start)).tooltip({
+                          title: event.description,
+                          placement: 'top',
+                          trigger: 'hover',
+                          container: 'body'
+                      });
+                  }
                   start.setDate(start.getDate() + 1);
-                  if (events.color == "#00a65a") {
+                  if (events.color == "#00a65a") { // 通院
                       $("#sum-"+$.datepicker.formatDate("yy-mm", start)).text(
                           parseInt($("#sum-"+$.datepicker.formatDate("yy-mm", start)).text(), 10) + 1
                       ).addClass('bg-red');

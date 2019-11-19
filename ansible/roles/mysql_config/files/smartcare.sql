@@ -48,7 +48,8 @@ CREATE TABLE `nyuin` (
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted_at` DATETIME DEFAULT NULL,
-  INDEX(shoken_id, ukeban_id)
+  INDEX(shoken_id, ukeban_id),
+  INDEX(start) -- ORDER BY `start`
 ) COMMENT='入院';
 
 CREATE TABLE `tsuin` (

@@ -48,11 +48,18 @@ class Smartcare
      */
     public static function conbineNyuin($nyuinList)
     {
-        $nyuinList = [
-            new \App\Entities\Nyuin(),
-            new \App\Entities\Nyuin(['warrantyMax' => 0]),
-            new \App\Entities\Nyuin(),
-        ];
+        if (count($nyuinList) < 2) {
+            return $nyuinList;
+        }
+
+        for ($i=0; isset($nyuinList[$i+1]); $i++) {
+            if (strtotime($nyuinList[$i+1]['warrantyStart']) <= strtotime($nyuinList[$i]['warrantyEnd']) &&
+                strtotime($nyuinList[$i]['warrantyStart']) <= strtotime($nyuinList[$i+1]['warrantyEnd'])) {
+                $nyuinList[$i]['warrantyEnd'] = $nyuinList[$i+1]['warrantyEnd'];
+                $nyuinList[$i+1]['warrantyMax'] = 0;
+            }
+        }
+
         return $nyuinList;
     }
 
@@ -84,7 +91,7 @@ class Smartcare
         return $result;
     }
 
-    public static function toJsonEvents($data, $filter)
+    public static function toJsonEvents($data, $filter, $start='start', $end='end')
     {
         $events = [];
 
@@ -96,12 +103,15 @@ class Smartcare
             }
 
             $event = [];
-            $event['start'] = isset($line['start']) ? $line['start'] : $line['date'];
-            $event['end'] = isset($line['end']) ? $line['end'] : $line['date'];
+            $event['start'] = isset($line[$start]) ? $line[$start] : $line['date'];
+            $event['end'] = isset($line[$end]) ? $line[$end] : $line['date'];
             // Note: This value is exclusive. For example, if you have an all-day event that has an end of 2018-09-03, then it will span through 2018-09-02 and end before the start of 2018-09-03.
             $event['end'] = date('Y-m-d', strtotime($event['end']) + 60 * 60 * 24);
+            if (isset($line['warrantyMax']) && $line['warrantyMax'] == 0) {
+                $event['color'] = '#aaaaff';
+                $event['description'] = '同一初回';
+            }
             $event['title'] = $line['ukeban_id'];
-            $event['description'] = 'てすと';
 
             $events[] = $event;
         }
