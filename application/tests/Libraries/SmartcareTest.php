@@ -9,33 +9,29 @@ class SmartcareTest extends \CIUnitTestCase
     public function testConbineNyuinCase1()
     {
         $nyuinList = [
-            new \App\Entities\Nyuin([
-                'start' => '2019-09-30',
-                'end' => '2019-10-03',
-                'warrantyStart' => '2019-09-30',
-                'warrantyEnd' => '2019-10-13',
+            [
+                'warrantyStart' => '2019-10-01',
+                'warrantyEnd' => '2019-10-02',
                 'warrantyMax' => 30,
-            ]),
-            new \App\Entities\Nyuin([
-                'start' => '2019-09-30',
-                'end' => '2019-10-03',
-                'warrantyStart' => '2019-09-30',
-                'warrantyEnd' => '2019-10-13',
+            ],
+            [
+                'warrantyStart' => '2019-10-03',
+                'warrantyEnd' => '2019-10-05',
                 'warrantyMax' => 30,
-            ]),
-            new \App\Entities\Nyuin([
-                'start' => '2019-09-30',
-                'end' => '2019-10-03',
-                'warrantyStart' => '2019-09-30',
-                'warrantyEnd' => '2019-10-13',
+            ],
+            [
+                'warrantyStart' => '2019-10-06',
+                'warrantyEnd' => '2019-10-08',
                 'warrantyMax' => 30,
-            ]),
+            ],
         ];
 
         $smartcare = new Smartcare();
         $nyuinList = $smartcare->conbineNyuin($nyuinList);
 
-        $this->assertEquals(0, $nyuinList[1]->warrantyMax);
+        $this->assertEquals(30, $nyuinList[0]['warrantyMax']);
+        $this->assertEquals(30, $nyuinList[1]['warrantyMax']);
+        $this->assertEquals(30, $nyuinList[2]['warrantyMax']);
     }
 
     /**
