@@ -74,48 +74,54 @@ class Smartcare
      */
     public static function tsuinResult($tsuinList, $nyuinList, $shujutsuList)
     {
-        $nyuin_key    = '<i class="fa fa-hotel margin-r-5"></i>入院';
-        $shujutsu_key = '<i class="fa fa-calendar-times-o margin-r-5"></i>手術';
-        $other_key    = '<i class="fa fa-times-circle margin-r-5"></i>保障外';
+        $nyuinList = self::conbineNyuin($nyuinList);
 
-        self::conbineNyuin($nyuinList);
-
-        $result = [
-            $nyuin_key    => [],
-            $shujutsu_key => [],
-            $other_key    => [],
-        ];
-
+        $warrantyList = [];
         foreach ($shujutsuList as $i => $shujutsu) {
-            foreach ($tsuinList as $j => $tsuin) {
-                if ($shujutsu['warrantyStart'] <= $tsuin['date'] &&
-                    $tsuin['date'] <= $shujutsu['warrantyEnd']) {
-                    $result[$shujutsu_key][$shujutsu['date']][] = $tsuin['date'];
-                    $shujutsuList[$i]['warrantyMax'] --;
-                    unset($tsuinList[$j]);
-                }
-                if ($shujutsuList[$i]['warrantyMax'] == 0) {
-                    continue 2;
+            foreach ($nyuinList as $j => $nyuin) {
+                if (strtotime($shujutsu['warrantyStart']) >= strtotime($nyuin['warrantyStart'])) {
+                    $warrantyList[] = [
+                        'key' => '<i class="fa fa-hotel margin-r-5"></i>入院：'. "{$nyuin['start']} ({$nyuin['warrantyMax']})",
+                        'warrantyStart' => $nyuin['warrantyStart'],
+                        'warrantyEnd' => $nyuin['warrantyEnd'],
+                        'warrantyMax' => $nyuin['warrantyMax'],
+                    ];
+                    unset($nyuinList[$j]);
                 }
             }
+            $warrantyList[] = [
+                'key' => '<i class="fa fa-calendar-times-o margin-r-5"></i>手術：'. "{$shujutsu['date']} ({$shujutsu['warrantyMax']})",
+                'warrantyStart' => $shujutsu['warrantyStart'],
+                'warrantyEnd' => $shujutsu['warrantyEnd'],
+                'warrantyMax' => $shujutsu['warrantyMax'],
+            ];
+        }
+        foreach ($nyuinList as $j => $nyuin) {
+            $warrantyList[] = [
+                'key' => '<i class="fa fa-hotel margin-r-5"></i>入院：'."{$nyuin['start']} ({$nyuin['warrantyMax']})",
+                'warrantyStart' => $nyuin['warrantyStart'],
+                'warrantyEnd' => $nyuin['warrantyEnd'],
+                'warrantyMax' => $nyuin['warrantyMax'],
+            ];
         }
 
-        foreach ($nyuinList as $i => $nyuin) {
+        foreach ($warrantyList as $i => $warranty) {
+            $result[$warranty['key']] = [];
             foreach ($tsuinList as $j => $tsuin) {
-                if ($nyuin['warrantyStart'] <= $tsuin['date'] &&
-                    $tsuin['date'] <= $nyuin['warrantyEnd']) {
-                    $result[$nyuin_key][$nyuin['start']][] = $tsuin['date'];
-                    $nyuinList[$i]['warrantyMax'] --;
-                    unset($tsuinList[$j]);
-                }
-                if ($nyuinList[$i]['warrantyMax'] == 0) {
+                if ($warrantyList[$i]['warrantyMax'] == 0) {
                     continue 2;
+                }
+                if (strtotime($warranty['warrantyStart']) <= strtotime($tsuin['date']) &&
+                    strtotime($tsuin['date']) <= strtotime($warranty['warrantyEnd'])) {
+                    $result[$warranty['key']][] = $tsuin['date'];
+                    $warrantyList[$i]['warrantyMax'] --;
+                    unset($tsuinList[$j]);
                 }
             }
         }
 
         foreach ($tsuinList as $i => $tsuin) {
-            $result[$other_key][''][] = $tsuin['date'];
+            $result['<i class="fa fa-times-circle margin-r-5"></i>保障外'][] = $tsuin['date'];
         }
 
         return $result;
@@ -127,7 +133,7 @@ class Smartcare
 
         foreach ($data as $line) {
             foreach ($filter as $key => $value) {
-                if (!empty($value) &&$line[$key] != $value) {
+                if (!empty($value) && $line[$key] != $value) {
                     continue 2;
                 }
             }

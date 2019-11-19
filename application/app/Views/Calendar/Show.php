@@ -157,11 +157,9 @@
           <!-- /.tab-pane -->
 
           <div class="tab-pane" id="activity">
-            <?php foreach (\App\Libraries\Smartcare::tsuinResult($shoken['tsuin'], $shoken['nyuin'], $shoken['shujutsu']) as $key => $value) { ?>
-            <?php foreach ($value as $warranty => $tsuin) { ?>
-            <strong><?= $key ?><?php if ($warranty) { ?>：<?=$warranty ?><?php } ?> ＠<?= count($tsuin) ?>日</strong>
+            <?php foreach (\App\Libraries\Smartcare::tsuinResult($shoken['tsuin'], $shoken['nyuin'], $shoken['shujutsu']) as $key => $tsuin) { ?>
+            <strong><?= $key ?> ＠<?= count($tsuin) ?>日</strong>
             <p><small><?= implode(', ', $tsuin) ?></small></p>
-            <?php } ?>
             <?php } ?>
           </div>
           <!-- /.tab-pane -->
