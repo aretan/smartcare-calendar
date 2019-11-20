@@ -395,7 +395,7 @@
           eventRender: function (info, element) {
               title = info.description;
               if (!title) {
-                  parent = eventData.find(events => events.color == info.source.color);
+                  parent = eventData.find(function(events){ return events.color == info.source.color });
                   title = parent.description;
               }
               element.tooltip({
