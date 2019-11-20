@@ -65,6 +65,18 @@ CREATE TABLE `tsuin` (
   INDEX(date) -- ORDER BY `date`
 ) COMMENT='通院';
 
+CREATE TABLE `bunsho` (
+  `id` int(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL COMMENT '通院ID (自動採番)',
+  `shoken_id` char(11) NOT NULL COMMENT '証券番号',
+  `ukeban_id` char(16) NOT NULL COMMENT '受付番号',
+  `date` date NOT NULL COMMENT '文書日',
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `deleted_at` DATETIME DEFAULT NULL,
+  INDEX(shoken_id, ukeban_id),
+  INDEX(date) -- ORDER BY `date`
+) COMMENT='文書';
+
 CREATE TABLE `result` (
   `id` int(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL COMMENT '計算結果ID (自動採番)',
   `shoken_id` char(11) NOT NULL COMMENT '証券番号',

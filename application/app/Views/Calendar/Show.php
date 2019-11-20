@@ -170,6 +170,24 @@
               <h3 class="box-title"><?= $line['id'] ?> (最新)</h3>
             </div>
             <div class="box-body">
+              <form class="form-horizontal" action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/{$line['id']}/bunsho") ?>" method="POST">
+                <!-- Date -->
+                <div class="form-group">
+                  <label for="bunsho" class="col-sm-3 control-label"><i class="fa fa-pencil-square-o margin-r-5"></i>文書</label>
+
+                  <div class="col-sm-9">
+                    <div class="input-group input-group-sm">
+                      <input type="text" class="form-control pull-right datepicker" id="bunsho" data-date-format="yyyy/mm/dd" name="date" required>
+                      <span class="input-group-btn">
+                        <button type="submit" class="btn btn-info btn-flat">登録</button>
+                      </span>
+                    </div>
+                  </div>
+                  <!-- /.input group -->
+                </div>
+                <!-- /.form group -->
+              </form>
+
               <form class="form-horizontal" action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/{$line['id']}/tsuin") ?>" method="POST">
                 <!-- Date -->
                 <div class="form-group">
@@ -297,6 +315,10 @@
           {
               events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['shujutsu'], ['ukeban_id' => $ukeban_id]) ?>,
               color: "#dd4b39",
+          },
+          {
+              events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['bunsho'], ['ukeban_id' => $ukeban_id]) ?>,
+              color: "#d2d6de",
           },
       ];
       eventData.forEach(function(events){
