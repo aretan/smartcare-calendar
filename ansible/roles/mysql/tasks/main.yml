@@ -37,6 +37,20 @@
     value: /etc/mysql/keyfile
     backup: yes
 
+- ini_file:
+    path: /etc/mysql/mariadb.conf.d/50-server.cnf
+    section: mariadb
+    option: innodb-encrypt-tables
+    value: "ON"
+    backup: yes
+
+- ini_file:
+    path: /etc/mysql/mariadb.conf.d/50-server.cnf
+    section: mariadb
+    option: innodb-encrypt-log
+    value: "1"
+    backup: yes
+
 - service:
     name: mysqld
     state: restarted
