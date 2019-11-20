@@ -114,7 +114,7 @@
                   <div class="timeline-body" style="padding-bottom: 0px;">
                     <?php $nyuin = \App\Libraries\Smartcare::groupByUkebanId($shoken['nyuin']) ?>
                     <?php if(isset($nyuin[$line['id']])){ ?>
-                    <i class="fa fa-hotel margin-r-5"></i>入院：
+                    <i class="fa fa-hotel margin-r-5"></i>入院：<?= count($nyuin[$line['id']]) ?>件
                     <p>
                       <?php foreach($nyuin[$line['id']] as $i){ ?>
                       <?= str_replace('-', '/', $i['start']) ?> -
@@ -124,7 +124,7 @@
                     <?php } ?>
                     <?php $shujutsu = \App\Libraries\Smartcare::groupByUkebanId($shoken['shujutsu']) ?>
                     <?php if(isset($shujutsu[$line['id']])){ ?>
-                    <i class="fa fa-calendar-times-o margin-r-5"></i>手術：
+                    <i class="fa fa-calendar-times-o margin-r-5"></i>手術：<?= count($shujutsu[$line['id']]) ?>件
                     <p>
                       <?php foreach($shujutsu[$line['id']] as $i){ ?>
                       <?= str_replace('-', '/', $i['date']) ?><br />
@@ -133,10 +133,19 @@
                     <?php } ?>
                     <?php $tsuin = \App\Libraries\Smartcare::groupByUkebanId($shoken['tsuin']) ?>
                     <?php if(isset($tsuin[$line['id']])){ ?>
-                    <i class="fa fa-taxi margin-r-5"></i>通院：
+                    <i class="fa fa-taxi margin-r-5"></i>通院：<?= count($tsuin[$line['id']]) ?>件
                     <p>
                       <?php foreach($tsuin[$line['id']] as $i){ ?>
-                      <?= str_replace('-', '/', $i['date']) ?><br />
+                      <?= str_replace('-', '/', $i['date']) ?>,
+                      <?php } ?>
+                    </p>
+                    <?php } ?>
+                    <?php $bunsho = \App\Libraries\Smartcare::groupByUkebanId($shoken['bunsho']) ?>
+                    <?php if(isset($bunsho[$line['id']])){ ?>
+                    <i class="fa fa-pencil-square-o margin-r-5"></i>文書：<?= count($bunsho[$line['id']]) ?>件
+                    <p>
+                      <?php foreach($bunsho[$line['id']] as $i){ ?>
+                      <?= str_replace('-', '/', $i['date']) ?>,
                       <?php } ?>
                     </p>
                     <?php } ?>
