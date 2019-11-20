@@ -24,6 +24,10 @@
               <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
                 年間カレンダー
               </a>
+
+              <?php if ($ukeban_id){ ?>
+              <a href="<?= site_url("{$shoken['id']}/") ?>" class="btn btn-danger btn-xs">受番:<?=$ukeban_id ?></a>
+              <?php } ?>
             </h4>
 
             <div class="box-tools pull-right">
