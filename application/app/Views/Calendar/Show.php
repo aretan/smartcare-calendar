@@ -307,18 +307,22 @@
           {
               events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['tsuin'], ['ukeban_id' => $ukeban_id]) ?>,
               color: "#00a65a",
+              description: "通院",
           },
           {
               events: <?= \App\Libraries\Smartcare::toJsonEvents(\App\Libraries\Smartcare::conbineNyuin($shoken['nyuin']), ['ukeban_id' => $ukeban_id]) ?>,
               color: "#00c0ef",
+              description: "入院",
           },
           {
               events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['shujutsu'], ['ukeban_id' => $ukeban_id]) ?>,
               color: "#dd4b39",
+              description: "手術",
           },
           {
               events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['bunsho'], ['ukeban_id' => $ukeban_id]) ?>,
               color: "#d2d6de",
+              description: "文書",
           },
       ];
       eventData.forEach(function(events){
@@ -343,15 +347,17 @@
                           $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).css("background-color", color);
                       }
                   }
-                  if (event.description) {
-                      $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).tooltip({
-                          title: event.description,
-                          placement: 'top',
-                          trigger: 'hover',
-                          container: 'body'
-                      });
+
+                  description = event.description ? event.description : events.description;
+                  if (description) {
+                      title = $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).data('title');
+                      if (!title) title = [];
+                      title.push(description);
+                      $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).data('title', title);
+                      $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).prop('title', title.join(', '));
                   }
-                  if (events.color == "#00a65a") { // 通院
+                  // 通院の時通院数をカウントアップ
+                  if (events.color == "#00a65a") {
                       $("#sum-"+$.datepicker.formatDate("yy-m", start)).text(
                           parseInt($("#sum-"+$.datepicker.formatDate("yy-m", start)).text(), 10) + 1
                       ).addClass('bg-red');
@@ -374,15 +380,26 @@
           dayNames: ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'],
           dayNamesShort: ['日', '月', '火', '水', '木', '金', '土'],
           eventSources: eventData,
-          eventRender: function (info, element) {
-              element.find('.fc-title').html(info.title);
+          eventAfterRender: function (info, element) {
+              title = info.description;
+              if (!title) {
+                  parent = eventData.find(events => events.color == info.source.color);
+                  title = parent.description;
+              }
               element.tooltip({
-                  title: info.description,
+                  title: title,
                   placement: 'top',
                   trigger: 'hover',
                   container: 'body'
-              }).tooltip('show');
-          }
+              });
+          },
+      });
+
+      //Tooltip
+      $("#nenview>tbody>tr>td").tooltip({
+          placement: 'top',
+          trigger: 'hover',
+          container: 'body'
       });
 
       //Date range picker
