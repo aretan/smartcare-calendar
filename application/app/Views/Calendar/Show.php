@@ -519,6 +519,5 @@
           return undefined;
       };
   }
-}
 </script>
 <?= $this->endSection() ?>
