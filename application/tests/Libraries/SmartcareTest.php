@@ -67,6 +67,14 @@ class SmartcareTest extends \CIUnitTestCase
         }
         $result = Smartcare::tsuinResult($tsuinList, $nyuinList, $shujutsuList);
 
-        $this->assertEquals(1, count($result['<i class="fa fa-times-circle margin-r-5"></i>保障外']));
+        foreach ($result as $warranty) {
+            if ($warranty['type'] == 'other') {
+                $this->assertEquals(1, count($warranty['tsuin']));
+            } elseif ($warranty['type'] == 'nyuin') {
+                $this->assertEquals(30, count($warranty['tsuin']));
+            } elseif ($warranty['type'] == 'shujutsu') {
+                $this->assertEquals(0, count($warranty['tsuin']));
+            }
+        }
     }
 }

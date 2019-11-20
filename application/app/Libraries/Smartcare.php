@@ -53,8 +53,8 @@ class Smartcare
         }
 
         for ($i=0; isset($nyuinList[$i+1]); $i++) {
-            if (strtotime($nyuinList[$i+1]['warrantyStart']) <= strtotime($nyuinList[$i]['warrantyEnd']) &&
-                strtotime($nyuinList[$i]['warrantyStart']) <= strtotime($nyuinList[$i+1]['warrantyEnd'])) {
+            if ($nyuinList[$i+1]['warrantyStart'] <= $nyuinList[$i]['warrantyEnd'] &&
+                $nyuinList[$i]['warrantyStart'] <= $nyuinList[$i+1]['warrantyEnd']) {
                 $nyuinList[$i]['warrantyEnd'] = $nyuinList[$i+1]['warrantyEnd'];
                 $nyuinList[$i+1]['warrantyMax'] = 0;
             }
@@ -78,54 +78,77 @@ class Smartcare
         $nyuinList = self::conbineNyuin($nyuinList);
 
         $warrantyList = [];
-        foreach ($shujutsuList as $i => $shujutsu) {
-            foreach ($nyuinList as $j => $nyuin) {
-                if (strtotime($shujutsu['warrantyStart']) >= strtotime($nyuin['warrantyStart'])) {
-                    $warrantyList[] = [
-                        'key' => '<i class="fa fa-hotel margin-r-5"></i>入院：'. "{$nyuin['start']} ({$nyuin['warrantyMax']})",
-                        'warrantyStart' => $nyuin['warrantyStart'],
-                        'warrantyEnd' => $nyuin['warrantyEnd'],
-                        'warrantyMax' => $nyuin['warrantyMax'],
-                    ];
-                    unset($nyuinList[$j]);
-                }
-            }
-            $warrantyList[] = [
-                'key' => '<i class="fa fa-calendar-times-o margin-r-5"></i>手術：'. "{$shujutsu['date']} ({$shujutsu['warrantyMax']})",
-                'warrantyStart' => $shujutsu['warrantyStart'],
-                'warrantyEnd' => $shujutsu['warrantyEnd'],
-                'warrantyMax' => $shujutsu['warrantyMax'],
-            ];
-        }
+
         foreach ($nyuinList as $j => $nyuin) {
             $warrantyList[] = [
-                'key' => '<i class="fa fa-hotel margin-r-5"></i>入院：'."{$nyuin['start']} ({$nyuin['warrantyMax']})",
+                'type' => 'nyuin',
+                'date' => $nyuin['start'],
+                'tsuin' => [],
                 'warrantyStart' => $nyuin['warrantyStart'],
                 'warrantyEnd' => $nyuin['warrantyEnd'],
                 'warrantyMax' => $nyuin['warrantyMax'],
             ];
         }
+        foreach ($shujutsuList as $i => $shujutsu) {
+            $warrantyList[] = [
+                'type' => 'shujutsu',
+                'date' => $shujutsu['date'],
+                'tsuin' => [],
+                'warrantyStart' => $shujutsu['warrantyStart'],
+                'warrantyEnd' => $shujutsu['warrantyEnd'],
+                'warrantyMax' => $shujutsu['warrantyMax'],
+            ];
+        }
 
-        foreach ($warrantyList as $i => $warranty) {
-            $result[$warranty['key']] = [];
-            foreach ($tsuinList as $j => $tsuin) {
-                if ($warrantyList[$i]['warrantyMax'] == 0) {
-                    continue 2;
-                }
-                if (strtotime($warranty['warrantyStart']) <= strtotime($tsuin['date']) &&
-                    strtotime($tsuin['date']) <= strtotime($warranty['warrantyEnd'])) {
-                    $result[$warranty['key']][] = $tsuin['date'];
-                    $warrantyList[$i]['warrantyMax'] --;
-                    unset($tsuinList[$j]);
+        if (empty($warrantyList)) return $warrantyList;
+
+        // 開始日が早い順で並べる
+        foreach ($warrantyList as $key => $value) {
+            $sort[$key] = $value['warrantyStart'];
+        }
+        array_multisort($sort, SORT_ASC, $warrantyList);
+
+        $other = [];
+        foreach ($tsuinList as $tsuin) {
+            // 適用可能な入院手術をリストアップ
+            $activeWarranty = [];
+            foreach ($warrantyList as $key => $warranty) {
+                if ($warranty['warrantyStart'] <= $tsuin['date'] &&
+                    $tsuin['date'] <= $warranty['warrantyEnd'] &&
+                    $warranty['warrantyMax'] != 0) {
+                    $activeWarranty[$key] = $warranty;
                 }
             }
+
+            // 適用不可能な場合
+            if (empty($activeWarranty)) {
+                $other[] = $tsuin['date'];
+                continue;
+            }
+
+            // うち終了日が一番近いのを見つける
+            $minEnd = null;
+            foreach ($activeWarranty as $key => $warranty) {
+                if (is_null($minEnd)) {
+                    $minEnd = $key;
+                    continue;
+                }
+                if ($activeWarranty[$minEnd] > $warranty['warrantyEnd']) {
+                    $minEnd = $key;
+                }
+            }
+
+            // カウント
+            $warrantyList[$minEnd]['warrantyMax']--;
+            $warrantyList[$minEnd]['tsuin'][] = $tsuin['date'];
         }
 
-        foreach ($tsuinList as $i => $tsuin) {
-            $result['<i class="fa fa-times-circle margin-r-5"></i>保障外'][] = $tsuin['date'];
-        }
+        $warrantyList[] = [
+            'type'  => 'other',
+            'tsuin' => $other,
+        ];
 
-        return $result;
+        return $warrantyList;
     }
 
     public static function toJsonEvents($data, $filter, $start='start', $end='end')

@@ -6,7 +6,7 @@ class Calendar
     public $month_attr = 'rowspan="2" style="width:10%; text-align:center; vertical-align:middle;"';
     public $count_attr = 'rowspan="2" style="width:10%; text-align:center; vertical-align:middle;"';
     public $day_attr = 'style="text-align:center; padding:3px;"';
-    public $non_attr = 'style="background-color:#111111;"';
+    public $non_attr = '';
 
     public function render($start, $end) {
         $start = str_replace('-', '/', $start);

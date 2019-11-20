@@ -157,9 +157,17 @@
           <!-- /.tab-pane -->
 
           <div class="tab-pane" id="activity">
-            <?php foreach (\App\Libraries\Smartcare::tsuinResult($shoken['tsuin'], $shoken['nyuin'], $shoken['shujutsu']) as $key => $tsuin) { ?>
-            <strong><?= $key ?> ＠<?= count($tsuin) ?>日</strong>
-            <p><small><?= implode(', ', $tsuin) ?></small></p>
+            <?php foreach (\App\Libraries\Smartcare::tsuinResult($shoken['tsuin'], $shoken['nyuin'], $shoken['shujutsu']) as $key => $warranty) { ?>
+            <?php if ($warranty['type'] == 'nyuin') { ?>
+            <strong><i class="fa fa-hotel margin-r-5"></i>入院：<?=$warranty['date'] ?> 計<?= count($warranty['tsuin']) ?>日 残<?= $warranty['warrantyMax'] ?>日</strong>
+            <p><small><?= implode(', ', $warranty['tsuin']) ?></small></p>
+            <?php } elseif ($warranty['type'] == 'shujutsu') { ?>
+            <strong><i class="fa fa-calendar-times-o margin-r-5"></i>手術：<?=$warranty['date'] ?> 計<?= count($warranty['tsuin']) ?>日 残<?= $warranty['warrantyMax'] ?>日</strong>
+            <p><small><?= implode(', ', $warranty['tsuin']) ?></small></p>
+            <?php } else { ?>
+            <strong><i class="fa fa-times-circle margin-r-5"></i>保障外 ＠<?= count($warranty['tsuin']) ?>日</strong>
+            <p><small><?= implode(', ', $warranty['tsuin']) ?></small></p>
+            <?php } ?>
             <?php } ?>
           </div>
           <!-- /.tab-pane -->
@@ -380,7 +388,7 @@
           dayNames: ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'],
           dayNamesShort: ['日', '月', '火', '水', '木', '金', '土'],
           eventSources: eventData,
-          eventAfterRender: function (info, element) {
+          eventRender: function (info, element) {
               title = info.description;
               if (!title) {
                   parent = eventData.find(events => events.color == info.source.color);
