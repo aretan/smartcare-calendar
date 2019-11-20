@@ -6,7 +6,7 @@
     machine_name_s: web
     basic_username: smartcare
     basic_password: smartcare
-    api_environment: development
+    app_environment: production
     mysql_hostname: develop.cy0zmnm42u0g.ap-northeast-1.rds.amazonaws.com
     mysql_database: smartcare
     mysql_username: smartcare
