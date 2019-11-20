@@ -1,3 +1,5 @@
+INSTALL SONAME 'server_audit';
+
 START TRANSACTION;
 
 CREATE TABLE `shoken` (
@@ -8,7 +10,7 @@ CREATE TABLE `shoken` (
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted_at` DATETIME DEFAULT NULL
-) COMMENT='証券';
+) COMMENT='証券' ENCRYPTED=YES;
 
 CREATE TABLE `ukeban` (
   `id` char(16) NOT NULL PRIMARY KEY COMMENT '受付番号',
@@ -20,7 +22,7 @@ CREATE TABLE `ukeban` (
   `deleted_at` DATETIME DEFAULT NULL,
   INDEX(shoken_id),
   INDEX(date) -- ORDER BY `date`
-) COMMENT='受付番号';
+) COMMENT='受付番号' ENCRYPTED=YES;
 
 CREATE TABLE `shujutsu` (
   `id` int(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL COMMENT '手術ID (自動採番)',
@@ -35,7 +37,7 @@ CREATE TABLE `shujutsu` (
   `deleted_at` DATETIME DEFAULT NULL,
   INDEX(shoken_id, ukeban_id),
   INDEX(warrantyStart) -- ORDER BY `warrantyStart`
-) COMMENT='手術';
+) COMMENT='手術' ENCRYPTED=YES;
 
 CREATE TABLE `nyuin` (
   `id` int(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL COMMENT '入院ID (自動採番)',
@@ -51,7 +53,7 @@ CREATE TABLE `nyuin` (
   `deleted_at` DATETIME DEFAULT NULL,
   INDEX(shoken_id, ukeban_id),
   INDEX(warrantyStart) -- ORDER BY `warrantyStart`
-) COMMENT='入院';
+) COMMENT='入院' ENCRYPTED=YES;
 
 CREATE TABLE `tsuin` (
   `id` int(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL COMMENT '通院ID (自動採番)',
@@ -63,7 +65,7 @@ CREATE TABLE `tsuin` (
   `deleted_at` DATETIME DEFAULT NULL,
   INDEX(shoken_id, ukeban_id),
   INDEX(date) -- ORDER BY `date`
-) COMMENT='通院';
+) COMMENT='通院' ENCRYPTED=YES;
 
 CREATE TABLE `bunsho` (
   `id` int(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL COMMENT '通院ID (自動採番)',
@@ -75,7 +77,7 @@ CREATE TABLE `bunsho` (
   `deleted_at` DATETIME DEFAULT NULL,
   INDEX(shoken_id, ukeban_id),
   INDEX(date) -- ORDER BY `date`
-) COMMENT='文書';
+) COMMENT='文書' ENCRYPTED=YES;
 
 CREATE TABLE `result` (
   `id` int(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL COMMENT '計算結果ID (自動採番)',
@@ -86,6 +88,6 @@ CREATE TABLE `result` (
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted_at` datetime DEFAULT NULL,
   INDEX(shoken_id, ukeban_id)
-) COMMENT='計算結果';
+) COMMENT='計算結果' ENCRYPTED=YES;
 
 COMMIT;
