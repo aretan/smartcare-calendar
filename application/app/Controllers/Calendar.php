@@ -25,6 +25,26 @@ class Calendar extends WebController
 
         $data['ukeban_id'] = $ukeban_id;
 
+        $data['result'] = \App\Libraries\Smartcare::tsuinResult(
+            $data['shoken']['tsuin'],
+            $data['shoken']['nyuin'],
+            $data['shoken']['shujutsu']
+        );
+
+        $data['no_pay'] = [];
+        $data['paypay'] = [];
+        foreach ($data['result'] as $warranty) {
+            if ($warranty['type'] == 'other') {
+                foreach ($data['shoken']['tsuin'] as $tsuin) {
+                    if (array_search($tsuin['date'], $warranty['tsuin']) !== false) {
+                        $data['no_pay'][] = $tsuin;
+                    } else {
+                        $data['paypay'][] = $tsuin;
+                    }
+                }
+            }
+        }
+
         return view('Calendar/Show', $data);
     }
 

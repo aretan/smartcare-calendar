@@ -23,22 +23,6 @@ class ApiControllerTest extends CIDatabaseTestCase
         $this->assertEquals($expected, get_class($actual));
     }
 
-    /**
-     * function _getEntity
-     *
-     * @dataProvider getControllerProvider
-     */
-    public function testGetEntity($controller, $expected)
-    {
-        $base = new \App\Controllers\Api\V1\ApiController();
-        $method = $this->getPrivateMethodInvoker($base, '_getEntity');
-
-        $actual = $method(new $controller());
-        $expected = "App\\Entities\\{$expected}";
-
-        $this->assertEquals($expected, get_class($actual));
-    }
-
     public function getControllerProvider()
     {
         return [

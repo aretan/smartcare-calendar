@@ -161,7 +161,7 @@
           <!-- /.tab-pane -->
 
           <div class="tab-pane" id="activity">
-            <?php foreach (\App\Libraries\Smartcare::tsuinResult($shoken['tsuin'], $shoken['nyuin'], $shoken['shujutsu']) as $key => $warranty) { ?>
+            <?php foreach ($result as $key => $warranty) { ?>
             <?php if ($warranty['type'] == 'nyuin') { ?>
             <strong><i class="fa fa-hotel margin-r-5"></i>入院：<?=$warranty['date'] ?> 計<?= count($warranty['tsuin']) ?>日 残<?= $warranty['warrantyMax'] ?>日</strong>
             <p><small><?= implode(', ', $warranty['tsuin']) ?></small></p>
@@ -169,7 +169,7 @@
             <strong><i class="fa fa-calendar-times-o margin-r-5"></i>手術：<?=$warranty['date'] ?> 計<?= count($warranty['tsuin']) ?>日 残<?= $warranty['warrantyMax'] ?>日</strong>
             <p><small><?= implode(', ', $warranty['tsuin']) ?></small></p>
             <?php } else { ?>
-            <strong><i class="fa fa-times-circle margin-r-5"></i>保障外 ＠<?= count($warranty['tsuin']) ?>日</strong>
+            <strong><i class="fa fa-times-circle margin-r-5"></i>保障外 計<?= count($warranty['tsuin']) ?>日</strong>
             <p><small><?= implode(', ', $warranty['tsuin']) ?></small></p>
             <?php } ?>
             <?php } ?>
@@ -186,7 +186,6 @@
                 <!-- Date -->
                 <div class="form-group">
                   <label for="bunsho" class="col-sm-3 control-label"><i class="fa fa-pencil-square-o margin-r-5"></i>文書</label>
-
                   <div class="col-sm-9">
                     <div class="input-group input-group-sm">
                       <input type="text" class="form-control pull-right datepicker" id="bunsho" data-date-format="yyyy/mm/dd" name="date" required>
@@ -317,9 +316,14 @@
               rendering: 'background',
           },
           {
-              events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['tsuin'], ['ukeban_id' => $ukeban_id]) ?>,
+              events: <?= \App\Libraries\Smartcare::toJsonEvents($paypay, ['ukeban_id' => $ukeban_id]) ?>,
               color: "#00a65a",
               description: "通院",
+          },
+          {
+              events: <?= \App\Libraries\Smartcare::toJsonEvents($no_pay, ['ukeban_id' => $ukeban_id]) ?>,
+              color: "#ffaaaa",
+              description: "支払えない通院",
           },
           {
               events: <?= \App\Libraries\Smartcare::toJsonEvents(\App\Libraries\Smartcare::conbineNyuin($shoken['nyuin']), ['ukeban_id' => $ukeban_id]) ?>,

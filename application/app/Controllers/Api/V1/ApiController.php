@@ -71,7 +71,7 @@ class ApiController extends ResourceController
         $model = $this->_getModel($this);
         $parents = $this->_getParentId($this);
         $data = array_merge($parents, $this->request->getJSON(true));
-        $this->_getModel($this)->update($this->_getEntity($this, $data));
+        $this->_getModel($this)->update($data);
         return $this->respond();
     }
 
@@ -97,15 +97,6 @@ class ApiController extends ResourceController
     {
         $model = 'App\\Models' . strrchr(get_class($class), '\\') . "Model";
         return new $model();
-    }
-
-    /**
-     * 内部関数：クラス名そのままのエンティティを返す
-     */
-    protected function _getEntity($class, $data = null)
-    {
-        $entity = 'App\\Entities' . strrchr(get_class($class), '\\');
-        return new $entity($data);
     }
 
     /**
