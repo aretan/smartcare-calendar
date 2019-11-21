@@ -411,12 +411,12 @@
                   parent = eventData.find(function(events){ return events.color == info.source.color });
                   title = parent.description;
               }
-              element.tooltip({
-                  title: title,
-                  placement: 'top',
-                  trigger: 'hover',
-                  container: 'body'
-              });
+              // element.tooltip({
+              //     title: title,
+              //     placement: 'top',
+              //     trigger: 'hover',
+              //     container: 'body'
+              // });
           },
       });
 
