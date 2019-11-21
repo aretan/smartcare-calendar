@@ -14,7 +14,7 @@ class ShokenModel extends BaseModel
 
     protected $validationMessages = [
         'id' => [
-            'regex_match' => '証券番号は 000-000000 の形式で入力してください',
+            'regex_match' => '証券番号は 000-0000000 の形式で入力してください',
         ],
         'date' => [
             'regex_match' => '契約日は 0000/00/00 の形式で入力してください',
