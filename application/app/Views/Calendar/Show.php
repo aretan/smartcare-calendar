@@ -309,8 +309,8 @@
 <!-- fullCalendar -->
 <script src="/vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
 <script src="/vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/locale-all.js"></script>
-<script src="https://unpkg.com/popper.js@1"></script>
-<script src="https://unpkg.com/tippy.js@5"></script>
+<script src="/vendor/tippy/popper.js@1"></script>
+<script src="/vendor/tippy/tippy.js@5"></script>
 <!-- iCheck 1.0.1 -->
 <script src="/vendor/adminlte-2.4.18/plugins/iCheck/icheck.min.js"></script>
 <script>
