@@ -309,7 +309,8 @@
 <!-- fullCalendar -->
 <script src="/vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
 <script src="/vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/locale-all.js"></script>
-<script src="/vendor/adminlte-2.4.18/bower_components/bootstrap/js/tooltip.js"></script>
+<script src="https://unpkg.com/popper.js@1"></script>
+<script src="https://unpkg.com/tippy.js@5"></script>
 <!-- iCheck 1.0.1 -->
 <script src="/vendor/adminlte-2.4.18/plugins/iCheck/icheck.min.js"></script>
 <script>
@@ -411,6 +412,19 @@
                   parent = eventData.find(function(events){ return events.color == info.source.color });
                   title = parent.description;
               }
+
+              $(element).prop('title', title);
+              tippy($(element)[0], {
+                  content(reference) {
+                      const title = reference.getAttribute('title');
+                      reference.removeAttribute('title');
+                      return title;
+                  },
+                  onShow(options) {
+                      return !!options.props.content
+                  },
+              });
+
               // element.tooltip({
               //     title: title,
               //     placement: 'top',
@@ -420,12 +434,34 @@
           },
       });
 
-      //Tooltip
-      $("#nenview>tbody>tr>td").tooltip({
-          placement: 'top',
-          trigger: 'hover',
-          container: 'body'
+      // tippy('.fc-event', {
+      //     content(reference) {
+      //         const title = reference.getAttribute('title');
+      //         reference.removeAttribute('title');
+      //         return title;
+      //     },
+      //     onShow(options) {
+      //         return !!options.props.content
+      //     },
+      // });
+
+      tippy('#nenview>tbody>tr>td', {
+          content(reference) {
+              const title = reference.getAttribute('title');
+              reference.removeAttribute('title');
+              return title;
+          },
+          onShow(options) {
+              return !!options.props.content
+          },
       });
+
+      //Tooltip
+      // $("#nenview>tbody>tr>td").tooltip({
+      //     placement: 'top',
+      //     trigger: 'hover',
+      //     container: 'body'
+      // });
 
       //Date range picker
       $('#nyuin').daterangepicker({
