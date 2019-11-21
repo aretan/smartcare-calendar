@@ -440,7 +440,7 @@
               return !!options.props.content
           },
           performance: true,
-          duration: [150, 100],
+          duration: [100, 50],
       });
 
       //Date range picker
