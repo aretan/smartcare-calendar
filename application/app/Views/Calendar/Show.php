@@ -424,6 +424,8 @@
                   onShow: function (options) {
                       return !!options.props.content
                   },
+                  performance: true,
+                  duration: [100, 50],
               });
           },
       });
@@ -437,6 +439,8 @@
           onShow: function (options) {
               return !!options.props.content
           },
+          performance: true,
+          duration: [150, 100],
       });
 
       //Date range picker
