@@ -4,7 +4,7 @@
 <section class="content-header">
   <h1>
     <?=$shoken['name'] ?>
-    <small><?=$shoken['id'] ?></small>
+    <small><span class="label label-success"><?=$shoken['id'] ?></span></small>
   </h1>
 
   <div class="breadcrumb" style="padding:0; top:10px; right:15px;">
@@ -17,21 +17,16 @@
   <div class="row">
     <div class="col-md-8">
       <div class="box-group" id="accordion">
-        <!-- we are adding the .panel class so bootstrap.js collapse plugin detects it -->
         <div class="panel box box-primary">
           <div class="box-header with-border">
             <h4 class="box-title">
-              <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                年間カレンダー
-              </a>
-
+              年間カレンダー
               <?php if ($ukeban_id){ ?>
               <a href="<?= site_url("{$shoken['id']}/") ?>" class="btn btn-danger btn-xs">受番:<?=$ukeban_id ?></a>
               <?php } ?>
             </h4>
 
             <div class="box-tools pull-right">
-
               <div class="row">
                 <div class="col-lg-6">
                   <!-- checkbox -->
@@ -43,7 +38,7 @@
                 </div>
                 <div class="col-lg-6">
                   <div class="input-group input-group-sm" style="width:200px; float:right;">
-                    <input type="text" class="form-control" id="monthrange" name="monthrange" value="<?= date('Y/m', strtotime($shoken['date'])) ?> - <?= date('Y/m') ?>" onchange="nenview()">
+                    <input type="text" class="form-control monthrange" id="monthrange" name="monthrange" value="<?= date('Y/m', strtotime($shoken['date'])) ?> - <?= date('Y/m') ?>" onchange="nenview()">
                     <span class="input-group-btn">
                       <button type="button" class="btn btn-info btn-flat" onclick="nenview_reset()">解除</button>
                     </span>
@@ -52,28 +47,14 @@
               </div>
             </div>
           </div>
-          <div id="collapseOne" class="panel-collapse collapse in">
-
-            <div class="box-body no-padding">
-              <?php (new \App\Libraries\Calendar)->render($shoken['date'], date('Y/m')); ?>
-            </div>
-            <!-- /.box-body -->
+          <div class="box-body no-padding">
+            <?php (new \App\Libraries\Calendar)->render($shoken['date'], date('Y/m')); ?>
           </div>
-          <!-- /.box -->
-
+          <!-- /.box-body -->
         </div>
         <div class="panel box box-danger">
-          <div class="box-header with-border">
-            <h4 class="box-title">
-              <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
-                月間カレンダー
-              </a>
-            </h4>
-          </div>
-          <div id="collapseTwo" class="panel-collapse collapse">
-            <!-- THE CALENDAR -->
-            <div id="calendar"></div>
-          </div>
+          <!-- THE CALENDAR -->
+          <div id="calendar"></div>
         </div>
       </div>
 
@@ -251,7 +232,7 @@
 
                   <div class="col-sm-9">
                     <div class="input-group input-group-sm">
-                      <input type="text" class="form-control pull-right" id="nyuin" name="daterange" required>
+                      <input type="text" class="form-control pull-right daterange" id="nyuin" name="daterange" required>
                       <span class="input-group-btn">
                         <button type="submit" class="btn btn-info btn-flat">登録</button>
                       </span>
@@ -281,6 +262,64 @@
   <!-- /.row -->
 </section>
 <!-- /.content -->
+
+<div class="modal fade" id="modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">カレンダー登録</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>
+            <input type="radio" class="minimal-red" name="type" checked>
+            <i class="fa fa-taxi margin-r-5"></i>通院
+          </label>
+          <label>
+            <input type="radio" class="minimal-red" name="type">
+            <i class="fa fa-calendar-times-o margin-r-5"></i>手術
+          </label>
+          <label>
+            <input type="radio" class="minimal-red" name="type">
+            <i class="fa fa-pencil-square-o margin-r-5"></i>文書
+          </label>
+          <label>
+            <input type="radio" class="minimal-red" name="type">
+            <i class="fa fa-hotel margin-r-5"></i>入院
+          </label>
+        </div>
+        <div class="form-group">
+          <label>Date:</label>
+          <div class="input-group date">
+            <div class="input-group-addon">
+              <i class="fa fa-calendar"></i>
+            </div>
+            <input type="text" class="form-control pull-right datepicker" id="datepicker">
+          </div>
+          <!-- /.input group -->
+        </div>
+        <div class="form-group">
+          <label>Date range:</label>
+          <div class="input-group">
+            <div class="input-group-addon">
+              <i class="fa fa-calendar"></i>
+            </div>
+            <input type="text" class="form-control pull-right daterange" id="reservation">
+          </div>
+          <!-- /.input group -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">キャンセル</button>
+        <button type="button" class="btn btn-primary">登録</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
 <?= $this->endSection() ?>
 
 <?= $this->section('stylesheets') ?>
@@ -404,6 +443,12 @@
           buttonText: {
               today: '今日',
           },
+          header: {
+              left: 'title',
+              center: '',
+              right: 'prev,next'
+          },
+          selectable: true,
           dayNames: ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'],
           dayNamesShort: ['日', '月', '火', '水', '木', '金', '土'],
           eventSources: eventData,
@@ -428,6 +473,10 @@
                   duration: [100, 50],
               });
           },
+          select: function(info) {
+              $('#modal').modal();
+              //alert('selected ' + info.startStr + ' to ' + info.endStr);
+          },
       });
 
       tippy('#nenview>tbody>tr>td', {
@@ -444,7 +493,7 @@
       });
 
       //Date range picker
-      $('#nyuin').daterangepicker({
+      $('.daterange').daterangepicker({
           autoApply: true,
           drops: 'down',
           locale: {
@@ -464,7 +513,7 @@
       });
 
       //Date picker
-      $('#monthrange').monthrangepicker({
+      $('.monthrange').monthrangepicker({
           autoApply: true,
           drops: 'down',
           minYear: <?= date('Y', strtotime($shoken['date'])) ?>,
@@ -477,9 +526,14 @@
           }
       });
 
-      $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+      $('.flat-red').iCheck({
           checkboxClass: 'icheckbox_flat-green',
           radioClass   : 'iradio_flat-green'
+      });
+
+      $('.minimal-red').iCheck({
+          checkboxClass: 'icheckbox_minimal-red',
+          radioClass   : 'iradio_minimal-red'
       });
 
       $('#no-data').on('ifChanged', function(){
@@ -520,8 +574,7 @@
   }
 
   function month(target) {
-      $('#collapseOne').collapse('hide');
-      $('#collapseTwo').collapse('show');
+      $("html,body").animate({scrollTop:$('#calendar').offset().top});
       $('#calendar').fullCalendar('gotoDate', target);
   }
 
