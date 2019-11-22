@@ -473,9 +473,8 @@
                   duration: [100, 50],
               });
           },
-          select: function(info) {
-              $('#modal').modal();
-              //alert('selected ' + info.startStr + ' to ' + info.endStr);
+          select: function(start, end) {
+              newevent(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
           },
       });
 
@@ -540,6 +539,18 @@
           nenview();
       });
   });
+
+  function newevent(start, end) {
+      // todo: modal
+      //$('#modal').modal();
+      event = {
+          title: '未実装',
+          start: start,
+          end: end,
+          color: 'red',
+      };
+      $('#calendar').fullCalendar('renderEvent', event, true);
+  }
 
   function nenview() {
       $('.no-data').parent().parent().show();
