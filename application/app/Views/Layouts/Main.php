@@ -47,7 +47,7 @@ desired effect
 |---------------------------------------------------------|
 -->
 <body class="hold-transition skin-green sidebar-mini">
-<div class="wrapper">
+<div class="wrapper" style="overflow-y: hidden;">
 
   <!-- Main Header -->
   <header class="main-header">
@@ -87,7 +87,7 @@ desired effect
       <!-- /.search form -->
 
       <!-- Sidebar Menu -->
-      <ul class="sidebar-menu" data-widget="tree" id="shoken">
+      <ul class="sidebar-menu" id="shoken">
         <?= view_cell('\App\Libraries\Layout::listShoken') ?>
       </ul>
       <!-- /.sidebar-menu -->
