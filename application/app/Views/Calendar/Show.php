@@ -16,7 +16,7 @@
 <section class="content container-fluid">
   <div class="row">
     <div class="col-md-8">
-      <div class="box-group" id="accordion">
+      <div class="box-group">
         <div class="panel box box-primary">
           <div class="box-header with-border">
             <h4 class="box-title">
@@ -70,7 +70,7 @@
       <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
           <li class="active"><a href="#timeline" data-toggle="tab">受付番号</a></li>
-          <li><a href="#activity" data-toggle="tab">通院数</a></li>
+          <li><a href="#result" data-toggle="tab">最終結果</a></li>
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="timeline">
@@ -149,7 +149,7 @@
           </div>
           <!-- /.tab-pane -->
 
-          <div class="tab-pane" id="activity">
+          <div class="tab-pane" id="result">
             <?php foreach ($result as $key => $warranty) { ?>
             <?php if ($warranty['type'] == 'nyuin') { ?>
             <strong><i class="fa fa-hotel margin-r-5"></i>入院：<?=$warranty['date'] ?> 計<?= count($warranty['tsuin']) ?>日 残<?= $warranty['warrantyMax'] ?>日</strong>
@@ -338,7 +338,7 @@
 <!-- tippy -->
 <script src="/vendor/tippy/popper.js"></script>
 <script src="/vendor/tippy/tippy.js"></script>
-<!-- iCheck 1.0.1 -->
+<!-- iCheck -->
 <script src="/vendor/adminlte-2.4.18/plugins/iCheck/icheck.min.js"></script>
 <script>
   $(function () {
@@ -545,36 +545,36 @@
       $('#no-data').on('ifChanged', function(){
           nenview();
       });
-  });
 
-  $('#create-modal-date-div').hide();
-  $('#create-modal-nyuin').on('ifChecked', function(){
       $('#create-modal-date-div').hide();
-      $('#create-modal-range-div').show();
-      $('#create-modal-date').prop("disabled", true);
-      $('#create-modal-range').prop("disabled", false);
-  });
-  $('#create-modal-nyuin').on('ifUnchecked', function(){
-      $('#create-modal-date-div').show();
-      $('#create-modal-range-div').hide();
-      $('#create-modal-date').prop("disabled", false);
-      $('#create-modal-range').prop("disabled", true);
-  });
-
-  $('#create-modal-submit').on('click', function(event){
-      form = $(this).parents('form');
-      params = form.serializeArray();
-      type = ukeban = null;
-      params.forEach(function(param){
-          if (param.name == 'type') {
-              type = param.value;
-          }
-          if (param.name == 'ukeban_id') {
-              ukeban = param.value;
-          }
+      $('#create-modal-nyuin').on('ifChecked', function(){
+          $('#create-modal-date-div').hide();
+          $('#create-modal-range-div').show();
+          $('#create-modal-date').prop("disabled", true);
+          $('#create-modal-range').prop("disabled", false);
       });
-      $(this).parents('form').attr('action', $(this).parents('form').attr('original-action') + ukeban + '/' + type);
-      return true;
+      $('#create-modal-nyuin').on('ifUnchecked', function(){
+          $('#create-modal-date-div').show();
+          $('#create-modal-range-div').hide();
+          $('#create-modal-date').prop("disabled", false);
+          $('#create-modal-range').prop("disabled", true);
+      });
+
+      $('#create-modal-submit').on('click', function(event){
+          form = $(this).parents('form');
+          params = form.serializeArray();
+          type = ukeban = null;
+          params.forEach(function(param){
+              if (param.name == 'type') {
+                  type = param.value;
+              }
+              if (param.name == 'ukeban_id') {
+                  ukeban = param.value;
+              }
+          });
+          $(this).parents('form').attr('action', $(this).parents('form').attr('original-action') + ukeban + '/' + type);
+          return true;
+      });
   });
 
   function createmodal(start, end) {
