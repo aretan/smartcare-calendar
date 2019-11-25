@@ -5,7 +5,7 @@ class Calendar
     public $table_attr = 'id="nenview" class="table table-bordered table-striped"';
     public $month_attr = 'rowspan="2" style="width:10%; text-align:center; vertical-align:middle;"';
     public $count_attr = 'rowspan="2" style="width:10%; text-align:center; vertical-align:middle;"';
-    public $day_attr = 'style="text-align:center; padding:3px; cursor:pointer;" onclick="showmodal($(this).attr(\'id\').replace(\'day-\', \'\'))"';
+    public $day_attr = 'style="text-align:center; padding:3px; cursor:pointer;" onclick="createmodal($(this).attr(\'id\').replace(\'day-\', \'\'))"';
     public $non_attr = '';
 
     public function render($start, $end) {

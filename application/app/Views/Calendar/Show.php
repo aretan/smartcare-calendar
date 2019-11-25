@@ -268,7 +268,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <form id="delete-modal-form" original-action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/") ?>" method="POST">
-        <div class="modal-header">
+        <div class="modal-header bg-red">
           <h4 class="modal-title">カレンダー削除</h4>
         </div>
         <div class="modal-body" style="background-color:white !important:">
@@ -276,19 +276,19 @@
             <label>種別</label>
             <div class="row">
               <label class="col-md-3">
-                <input type="radio" class="icheck" name="type" id="delete-modal-tsuin" value="tsuin" disabled>
+                <input type="radio" class="icheck" name="type" id="delete-modal-tsuin" value="tsuin" readonly>
                 <i class="fa fa-taxi margin-r-5"></i>通院
               </label>
               <label class="col-md-3">
-                <input type="radio" class="icheck" name="type" id="delete-modal-bunsho" value="bunsho" disabled>
+                <input type="radio" class="icheck" name="type" id="delete-modal-bunsho" value="bunsho" readonly>
                 <i class="fa fa-pencil-square-o margin-r-5"></i>文書
               </label>
               <label class="col-md-3">
-                <input type="radio" class="icheck" name="type" id="delete-modal-shujutsu" value="shujutsu" disabled>
+                <input type="radio" class="icheck" name="type" id="delete-modal-shujutsu" value="shujutsu" readonly>
                 <i class="fa fa-calendar-times-o margin-r-5"></i>手術
               </label>
               <label class="col-md-3">
-                <input type="radio" class="icheck" name="type" id="delete-modal-nyuin" value="nyuin"  disabled>
+                <input type="radio" class="icheck" name="type" id="delete-modal-nyuin" value="nyuin" readonly>
                 <i class="fa fa-hotel margin-r-5"></i>入院
               </label>
             </div>
@@ -320,7 +320,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <form id="create-modal-form" action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/{$line['id']}/") ?>" method="POST">
-        <div class="modal-header">
+        <div class="modal-header bg-green">
           <h4 class="modal-title">カレンダー登録</h4>
         </div>
         <div class="modal-body">
@@ -368,7 +368,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default pull-left" data-dismiss="modal">キャンセル</button>
-          <button type="submit" id="create-modal-submit" class="btn btn-primary">登録</button>
+          <button type="submit" id="create-modal-submit" class="btn btn-success">登録</button>
         </div>
       </form>
     </div>
@@ -610,8 +610,8 @@
       });
 
       $('.icheck').iCheck({
-          checkboxClass: 'icheckbox_minimal-red',
-          radioClass   : 'iradio_minimal-red'
+          checkboxClass: 'icheckbox_flat-red',
+          radioClass   : 'iradio_flat-red'
       });
 
       $('#no-data').on('ifChanged', function(){
