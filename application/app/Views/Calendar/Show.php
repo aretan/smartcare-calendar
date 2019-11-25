@@ -71,7 +71,6 @@
         <ul class="nav nav-tabs">
           <li class="active"><a href="#timeline" data-toggle="tab">受付番号</a></li>
           <li><a href="#activity" data-toggle="tab">通院数</a></li>
-          <li><a href="#settings" data-toggle="tab">カレンダー</a></li>
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="timeline">
@@ -165,92 +164,6 @@
             <?php } ?>
           </div>
           <!-- /.tab-pane -->
-
-          <div class="tab-pane" id="settings">
-            <?php if(isset($line)){ ?>
-            <div class="box-header with-border">
-              <h3 class="box-title"><?= $line['id'] ?> (最新)</h3>
-            </div>
-            <div class="box-body">
-              <form class="form-horizontal" action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/{$line['id']}/bunsho") ?>" method="POST">
-                <!-- Date -->
-                <div class="form-group">
-                  <label for="bunsho" class="col-sm-3 control-label"><i class="fa fa-pencil-square-o margin-r-5"></i>文書</label>
-                  <div class="col-sm-9">
-                    <div class="input-group input-group-sm">
-                      <input type="text" class="form-control pull-right datepicker" id="bunsho" data-date-format="yyyy/mm/dd" name="date" required>
-                      <span class="input-group-btn">
-                        <button type="submit" class="btn btn-info btn-flat">登録</button>
-                      </span>
-                    </div>
-                  </div>
-                  <!-- /.input group -->
-                </div>
-                <!-- /.form group -->
-              </form>
-
-              <form class="form-horizontal" action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/{$line['id']}/tsuin") ?>" method="POST">
-                <!-- Date -->
-                <div class="form-group">
-                  <label for="tsuin" class="col-sm-3 control-label"><i class="fa fa-taxi margin-r-5"></i>通院</label>
-
-                  <div class="col-sm-9">
-                    <div class="input-group input-group-sm">
-                      <input type="text" class="form-control pull-right datepicker" id="tsuin" data-date-format="yyyy/mm/dd" name="date" required>
-                      <span class="input-group-btn">
-                        <button type="submit" class="btn btn-info btn-flat">登録</button>
-                      </span>
-                    </div>
-                  </div>
-                  <!-- /.input group -->
-                </div>
-                <!-- /.form group -->
-              </form>
-
-              <form class="form-horizontal" action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/{$line['id']}/shujutsu") ?>" method="POST">
-                <!-- Date -->
-                <div class="form-group">
-                  <label for="shujutsu" class="col-sm-3 control-label"><i class="fa fa-calendar-times-o margin-r-5"></i>手術</label>
-
-                  <div class="col-sm-9">
-                    <div class="input-group input-group-sm">
-                      <input type="text" class="form-control pull-right datepicker" id="shujutsu" data-date-format="yyyy/mm/dd" name="date" required>
-                      <span class="input-group-btn">
-                        <button type="submit" class="btn btn-info btn-flat">登録</button>
-                      </span>
-                    </div>
-                  </div>
-                  <!-- /.input group -->
-                </div>
-                <!-- /.form group -->
-              </form>
-
-              <form class="form-horizontal" action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/{$line['id']}/nyuin") ?>" method="POST">
-                <!-- Date range -->
-                <div class="form-group">
-                  <label for="nyuin" class="col-sm-3 control-label"><i class="fa fa-hotel margin-r-5"></i>入院</label>
-
-                  <div class="col-sm-9">
-                    <div class="input-group input-group-sm">
-                      <input type="text" class="form-control pull-right daterange" id="nyuin" name="daterange" required>
-                      <span class="input-group-btn">
-                        <button type="submit" class="btn btn-info btn-flat">登録</button>
-                      </span>
-                    </div>
-                  </div>
-                  <!-- /.input group -->
-                </div>
-                <!-- /.form group -->
-              </form>
-            </div>
-            <!-- /.box-body -->
-            <?php } else { ?>
-            <a class="btn btn-success btn-block" href="<?= site_url("calendar/ukeban/{$shoken['id']}/") ?>" role="button">
-              <i class="fa fa-envelope-o margin-r-5"></i>受付番号 登録
-            </a>
-            <?php } ?>
-          </div>
-          <!-- /.tab-pane -->
         </div>
         <!-- /.tab-content -->
       </div>
@@ -272,6 +185,13 @@
           <h4 class="modal-title">カレンダー削除</h4>
         </div>
         <div class="modal-body" style="background-color:white !important:">
+          <div class="form-group">
+            <label>受付番号</label>
+            <div class="input-group date">
+              <input type="text" name="date" class="form-control pull-right" id="delete-modal-ukeban" readonly>
+            </div>
+            <!-- /.input group -->
+          </div>
           <div class="form-group">
             <label>種別</label>
             <div class="row">
@@ -306,7 +226,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default pull-left" data-dismiss="modal">キャンセル</button>
-          <button type="submit" id="delete-modal-submit" class="btn btn-danger">削除</button>
+          <button type="submit" id="delete-modal-submit" class="btn btn-danger" onclick="return confirm('本当に削除しますか？');">削除</button>
         </div>
       </form>
     </div>
@@ -319,11 +239,19 @@
 <div class="modal fade" id="create-modal">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form id="create-modal-form" action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/{$line['id']}/") ?>" method="POST">
+      <form id="create-modal-form" original-action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/") ?>" method="POST">
         <div class="modal-header bg-green">
           <h4 class="modal-title">カレンダー登録</h4>
         </div>
         <div class="modal-body">
+          <div class="form-group">
+            <label>受付番号</label>
+            <select class="form-control" name="ukeban_id">
+              <?php foreach($shoken['ukeban'] as $line){ ?>
+              <option value="<?=$line['id'] ?>" <?= ($line['id'] == $ukeban_id) ? '' : 'selected' ?>><?=$line['id'] ?></option>
+              <?php } ?>
+            </select>
+          </div>
           <div class="form-group">
             <label>種別</label>
             <div class="row">
@@ -619,6 +547,7 @@
       });
   });
 
+  $('#create-modal-date-div').hide();
   $('#create-modal-nyuin').on('ifChecked', function(){
       $('#create-modal-date-div').hide();
       $('#create-modal-range-div').show();
@@ -635,13 +564,16 @@
   $('#create-modal-submit').on('click', function(event){
       form = $(this).parents('form');
       params = form.serializeArray();
-      type = null;
+      type = ukeban = null;
       params.forEach(function(param){
           if (param.name == 'type') {
               type = param.value;
           }
+          if (param.name == 'ukeban_id') {
+              ukeban = param.value;
+          }
       });
-      $(this).parents('form').attr('action', $(this).parents('form').attr('action') + type);
+      $(this).parents('form').attr('action', $(this).parents('form').attr('original-action') + ukeban + '/' + type);
       return true;
   });
 
@@ -670,6 +602,7 @@
       $('#delete-modal').modal();
       $('#delete-modal-form').attr('action', $('#delete-modal-form').attr('original-action') + event.title + '/' + source.id + '/' + event.event_id + '/delete');
       $('#delete-modal-'+source.id).iCheck('check');
+      $('#delete-modal-ukeban').val(event.title);
 
       if (source.id == 'nyuin') {
           if (event.start instanceof moment) {
