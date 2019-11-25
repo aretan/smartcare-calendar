@@ -245,7 +245,7 @@
             </div>
             <!-- /.box-body -->
             <?php } else { ?>
-            <a class="btn btn-success btn-block" href="<?= site_url("calendar/ukeban/{$shoken['id']}") ?>" role="button">
+            <a class="btn btn-success btn-block" href="<?= site_url("calendar/ukeban/{$shoken['id']}/") ?>" role="button">
               <i class="fa fa-envelope-o margin-r-5"></i>受付番号 登録
             </a>
             <?php } ?>
@@ -263,62 +263,121 @@
 </section>
 <!-- /.content -->
 
-<div class="modal fade" id="modal">
+<?php if(isset($line)){ ?>
+<div class="modal fade" id="delete-modal">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">カレンダー登録</h4>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label>
-            <input type="radio" class="minimal-red" name="type" checked>
-            <i class="fa fa-taxi margin-r-5"></i>通院
-          </label>
-          <label>
-            <input type="radio" class="minimal-red" name="type">
-            <i class="fa fa-calendar-times-o margin-r-5"></i>手術
-          </label>
-          <label>
-            <input type="radio" class="minimal-red" name="type">
-            <i class="fa fa-pencil-square-o margin-r-5"></i>文書
-          </label>
-          <label>
-            <input type="radio" class="minimal-red" name="type">
-            <i class="fa fa-hotel margin-r-5"></i>入院
-          </label>
+      <form id="delete-modal-form" original-action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/") ?>" method="POST">
+        <div class="modal-header">
+          <h4 class="modal-title">カレンダー削除</h4>
         </div>
-        <div class="form-group">
-          <label>Date:</label>
-          <div class="input-group date">
-            <div class="input-group-addon">
-              <i class="fa fa-calendar"></i>
+        <div class="modal-body" style="background-color:white !important:">
+          <div class="form-group">
+            <label>種別</label>
+            <div class="row">
+              <label class="col-md-3">
+                <input type="radio" class="icheck" name="type" id="delete-modal-tsuin" value="tsuin" disabled>
+                <i class="fa fa-taxi margin-r-5"></i>通院
+              </label>
+              <label class="col-md-3">
+                <input type="radio" class="icheck" name="type" id="delete-modal-bunsho" value="bunsho" disabled>
+                <i class="fa fa-pencil-square-o margin-r-5"></i>文書
+              </label>
+              <label class="col-md-3">
+                <input type="radio" class="icheck" name="type" id="delete-modal-shujutsu" value="shujutsu" disabled>
+                <i class="fa fa-calendar-times-o margin-r-5"></i>手術
+              </label>
+              <label class="col-md-3">
+                <input type="radio" class="icheck" name="type" id="delete-modal-nyuin" value="nyuin"  disabled>
+                <i class="fa fa-hotel margin-r-5"></i>入院
+              </label>
             </div>
-            <input type="text" class="form-control pull-right datepicker" id="datepicker">
           </div>
-          <!-- /.input group -->
-        </div>
-        <div class="form-group">
-          <label>Date range:</label>
-          <div class="input-group">
-            <div class="input-group-addon">
-              <i class="fa fa-calendar"></i>
+          <div class="form-group">
+            <label>日付</label>
+            <div class="input-group date">
+              <div class="input-group-addon">
+                <i class="fa fa-calendar"></i>
+              </div>
+              <input type="text" name="date" class="form-control pull-right" id="delete-modal-date" readonly>
             </div>
-            <input type="text" class="form-control pull-right daterange" id="reservation">
+            <!-- /.input group -->
           </div>
-          <!-- /.input group -->
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">キャンセル</button>
-        <button type="button" class="btn btn-primary">登録</button>
-      </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">キャンセル</button>
+          <button type="submit" id="delete-modal-submit" class="btn btn-danger">削除</button>
+        </div>
+      </form>
     </div>
     <!-- /.modal-content -->
   </div>
   <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
+
+<div class="modal fade" id="create-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="create-modal-form" action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/{$line['id']}/") ?>" method="POST">
+        <div class="modal-header">
+          <h4 class="modal-title">カレンダー登録</h4>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>種別</label>
+            <div class="row">
+              <label class="col-md-3">
+                <input type="radio" class="icheck" name="type" id="create-modal-tsuin" value="tsuin" required>
+                <i class="fa fa-taxi margin-r-5"></i>通院
+              </label>
+              <label class="col-md-3">
+                <input type="radio" class="icheck" name="type" id="create-modal-bunsho" value="bunsho">
+                <i class="fa fa-pencil-square-o margin-r-5"></i>文書
+              </label>
+              <label class="col-md-3">
+                <input type="radio" class="icheck" name="type" id="create-modal-shujutsu" value="shujutsu">
+                <i class="fa fa-calendar-times-o margin-r-5"></i>手術
+              </label>
+              <label class="col-md-3">
+                <input type="radio" class="icheck" name="type" id="create-modal-nyuin" value="nyuin" checked>
+                <i class="fa fa-hotel margin-r-5"></i>入院
+              </label>
+            </div>
+          </div>
+          <div class="form-group" id="create-modal-date-div">
+            <label>日付</label>
+            <div class="input-group date">
+              <div class="input-group-addon">
+                <i class="fa fa-calendar"></i>
+              </div>
+              <input type="text" name="date" class="form-control pull-right datepicker" id="create-modal-date">
+            </div>
+            <!-- /.input group -->
+          </div>
+          <div class="form-group" id="create-modal-range-div">
+            <label>入院期間</label>
+            <div class="input-group">
+              <div class="input-group-addon">
+                <i class="fa fa-calendar"></i>
+              </div>
+              <input type="text" name="daterange" class="form-control pull-right daterange" id="create-modal-range">
+            </div>
+            <!-- /.input group -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">キャンセル</button>
+          <button type="submit" id="create-modal-submit" class="btn btn-primary">登録</button>
+        </div>
+      </form>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<?php } ?>
 
 <?= $this->endSection() ?>
 
@@ -366,26 +425,31 @@
               rendering: 'background',
           },
           {
+              id: 'tsuin',
               events: <?= \App\Libraries\Smartcare::toJsonEvents($paypay, ['ukeban_id' => $ukeban_id]) ?>,
               color: "#00a65a",
               description: "通院",
           },
           {
+              id: 'tsuin',
               events: <?= \App\Libraries\Smartcare::toJsonEvents($no_pay, ['ukeban_id' => $ukeban_id]) ?>,
               color: "#ffaaaa",
               description: "支払えない通院",
           },
           {
+              id: 'nyuin',
               events: <?= \App\Libraries\Smartcare::toJsonEvents(\App\Libraries\Smartcare::conbineNyuin($shoken['nyuin']), ['ukeban_id' => $ukeban_id]) ?>,
               color: "#00c0ef",
               description: "入院",
           },
           {
+              id: 'shujutsu',
               events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['shujutsu'], ['ukeban_id' => $ukeban_id]) ?>,
               color: "#dd4b39",
               description: "手術",
           },
           {
+              id: 'bunsho',
               events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['bunsho'], ['ukeban_id' => $ukeban_id]) ?>,
               color: "#d2d6de",
               description: "文書",
@@ -401,16 +465,27 @@
 
               while (start < end) {
                   if (events.rendering) {
-                      $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).css("text-decoration", 'underline');
-                      $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).css("font-weight", 'bold');
-                      $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).css("color", 'green');
+                      $("#day-"+$.datepicker.formatDate("yy-m-dd", start))
+                          .css("text-decoration", 'underline')
+                          .css("font-weight", 'bold')
+                          .css("color", 'green');
                   } else {
                       color = event.color ? event.color : events.color;
                       if (events.color == "#dd4b39") { // 手術
-                          $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).css("font-weight", 'bold');
-                          $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).css("color", 'red');
+                          $("#day-"+$.datepicker.formatDate("yy-m-dd", start))
+                              .css("font-weight", 'bold')
+                              .css("color", 'red')
+                              .attr('onclick', '')
+                              .on('click', function(){
+                                  deletemodal(event, events)
+                              });
                       } else {
-                          $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).css("background-color", color);
+                          $("#day-"+$.datepicker.formatDate("yy-m-dd", start))
+                              .css("background-color", color)
+                              .attr('onclick', '')
+                              .on('click', function(){
+                                  deletemodal(event, events);
+                              });
                       }
                   }
 
@@ -419,10 +494,11 @@
                       title = $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).data('title');
                       if (!title) title = [];
                       title.push(description);
-                      $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).data('title', title);
-                      $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).prop('title', title.join(', '));
+                      $("#day-"+$.datepicker.formatDate("yy-m-dd", start))
+                          .data('title', title)
+                          .prop('title', title.join(', '));
                   }
-                  // 通院の時通院数をカウントアップ
+                  // 通院の時は通院数をカウントアップ
                   if (events.color == "#00a65a") {
                       $("#sum-"+$.datepicker.formatDate("yy-m", start)).text(
                           parseInt($("#sum-"+$.datepicker.formatDate("yy-m", start)).text(), 10) + 1
@@ -474,8 +550,11 @@
               });
           },
           select: function(start, end) {
-              newevent(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
+              createmodal(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
           },
+          eventClick: function(info) {
+              deletemodal(info, info.source)
+          }
       });
 
       tippy('#nenview>tbody>tr>td', {
@@ -530,7 +609,7 @@
           radioClass   : 'iradio_flat-green'
       });
 
-      $('.minimal-red').iCheck({
+      $('.icheck').iCheck({
           checkboxClass: 'icheckbox_minimal-red',
           radioClass   : 'iradio_minimal-red'
       });
@@ -540,16 +619,71 @@
       });
   });
 
-  function newevent(start, end) {
-      // todo: modal
-      //$('#modal').modal();
-      event = {
-          title: '未実装',
-          start: start,
-          end: end,
-          color: 'red',
-      };
-      $('#calendar').fullCalendar('renderEvent', event, true);
+  $('#create-modal-nyuin').on('ifChecked', function(){
+      $('#create-modal-date-div').hide();
+      $('#create-modal-range-div').show();
+      $('#create-modal-date').prop("disabled", true);
+      $('#create-modal-range').prop("disabled", false);
+  });
+  $('#create-modal-nyuin').on('ifUnchecked', function(){
+      $('#create-modal-date-div').show();
+      $('#create-modal-range-div').hide();
+      $('#create-modal-date').prop("disabled", false);
+      $('#create-modal-range').prop("disabled", true);
+  });
+
+  $('#create-modal-submit').on('click', function(event){
+      form = $(this).parents('form');
+      params = form.serializeArray();
+      type = null;
+      params.forEach(function(param){
+          if (param.name == 'type') {
+              type = param.value;
+          }
+      });
+      $(this).parents('form').attr('action', $(this).parents('form').attr('action') + type);
+      return true;
+  });
+
+  function createmodal(start, end) {
+      $('#create-modal').modal();
+
+      if (end) {
+          end = end.split('-');
+          end = new Date(end[0], end[1]-1, end[2]-1);
+          end = $.datepicker.formatDate("yy-m-dd", end);
+      }
+      if (end && start != end) {
+          $('#create-modal-nyuin').iCheck('check');
+          $('#create-modal-date').datepicker("setDate", start);
+          $('#create-modal-range').data('daterangepicker').setStartDate(start);
+          $('#create-modal-range').data('daterangepicker').setEndDate(end);
+      } else {
+          $('#create-modal-tsuin').iCheck('check');
+          $('#create-modal-date').datepicker("setDate", start);
+          $('#create-modal-range').data('daterangepicker').setStartDate(start);
+          $('#create-modal-range').data('daterangepicker').setEndDate(start);
+      }
+  }
+
+  function deletemodal(event, source){
+      $('#delete-modal').modal();
+      $('#delete-modal-form').attr('action', $('#delete-modal-form').attr('original-action') + event.title + '/' + source.id + '/' + event.event_id + '/delete');
+      $('#delete-modal-'+source.id).iCheck('check');
+
+      if (source.id == 'nyuin') {
+          if (event.start instanceof moment) {
+              $('#delete-modal-date').val(event.start.format('YYYY/MM/DD') + ' - ' + event.end.format('YYYY/MM/DD'));
+          } else {
+              $('#delete-modal-date').val(event.start + ' - ' + event.end);
+          }
+      } else {
+          if (event.start instanceof moment) {
+              $('#delete-modal-date').val(event.start.format('YYYY/MM/DD'));
+          } else {
+              $('#delete-modal-date').val(event.start);
+          }
+      }
   }
 
   function nenview() {

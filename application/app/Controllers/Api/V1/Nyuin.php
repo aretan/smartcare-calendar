@@ -21,10 +21,12 @@ class Nyuin extends ApiController
         }
 
         $data = array_merge($this->_getParentId($this), $request);
-        $this->_getModel($this)->insert($data);
+        $model = $this->_getModel($this);
+        $model->insert($data);
+        $data['id'] = $model->insertID();
 
         if ($this->request->isAJAX()) {
-            return $this->respondCreated();
+            return $this->respondCreated($data);
         } else {
             return redirect()->to("/{$data['shoken_id']}");
         }

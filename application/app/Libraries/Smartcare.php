@@ -100,13 +100,13 @@ class Smartcare
             ];
         }
 
-        if (empty($warrantyList)) return $warrantyList;
-
-        // 開始日が早い順で並べる
-        foreach ($warrantyList as $key => $value) {
-            $sort[$key] = $value['warrantyStart'];
+        if (!empty($warrantyList)) {
+            // 開始日が早い順で並べる
+            foreach ($warrantyList as $key => $value) {
+                $sort[$key] = $value['warrantyStart'];
+            }
+            array_multisort($sort, SORT_ASC, $warrantyList);
         }
-        array_multisort($sort, SORT_ASC, $warrantyList);
 
         $other = [];
         foreach ($tsuinList as $tsuin) {
@@ -163,6 +163,7 @@ class Smartcare
             }
 
             $event = [];
+            $event['event_id'] = $line['id'];
             $event['start'] = isset($line[$start]) ? $line[$start] : $line['date'];
             $event['end'] = isset($line[$end]) ? $line[$end] : $line['date'];
             // Note: This value is exclusive. For example, if you have an all-day event that has an end of 2018-09-03, then it will span through 2018-09-02 and end before the start of 2018-09-03.

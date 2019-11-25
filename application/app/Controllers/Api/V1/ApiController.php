@@ -87,7 +87,12 @@ class ApiController extends ResourceController
             $model->where($parents);
         }
         $model->delete($parents['id']);
-        return $this->respondDeleted();
+
+        if ($this->request->isAJAX()) {
+            return $this->respondDeleted();
+        } else {
+            return redirect()->to("/{$parents['shoken_id']}/");
+        }
     }
 
     /**
