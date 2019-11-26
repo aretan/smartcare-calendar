@@ -76,7 +76,6 @@ $routes->group('api/v1', ['namespace' => 'App\Controllers\Api\V1'], function($ro
             $routes->resource('tsuin', ['only' => ['create', 'update', 'delete'], 'websafe' => 1]);
             $routes->resource('nyuin', ['only' => ['create', 'update', 'delete'], 'websafe' => 1]);
             $routes->resource('bunsho', ['only' => ['create', 'update', 'delete'], 'websafe' => 1]);
-            $routes->resource('result', ['only' => ['create', 'show']]);
         });
         $routes->resource('ukeban', ['only' => ['create', 'show', 'update', 'delete']]);
     });

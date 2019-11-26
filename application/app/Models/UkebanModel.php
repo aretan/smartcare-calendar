@@ -3,12 +3,11 @@
 class UkebanModel extends BaseModel
 {
     protected $table = 'ukeban';
-    protected $allowedFields = ['id', 'shoken_id', 'date', 'result_id'];
+    protected $allowedFields = ['id', 'shoken_id', 'date'];
     protected $validationRules    = [
         'id'        => 'required|exact_length[16]',
-        'shoken_id' => 'required|regex_match[/[0-9]{3}-[0-9]{7}/]',
+        'shoken_id' => 'required|regex_match[/[0-9]{3}-[0-9]{6}/]',
         'date'      => 'required|regex_match[/[0-9]{4}[\/-][0-9]{2}[\/-][0-9]{2}/]',
-        'result_id' => 'max_length[65535]'
     ];
 
     protected $validationMessages = [
