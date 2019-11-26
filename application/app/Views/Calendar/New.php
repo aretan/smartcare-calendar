@@ -23,17 +23,17 @@
           <div class="box-body">
             <div class="form-group<?=(!$validation->hasError('id'))?'': ' has-error' ?>">
               <label for="inputId">証券番号</label>
-              <input type="text" class="form-control" name="id" id="inputId" placeholder="825-123456" value="<?= set_value('id') ?>">
+              <input type="text" class="form-control" name="id" id="inputId" placeholder="825-123456" value="<?= set_value('id') ?>" maxlength="10" required autofocus>
               <span class="help-block"><?= $validation->showError('id') ?></span>
             </div>
             <div class="form-group<?=(!$validation->hasError('name'))?'': ' has-error' ?>">
               <label for="inputName">ニックネーム</label>
-              <input type="text" class="form-control" name="name" id="inputName" placeholder="アクサ 太郎" value="<?= set_value('name') ?>">
+              <input type="text" class="form-control" name="name" id="inputName" placeholder="アクサ 太郎" value="<?= set_value('name') ?>" required>
               <span class="help-block"><?= $validation->showError('name') ?></span>
             </div>
             <div class="form-group<?=(!$validation->hasError('date'))?'': ' has-error' ?>">
               <label for="inputDate">契約日</label>
-              <input type="text" class="form-control datepicker" name="date" id="inputDate" placeholder="2018/07/06" value="<?= set_value('date') ?>">
+              <input type="text" class="form-control datepicker" name="date" id="inputDate" placeholder="2018/07/06" value="<?= set_value('date') ?>" required>
               <span class="help-block"><?= $validation->showError('date') ?></span>
             </div>
             <div class="form-group<?=(!$validation->hasError('comment'))?'': ' has-error' ?>">

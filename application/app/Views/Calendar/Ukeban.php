@@ -28,12 +28,12 @@
             </div>
             <div class="form-group<?=(!$validation->hasError('id'))?'': ' has-error' ?>">
               <label for="inputId">受付番号</label>
-              <input type="text" class="form-control" name="id" id="inputId" placeholder="E01-1908-123456" value="<?= set_value('id') ?>">
+              <input type="text" class="form-control" name="id" id="inputId" placeholder="E01-1908-123456" value="<?= set_value('id') ?>" maxlength="16" required autofocus>
               <span class="help-block"><?= $validation->showError('id') ?></span>
             </div>
             <div class="form-group<?=(!$validation->hasError('date'))?'': ' has-error' ?>">
               <label for="inputDate">受付日</label>
-              <input type="text" class="form-control datepicker" name="date" id="inputDate" placeholder="2018/07/06" value="<?= set_value('date') ?>">
+              <input type="text" class="form-control datepicker" name="date" id="inputDate" placeholder="2018/07/06" value="<?= set_value('date') ?>" required>
               <span class="help-block"><?= $validation->showError('date') ?></span>
             </div>
           </div>

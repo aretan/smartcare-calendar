@@ -173,7 +173,8 @@
           <!-- /.tab-pane -->
 
           <div class="tab-pane" id="batch">
-            <textarea></textarea>
+            <textarea>みじっそう</textarea>
+          <button type="submit" id="delete-modal-submit" class="btn btn-danger" onclick="return confirm('本当に削除しますか？');">登録</button>
           </div>
           <!-- /.tab-pane -->
 
@@ -209,19 +210,19 @@
             <label>種別</label>
             <div class="row">
               <label class="col-md-3">
-                <input type="radio" class="icheck" name="type" id="delete-modal-tsuin" value="tsuin" readonly>
+                <input type="radio" class="icheck" name="type" id="delete-modal-tsuin" value="tsuin" disabled>
                 <i class="fa fa-taxi margin-r-5"></i>通院
               </label>
               <label class="col-md-3">
-                <input type="radio" class="icheck" name="type" id="delete-modal-bunsho" value="bunsho" readonly>
+                <input type="radio" class="icheck" name="type" id="delete-modal-bunsho" value="bunsho" disabled>
                 <i class="fa fa-pencil-square-o margin-r-5"></i>文書
               </label>
               <label class="col-md-3">
-                <input type="radio" class="icheck" name="type" id="delete-modal-shujutsu" value="shujutsu" readonly>
+                <input type="radio" class="icheck" name="type" id="delete-modal-shujutsu" value="shujutsu" disabled>
                 <i class="fa fa-calendar-times-o margin-r-5"></i>手術
               </label>
               <label class="col-md-3">
-                <input type="radio" class="icheck" name="type" id="delete-modal-nyuin" value="nyuin" readonly>
+                <input type="radio" class="icheck" name="type" id="delete-modal-nyuin" value="nyuin" disabled>
                 <i class="fa fa-hotel margin-r-5"></i>入院
               </label>
             </div>
@@ -618,8 +619,13 @@
 
   function deletemodal(event, source){
       $('#delete-modal').modal();
+      $('#delete-modal-tsuin').iCheck('disable');
+      $('#delete-modal-bunsho').iCheck('disable');
+      $('#delete-modal-shujutsu').iCheck('disable');
+      $('#delete-modal-nyuin').iCheck('disable');
       $('#delete-modal-form').attr('action', $('#delete-modal-form').attr('original-action') + event.title + '/' + source.id + '/' + event.event_id + '/delete');
       $('#delete-modal-'+source.id).iCheck('check');
+      $('#delete-modal-'+source.id).iCheck('enable');
       $('#delete-modal-ukeban').val(event.title);
 
       if (source.id == 'nyuin') {
