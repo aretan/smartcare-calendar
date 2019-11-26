@@ -69,9 +69,10 @@
       <?php } ?>
       <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
-          <li class="active"><a href="#timeline" data-toggle="tab">受付番号</a></li>
-          <li><a href="#result" data-toggle="tab">支払い履歴</a></li>
+          <li class="active"><a href="#timeline" data-toggle="tab">受付</a></li>
+          <li><a href="#result" data-toggle="tab">支払履歴</a></li>
           <li><a href="#final" data-toggle="tab">最終結果</a></li>
+          <li><a href="#batch" data-toggle="tab">バッチ</a></li>
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="timeline">
@@ -170,6 +171,12 @@
             <?php } ?>
           </div>
           <!-- /.tab-pane -->
+
+          <div class="tab-pane" id="batch">
+            <textarea></textarea>
+          </div>
+          <!-- /.tab-pane -->
+
         </div>
         <!-- /.tab-content -->
       </div>
