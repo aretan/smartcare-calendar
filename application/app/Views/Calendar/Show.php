@@ -72,7 +72,7 @@
           <li class="active"><a href="#timeline" data-toggle="tab">受付</a></li>
           <li><a href="#result" data-toggle="tab">支払履歴</a></li>
           <li><a href="#final" data-toggle="tab">最終結果</a></li>
-          <li><a href="#batch" data-toggle="tab">バッチ</a></li>
+          <li><a href="#batch" data-toggle="tab">バッチ登録</a></li>
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="timeline">
@@ -173,8 +173,26 @@
           <!-- /.tab-pane -->
 
           <div class="tab-pane" id="batch">
-            <textarea>みじっそう</textarea>
-          <button type="submit" id="delete-modal-submit" class="btn btn-danger" onclick="return confirm('本当に削除しますか？');">登録</button>
+
+            <?php if(isset($line)){ ?>
+            <div class="box-header with-border">
+              <h3 class="box-title"><?= $line['id'] ?></h3>
+            </div>
+            <div class="box-body">
+              <form class="form" action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/{$line['id']}/batch") ?>" method="POST">
+                <!-- Date -->
+                <div class="form-group">
+                  <textarea class="form-control" rows="15" placeholder="2019-09-10
+2019-10-10
+2019-11-10"></textarea>
+                </div>
+                <!-- /.form group -->
+                <button type="submit" class="btn btn-success btn-block" onclick="return false;">
+                  <i class="fa fa-taxi margin-r-5"></i>通院 バッチ登録 (未実装)
+                </button>
+              </form>
+            </div>
+            <?php } ?>
           </div>
           <!-- /.tab-pane -->
 
