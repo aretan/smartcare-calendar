@@ -341,48 +341,49 @@
 <!-- iCheck -->
 <script src="/vendor/adminlte-2.4.18/plugins/iCheck/icheck.min.js"></script>
 <script>
+  // ２つのカレンダーに表示するために、Ajaxをあきらめた（言い訳）
+  var eventData = [
+      {
+          events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['shujutsu'], ['ukeban_id' => $ukeban_id], 'warrantyStart', 'warrantyEnd') ?>,
+          rendering: 'background',
+      },
+      {
+          events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['nyuin'], ['ukeban_id' => $ukeban_id], 'warrantyStart', 'warrantyEnd') ?>,
+          rendering: 'background',
+      },
+      {
+          id: 'tsuin',
+          events: <?= \App\Libraries\Smartcare::toJsonEvents($paypay, ['ukeban_id' => $ukeban_id]) ?>,
+          color: "#00a65a",
+          description: "通院",
+      },
+      {
+          id: 'tsuin',
+          events: <?= \App\Libraries\Smartcare::toJsonEvents($no_pay, ['ukeban_id' => $ukeban_id]) ?>,
+          color: "#ffaaaa",
+          description: "支払えない通院",
+      },
+      {
+          id: 'nyuin',
+          events: <?= \App\Libraries\Smartcare::toJsonEvents(\App\Libraries\Smartcare::conbineNyuin($shoken['nyuin']), ['ukeban_id' => $ukeban_id]) ?>,
+          color: "#00c0ef",
+          description: "入院",
+      },
+      {
+          id: 'shujutsu',
+          events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['shujutsu'], ['ukeban_id' => $ukeban_id]) ?>,
+          color: "#dd4b39",
+          description: "手術",
+      },
+      {
+          id: 'bunsho',
+          events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['bunsho'], ['ukeban_id' => $ukeban_id]) ?>,
+          color: "#d2d6de",
+          description: "文書",
+      },
+  ];
+
   $(function () {
-      // ２つのカレンダーに表示するために、Ajaxをあきらめた（言い訳）
-      var eventData = [
-          {
-              events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['shujutsu'], ['ukeban_id' => $ukeban_id], 'warrantyStart', 'warrantyEnd') ?>,
-              rendering: 'background',
-          },
-          {
-              events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['nyuin'], ['ukeban_id' => $ukeban_id], 'warrantyStart', 'warrantyEnd') ?>,
-              rendering: 'background',
-          },
-          {
-              id: 'tsuin',
-              events: <?= \App\Libraries\Smartcare::toJsonEvents($paypay, ['ukeban_id' => $ukeban_id]) ?>,
-              color: "#00a65a",
-              description: "通院",
-          },
-          {
-              id: 'tsuin',
-              events: <?= \App\Libraries\Smartcare::toJsonEvents($no_pay, ['ukeban_id' => $ukeban_id]) ?>,
-              color: "#ffaaaa",
-              description: "支払えない通院",
-          },
-          {
-              id: 'nyuin',
-              events: <?= \App\Libraries\Smartcare::toJsonEvents(\App\Libraries\Smartcare::conbineNyuin($shoken['nyuin']), ['ukeban_id' => $ukeban_id]) ?>,
-              color: "#00c0ef",
-              description: "入院",
-          },
-          {
-              id: 'shujutsu',
-              events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['shujutsu'], ['ukeban_id' => $ukeban_id]) ?>,
-              color: "#dd4b39",
-              description: "手術",
-          },
-          {
-              id: 'bunsho',
-              events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['bunsho'], ['ukeban_id' => $ukeban_id]) ?>,
-              color: "#d2d6de",
-              description: "文書",
-          },
-      ];
       eventData.forEach(function(events){
           events.events.forEach(function(event){
               start = event.start.split('-');
@@ -437,6 +438,9 @@
               }
           });
       });
+  });
+
+  $(window).on('load', function() {
       $('#calendar').fullCalendar({
           views: {
               month: {
@@ -575,6 +579,7 @@
           $(this).parents('form').attr('action', $(this).parents('form').attr('original-action') + ukeban + '/' + type);
           return true;
       });
+      $('#nenview').fadeTo(0, 1);
   });
 
   function createmodal(start, end) {
