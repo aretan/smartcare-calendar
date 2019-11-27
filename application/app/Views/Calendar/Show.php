@@ -254,7 +254,10 @@
                   <label>通院日</label>
                   <textarea class="form-control" rows="15" name="date" placeholder="2019-09-10
 2019-10-10
-2019-11-10"></textarea>
+2019-11-10
+
+2019/01/01,2019-01-02,2019-01-13
+2019/02/01 2019-02-02 2019/02/13"></textarea>
                 </div>
                 <!-- /.form group -->
                 <button type="submit" id="batch-submit" class="btn btn-success btn-block">

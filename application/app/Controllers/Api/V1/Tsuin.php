@@ -29,7 +29,7 @@ class Tsuin extends ApiController
     public function batch()
     {
         $data = [];
-        foreach (explode(["\n", ','], $this->request->getPost('date')) as $date) {
+        foreach (explode(' ', str_replace(["\n", ','], ' ', $this->request->getPost('date'))) as $date) {
             $date = trim($date);
             if (!$date) continue;
             $request['date'] = $date;
