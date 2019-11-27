@@ -284,7 +284,7 @@
     <div class="modal-content">
       <form id="delete-modal-form" original-action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/") ?>" method="POST">
         <div class="modal-header bg-red">
-          <h4 class="modal-title">カレンダー削除</h4>
+          <h4 class="modal-title">イベント削除</h4>
         </div>
         <div class="modal-body" style="background-color:white !important:">
           <div class="form-group">
@@ -343,7 +343,7 @@
     <div class="modal-content">
       <form id="create-modal-form" original-action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/") ?>" method="POST">
         <div class="modal-header bg-green">
-          <h4 class="modal-title">カレンダー登録</h4>
+          <h4 class="modal-title">イベント登録</h4>
         </div>
         <div class="modal-body">
           <div class="form-group">
@@ -699,6 +699,10 @@
   });
 
   function createmodal(start, end) {
+      if ($('#create-modal').length == 0) {
+          return location.href = '<?= site_url("calendar/ukeban/{$shoken['id']}/") ?>';
+      }
+
       $('#create-modal').modal();
 
       if (end) {
