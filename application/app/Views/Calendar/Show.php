@@ -140,7 +140,7 @@
 
               <!-- timeline time label -->
               <li class="time-label">
-                <a class="btn btn-success btn-block" href="<?= site_url("calendar/ukeban/{$shoken['id']}") ?>" role="button">
+                <a class="btn btn-success btn-block" href="<?= site_url("calendar/ukeban/{$shoken['id']}/") ?>" role="button">
                   <i class="fa fa-envelope-o margin-r-5"></i>受付番号 登録
                 </a>
               </li>
@@ -200,7 +200,7 @@
 
               <!-- timeline time label -->
               <li class="time-label">
-                <a class="btn btn-success btn-block" href="<?= site_url("calendar/ukeban/{$shoken['id']}") ?>" role="button">
+                <a class="btn btn-success btn-block" href="<?= site_url("calendar/ukeban/{$shoken['id']}/") ?>" role="button">
                   <i class="fa fa-envelope-o margin-r-5"></i>受付番号 登録
                 </a>
               </li>
@@ -502,7 +502,7 @@
                           .css("color", 'green');
                   } else {
                       color = event.color ? event.color : events.color;
-                      if (events.color == "#dd4b39") { // 手術
+                      if (events.id == "shujutsu") { // 手術
                           $("#day-"+$.datepicker.formatDate("yy-m-dd", start))
                               .css("font-weight", 'bold')
                               .css("color", 'red')
@@ -530,7 +530,7 @@
                           .prop('title', title.join(', '));
                   }
                   // 通院の時は通院数をカウントアップ
-                  if (events.color == "#00a65a") {
+                  if (events.id == "tsuin") {
                       $("#sum-"+$.datepicker.formatDate("yy-m", start)).text(
                           parseInt($("#sum-"+$.datepicker.formatDate("yy-m", start)).text(), 10) + 1
                       ).addClass('bg-red');

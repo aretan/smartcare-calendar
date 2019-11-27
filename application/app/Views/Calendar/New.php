@@ -19,7 +19,7 @@
       <!-- general form elements -->
       <div class="box box-primary">
         <!-- form start -->
-        <form role="form" method="POST" action="<?= site_url('calendar/create') ?>">
+        <form role="form" method="POST" action="<?= site_url('calendar/create/') ?>">
           <div class="box-body">
             <div class="form-group<?=(!$validation->hasError('id'))?'': ' has-error' ?>">
               <label for="inputId">証券番号</label>

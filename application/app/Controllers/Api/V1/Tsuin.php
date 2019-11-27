@@ -22,14 +22,14 @@ class Tsuin extends ApiController
         if ($this->request->isAJAX()) {
             return $this->respondCreated($data);
         } else {
-            return redirect()->to("/{$data['shoken_id']}");
+            return redirect()->to("/{$data['shoken_id']}/");
         }
     }
 
     public function batch()
     {
         $data = [];
-        foreach (explode("\n", $this->request->getPost('date')) as $date) {
+        foreach (explode(["\n", ','], $this->request->getPost('date')) as $date) {
             $date = trim($date);
             if (!$date) continue;
             $request['date'] = $date;
@@ -40,6 +40,6 @@ class Tsuin extends ApiController
         $model = $this->_getModel($this);
         $model->insertBatch($data);
 
-        return redirect()->to("/{$data['shoken_id']}");
+        return redirect()->to("/{$data[0]['shoken_id']}/");
     }
 }

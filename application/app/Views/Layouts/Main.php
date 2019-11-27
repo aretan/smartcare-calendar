@@ -75,7 +75,7 @@ desired effect
     <section class="sidebar">
 
       <!-- search form (Optional) -->
-      <form action="<?= site_url('calendar/create') ?>" method="POST" class="sidebar-form">
+      <form action="<?= site_url('calendar/create/') ?>" method="POST" class="sidebar-form">
         <div class="input-group">
           <input type="text" name="id" class="form-control" placeholder="証券番号入力..." onkeyup="filter(this)">
           <span class="input-group-btn">
