@@ -64,7 +64,7 @@
     <div class="col-md-4">
       <?php if($shoken['comment']){ ?>
       <div class="callout callout-info">
-        <?=$shoken['comment'] ?>
+        <?=nl2br($shoken['comment']) ?>
       </div>
       <?php } ?>
       <div class="nav-tabs-custom">
