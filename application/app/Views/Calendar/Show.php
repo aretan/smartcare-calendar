@@ -70,9 +70,9 @@
       <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
           <li class="active"><a href="#timeline" data-toggle="tab">受付</a></li>
-          <li><a href="#result" data-toggle="tab">支払履歴</a></li>
-          <li><a href="#final" data-toggle="tab">最終結果</a></li>
-          <li><a href="#batch" data-toggle="tab">バッチ登録</a></li>
+          <li><a href="#result" data-toggle="tab">履歴</a></li>
+          <li><a href="#final" data-toggle="tab">結果</a></li>
+          <li><a href="#batch" data-toggle="tab">一括</a></li>
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="timeline">
@@ -258,7 +258,7 @@
                 </div>
                 <!-- /.form group -->
                 <button type="submit" id="batch-submit" class="btn btn-success btn-block">
-                  <i class="fa fa-taxi margin-r-5"></i>通院 バッチ登録
+                  <i class="fa fa-taxi margin-r-5"></i>通院 一括登録
                 </button>
               </form>
             </div>

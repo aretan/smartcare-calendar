@@ -90,10 +90,10 @@ class Calendar extends WebController
             foreach ($data['final']['other']['warranty'] as $warranty) {
                 if ($tsuin['date'] == $warranty['date']) {
                     $data['no_pay'][] = $tsuin;
-                } else {
-                    $data['paypay'][] = $tsuin;
+                    continue 2;
                 }
             }
+            $data['paypay'][] = $tsuin;
         }
 
         return view('Calendar/Show', $data);
