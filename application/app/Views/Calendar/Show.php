@@ -241,10 +241,10 @@
 
             <?php if(isset($line)){ ?>
             <div class="box-body">
-              <form class="form" action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/{$line['id']}/batch") ?>" method="POST">
+              <form class="form" original-action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/") ?>" method="POST">
                 <div class="form-group">
                   <label>受付番号</label>
-                  <select class="form-control" name="ukeban_id">
+                  <select class="form-control" id="batch-ukeban">
                     <?php foreach($shoken['ukeban'] as $line){ ?>
                     <option value="<?=$line['id'] ?>" <?= ($line['id'] == $ukeban_id) ? '' : 'selected' ?>><?=$line['id'] ?> (<?=$line['date'] ?>)</option>
                     <?php } ?>
@@ -252,13 +252,13 @@
                 </div>
                 <div class="form-group">
                   <label>通院日</label>
-                  <textarea class="form-control" rows="15" placeholder="2019-09-10
+                  <textarea class="form-control" rows="15" name="date" placeholder="2019-09-10
 2019-10-10
 2019-11-10"></textarea>
                 </div>
                 <!-- /.form group -->
-                <button type="submit" class="btn btn-success btn-block" onclick="return false;">
-                  <i class="fa fa-taxi margin-r-5"></i>通院 バッチ登録 (未実装)
+                <button type="submit" id="batch-submit" class="btn btn-success btn-block">
+                  <i class="fa fa-taxi margin-r-5"></i>通院 バッチ登録
                 </button>
               </form>
             </div>
@@ -678,9 +678,23 @@
                   ukeban = param.value;
               }
           });
-          $(this).parents('form').attr('action', $(this).parents('form').attr('original-action') + ukeban + '/' + type);
+          form.attr('action', form.attr('original-action') + ukeban + '/' + type);
           return true;
       });
+
+      $('#batch-submit').on('click', function(event){
+          form = $(this).parents('form');
+          params = form.serializeArray();
+          ukeban = null;
+          params.forEach(function(param){
+              if (param.name == 'ukeban_id') {
+                  ukeban = param.value;
+              }
+          });
+          form.attr('action', form.attr('original-action') + $('#batch-ukeban option:selected').val() + '/batch');
+          return true;
+      });
+
       $('#nenview').fadeTo(0, 1);
   });
 
