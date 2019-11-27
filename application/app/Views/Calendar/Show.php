@@ -94,46 +94,44 @@
                   <span class="time"><i class="fa fa-clock-o"></i> <?= $line['date'] ?></span>
                   <h3 class="timeline-header"><?= $line['id'] ?></h3>
                   <div class="timeline-body" style="padding-bottom: 0px;">
-                    <?php $nyuin = \App\Libraries\Smartcare::groupByUkebanId($shoken['nyuin']) ?>
-                    <?php if(isset($nyuin[$line['id']])){ ?>
-                    <i class="fa fa-hotel margin-r-5"></i>入院：<?= count($nyuin[$line['id']]) ?>件
-                    <p>
-                      <?php foreach($nyuin[$line['id']] as $i){ ?>
+                    <?php if(!empty($line['nyuin'])){ ?>
+                    <strong><i class="fa fa-hotel margin-r-5"></i>入院：<?= count($line['nyuin']) ?>件</strong>
+                    <p><small>
+                      <?php foreach($line['nyuin'] as $i){ ?>
                       <?= str_replace('-', '/', $i['start']) ?> -
                       <?= str_replace('-', '/', $i['end']) ?><br />
                       <?php } ?>
-                    </p>
+                    </small></p>
                     <?php } ?>
-                    <?php $shujutsu = \App\Libraries\Smartcare::groupByUkebanId($shoken['shujutsu']) ?>
-                    <?php if(isset($shujutsu[$line['id']])){ ?>
-                    <i class="fa fa-calendar-times-o margin-r-5"></i>手術：<?= count($shujutsu[$line['id']]) ?>件
-                    <p>
-                      <?php foreach($shujutsu[$line['id']] as $i){ ?>
+                    <?php if(!empty($line['shujutsu'])){ ?>
+                    <strong><i class="fa fa-calendar-times-o margin-r-5"></i>手術：<?= count($line['shujutsu']) ?>件</strong>
+                    <p><small>
+                      <?php foreach($line['shujutsu'] as $i){ ?>
                       <?= str_replace('-', '/', $i['date']) ?><br />
                       <?php } ?>
-                    </p>
+                    </small></p>
                     <?php } ?>
-                    <?php $tsuin = \App\Libraries\Smartcare::groupByUkebanId($shoken['tsuin']) ?>
-                    <?php if(isset($tsuin[$line['id']])){ ?>
-                    <i class="fa fa-taxi margin-r-5"></i>通院：<?= count($tsuin[$line['id']]) ?>件
-                    <p>
-                      <?php foreach($tsuin[$line['id']] as $i){ ?>
+                    <?php if(!empty($line['tsuin'])){ ?>
+                    <strong><i class="fa fa-taxi margin-r-5"></i>通院：<?= count($line['tsuin']) ?>件</strong>
+                    <p><small>
+                      <?php foreach($line['tsuin'] as $i){ ?>
                       <?= str_replace('-', '/', $i['date']) ?>,
                       <?php } ?>
-                    </p>
+                    </small></p>
                     <?php } ?>
-                    <?php $bunsho = \App\Libraries\Smartcare::groupByUkebanId($shoken['bunsho']) ?>
-                    <?php if(isset($bunsho[$line['id']])){ ?>
-                    <i class="fa fa-pencil-square-o margin-r-5"></i>文書：<?= count($bunsho[$line['id']]) ?>件
-                    <p>
-                      <?php foreach($bunsho[$line['id']] as $i){ ?>
+                    <?php if(!empty($line['bunsho'])){ ?>
+                    <strong><i class="fa fa-pencil-square-o margin-r-5"></i>文書：<?= count($line['bunsho']) ?>件</strong>
+                    <p><small>
+                      <?php foreach($line['bunsho'] as $i){ ?>
                       <?= str_replace('-', '/', $i['date']) ?>,
                       <?php } ?>
-                    </p>
+                    </small></p>
                     <?php } ?>
                   </div>
                   <div class="timeline-footer">
+                    <?php if($line['id'] != $ukeban_id){ ?>
                     <a href="<?= site_url("{$shoken['id']}/{$line['id']}/") ?>" class="btn btn-danger btn-xs">これだけカレンダーに表示</a>
+                    <?php } ?>
                   </div>
                 </div>
               </li>
@@ -152,21 +150,88 @@
           <!-- /.tab-pane -->
 
           <div class="tab-pane" id="result">
-            s
+            <!-- The timeline -->
+            <ul class="timeline timeline-inverse">
+
+              <!-- timeline time label -->
+              <li class="time-label">
+                <a class="btn-warning btn btn-block" href="<?= site_url("calendar/edit/{$shoken['id']}/") ?>" role="button">
+                  <i class="fa fa-pencil margin-r-5"></i>契約日 (<?= $shoken['date'] ?>)
+                </a>
+              </li>
+              <!-- /.timeline-label -->
+              <?php foreach($shoken['ukeban'] as $line){ ?>
+              <!-- timeline item -->
+              <li>
+                <i class="fa fa-envelope bg-blue"></i>
+                <div class="timeline-item">
+                  <span class="time"><i class="fa fa-clock-o"></i> <?= $line['date'] ?></span>
+                  <h3 class="timeline-header"><?= $line['id'] ?></h3>
+                  <div class="timeline-body" style="padding-bottom: 0px;">
+            <?php foreach ($line['result'] as $key => $warranty) { ?>
+            <?php if ($warranty['type'] == 'nyuin' && count($warranty['warranty'])) { ?>
+            <strong><i class="fa fa-hotel margin-r-5"></i>入院：<?=$warranty['date'] ?> <?= count($warranty['warranty']) ?>日</strong>
+            <p><small>
+                <?php foreach ($warranty['warranty'] as $tsuin) { ?>
+                <?= $tsuin['date'] ?>
+                <?php } ?>
+            </small></p>
+            <?php } elseif ($warranty['type'] == 'shujutsu' && count($warranty['warranty'])) { ?>
+            <strong><i class="fa fa-calendar-times-o margin-r-5"></i>手術：<?=$warranty['date'] ?> <?= count($warranty['warranty']) ?>日</strong>
+            <p><small>
+                <?php foreach ($warranty['warranty'] as $tsuin) { ?>
+                <?= $tsuin['date'] ?>
+                <?php } ?>
+            </small></p>
+            <?php } elseif ($warranty['type'] == 'other') { ?>
+            <strong><i class="fa fa-times-circle margin-r-5"></i>保障外 <?= count($warranty['warranty']) ?>日</strong>
+            <p><small>
+                <?php foreach ($warranty['warranty'] as $tsuin) { ?>
+                <?= $tsuin['date'] ?>
+                <?php } ?>
+            </small></p>
+            <?php } ?>
+            <?php } ?>
+                  </div>
+                </div>
+              </li>
+              <!-- END timeline item -->
+              <?php } ?>
+
+              <!-- timeline time label -->
+              <li class="time-label">
+                <a class="btn btn-success btn-block" href="<?= site_url("calendar/ukeban/{$shoken['id']}") ?>" role="button">
+                  <i class="fa fa-envelope-o margin-r-5"></i>受付番号 登録
+                </a>
+              </li>
+              <!-- /.timeline-label -->
+            </ul>
           </div>
           <!-- /.tab-pane -->
 
           <div class="tab-pane" id="final">
-            <?php foreach ($result as $key => $warranty) { ?>
+            <?php foreach ($final as $key => $warranty) { ?>
             <?php if ($warranty['type'] == 'nyuin') { ?>
-            <strong><i class="fa fa-hotel margin-r-5"></i>入院：<?=$warranty['date'] ?> 計<?= count($warranty['tsuin']) ?>日 残<?= $warranty['warrantyMax'] ?>日</strong>
-            <p><small><?= implode(', ', $warranty['tsuin']) ?></small></p>
+            <strong><i class="fa fa-hotel margin-r-5"></i>入院：<?=$warranty['date'] ?> 計<?= count($warranty['warranty']) ?>日 残<?= $warranty['warrantyMax'] ?>日</strong>
+            <p><small>
+                <?php foreach ($warranty['warranty'] as $tsuin) { ?>
+                <?= $tsuin['date'] ?>
+                <?php } ?>
+            </small></p>
             <?php } elseif ($warranty['type'] == 'shujutsu') { ?>
-            <strong><i class="fa fa-calendar-times-o margin-r-5"></i>手術：<?=$warranty['date'] ?> 計<?= count($warranty['tsuin']) ?>日 残<?= $warranty['warrantyMax'] ?>日</strong>
-            <p><small><?= implode(', ', $warranty['tsuin']) ?></small></p>
+            <strong><i class="fa fa-calendar-times-o margin-r-5"></i>手術：<?=$warranty['date'] ?> 計<?= count($warranty['warranty']) ?>日 残<?= $warranty['warrantyMax'] ?>日</strong>
+            <p><small>
+                <?php foreach ($warranty['warranty'] as $tsuin) { ?>
+                <?= $tsuin['date'] ?>
+                <?php } ?>
+            </small></p>
             <?php } else { ?>
-            <strong><i class="fa fa-times-circle margin-r-5"></i>保障外 計<?= count($warranty['tsuin']) ?>日</strong>
-            <p><small><?= implode(', ', $warranty['tsuin']) ?></small></p>
+            <strong><i class="fa fa-times-circle margin-r-5"></i>保障外 計<?= count($warranty['warranty']) ?>日</strong>
+            <p><small>
+                <?php foreach ($warranty['warranty'] as $tsuin) { ?>
+                <?= $tsuin['date'] ?>
+                <?php } ?>
+            </small></p>
             <?php } ?>
             <?php } ?>
           </div>
@@ -175,13 +240,18 @@
           <div class="tab-pane" id="batch">
 
             <?php if(isset($line)){ ?>
-            <div class="box-header with-border">
-              <h3 class="box-title"><?= $line['id'] ?></h3>
-            </div>
             <div class="box-body">
               <form class="form" action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/{$line['id']}/batch") ?>" method="POST">
-                <!-- Date -->
                 <div class="form-group">
+                  <label>受付番号</label>
+                  <select class="form-control" name="ukeban_id">
+                    <?php foreach($shoken['ukeban'] as $line){ ?>
+                    <option value="<?=$line['id'] ?>" <?= ($line['id'] == $ukeban_id) ? '' : 'selected' ?>><?=$line['id'] ?> (<?=$line['date'] ?>)</option>
+                    <?php } ?>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>通院日</label>
                   <textarea class="form-control" rows="15" placeholder="2019-09-10
 2019-10-10
 2019-11-10"></textarea>
@@ -280,7 +350,7 @@
             <label>受付番号</label>
             <select class="form-control" name="ukeban_id">
               <?php foreach($shoken['ukeban'] as $line){ ?>
-              <option value="<?=$line['id'] ?>" <?= ($line['id'] == $ukeban_id) ? '' : 'selected' ?>><?=$line['id'] ?></option>
+              <option value="<?=$line['id'] ?>" <?= ($line['id'] == $ukeban_id) ? '' : 'selected' ?>><?=$line['id'] ?> (<?=$line['date'] ?>)</option>
               <?php } ?>
             </select>
           </div>

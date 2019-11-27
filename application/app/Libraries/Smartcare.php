@@ -2,6 +2,9 @@
 
 class Smartcare
 {
+    /**
+     * 受番で振り分ける
+     */
     public static function groupByUkebanId($array)
     {
         $result = [];
@@ -52,11 +55,24 @@ class Smartcare
             return $nyuinList;
         }
 
+        foreach ($nyuinList as $key => $value) {
+            $sort[$key] = $value['start'];
+        }
+        array_multisort($sort, SORT_ASC, $nyuinList);
+
+        foreach ($nyuinList as $key => $nyuin) {
+            if (!isset($nyuin['warranty'])) {
+                $nyuinList[$key]['warranty'] = [];
+            }
+        }
+
         for ($i=0; isset($nyuinList[$i+1]); $i++) {
             if ($nyuinList[$i+1]['warrantyStart'] <= $nyuinList[$i]['warrantyEnd'] &&
                 $nyuinList[$i]['warrantyStart'] <= $nyuinList[$i+1]['warrantyEnd']) {
                 $nyuinList[$i]['warrantyEnd'] = $nyuinList[$i+1]['warrantyEnd'];
+                $nyuinList[$i]['warrantyMax'] += $nyuinList[$i+1]['warrantyMax'] - 30;
                 $nyuinList[$i+1]['warrantyMax'] = 0;
+                $nyuinList[$i]['warranty'] = array_merge($nyuinList[$i]['warranty'], $nyuinList[$i+1]['warranty']);
             }
         }
 
@@ -74,16 +90,14 @@ class Smartcare
      */
     public static function tsuinResult($tsuinList, $nyuinList, $shujutsuList)
     {
-        $result = [];
+        $result = $warrantyList = [];
         $nyuinList = self::conbineNyuin($nyuinList);
-
-        $warrantyList = [];
 
         foreach ($nyuinList as $j => $nyuin) {
             $warrantyList[] = [
                 'type' => 'nyuin',
                 'date' => $nyuin['start'],
-                'tsuin' => [],
+                'warranty' => [],
                 'warrantyStart' => $nyuin['warrantyStart'],
                 'warrantyEnd' => $nyuin['warrantyEnd'],
                 'warrantyMax' => $nyuin['warrantyMax'],
@@ -93,7 +107,7 @@ class Smartcare
             $warrantyList[] = [
                 'type' => 'shujutsu',
                 'date' => $shujutsu['date'],
-                'tsuin' => [],
+                'warranty' => [],
                 'warrantyStart' => $shujutsu['warrantyStart'],
                 'warrantyEnd' => $shujutsu['warrantyEnd'],
                 'warrantyMax' => $shujutsu['warrantyMax'],
@@ -122,7 +136,7 @@ class Smartcare
 
             // 適用不可能な場合
             if (empty($activeWarranty)) {
-                $other[] = $tsuin['date'];
+                $other[] = $tsuin;
                 continue;
             }
 
@@ -140,17 +154,20 @@ class Smartcare
 
             // カウント
             $warrantyList[$minEnd]['warrantyMax']--;
-            $warrantyList[$minEnd]['tsuin'][] = $tsuin['date'];
+            $warrantyList[$minEnd]['warranty'][] = $tsuin;
         }
 
-        $warrantyList[] = [
-            'type'  => 'other',
-            'tsuin' => $other,
+        $warrantyList['other'] = [
+            'type'     => 'other',
+            'warranty' => $other,
         ];
 
         return $warrantyList;
     }
 
+    /**
+     * fullcalendarのevent jsonにする
+     */
     public static function toJsonEvents($data, $filter, $start='start', $end='end')
     {
         $events = [];

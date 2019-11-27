@@ -25,7 +25,60 @@ class Calendar extends WebController
 
         $data['ukeban_id'] = $ukeban_id;
 
-        $data['result'] = \App\Libraries\Smartcare::tsuinResult(
+        $nyuin = \App\Libraries\Smartcare::groupByUkebanId($data['shoken']['nyuin']);
+        $shujutsu = \App\Libraries\Smartcare::groupByUkebanId($data['shoken']['shujutsu']);
+        $tsuin = \App\Libraries\Smartcare::groupByUkebanId($data['shoken']['tsuin']);
+        $bunsho = \App\Libraries\Smartcare::groupByUkebanId($data['shoken']['bunsho']);
+
+        foreach ($data['shoken']['ukeban'] as $key => $ukeban) {
+            $data['shoken']['ukeban'][$key]['nyuin'] = isset($nyuin[$ukeban['id']]) ? $nyuin[$ukeban['id']] : [];
+            $data['shoken']['ukeban'][$key]['shujutsu'] = isset($shujutsu[$ukeban['id']]) ? $shujutsu[$ukeban['id']] : [];
+            $data['shoken']['ukeban'][$key]['tsuin'] = isset($tsuin[$ukeban['id']]) ? $tsuin[$ukeban['id']] : [];
+            $data['shoken']['ukeban'][$key]['bunsho'] = isset($bunsho[$ukeban['id']]) ? $bunsho[$ukeban['id']] : [];
+        }
+
+        $nyuinList = $shujutsuList = $tsuinList = $result = [];
+        foreach ($data['shoken']['ukeban'] as $key => $ukeban) {
+            $nyuinList = array_merge($nyuinList, $ukeban['nyuin']);
+            $shujutsuList = array_merge($shujutsuList, $ukeban['shujutsu']);
+
+            $tsuinList = (!empty($result))
+                   ? array_merge($result['other']['warranty'], $ukeban['tsuin'])
+                   : $ukeban['tsuin'];
+
+            $result = \App\Libraries\Smartcare::tsuinResult(
+                $tsuinList,
+                $nyuinList,
+                $shujutsuList
+            );
+
+            foreach ($result as $warranty) {
+                if (!isset($warranty['date'])) continue;
+                if ($warranty['type'] == 'nyuin') {
+                    foreach ($nyuinList as $i => $nyuin) {
+                        if ($nyuin['start'] == $warranty['date']) {
+                            $nyuinList[$i]['warrantyStart'] = $warranty['warrantyStart'];
+                            $nyuinList[$i]['warrantyEnd'] = $warranty['warrantyEnd'];
+                            $nyuinList[$i]['warrantyMax'] = $warranty['warrantyMax'];
+                            continue 2;
+                        }
+                    }
+                } else {
+                    foreach ($shujutsuList as $i => $shujutsu) {
+                        if ($shujutsu['date'] == $warranty['date']) {
+                            $shujutsuList[$i]['warrantyStart'] = $warranty['warrantyStart'];
+                            $shujutsuList[$i]['warrantyEnd'] = $warranty['warrantyEnd'];
+                            $shujutsuList[$i]['warrantyMax'] = $warranty['warrantyMax'];
+                            continue 2;
+                        }
+                    }
+                }
+            }
+
+            $data['shoken']['ukeban'][$key]['result'] = $result;
+        }
+
+        $data['final'] = \App\Libraries\Smartcare::tsuinResult(
             $data['shoken']['tsuin'],
             $data['shoken']['nyuin'],
             $data['shoken']['shujutsu']
@@ -33,14 +86,12 @@ class Calendar extends WebController
 
         $data['no_pay'] = [];
         $data['paypay'] = [];
-        foreach ($data['result'] as $warranty) {
-            if ($warranty['type'] == 'other') {
-                foreach ($data['shoken']['tsuin'] as $tsuin) {
-                    if (array_search($tsuin['date'], $warranty['tsuin']) !== false) {
-                        $data['no_pay'][] = $tsuin;
-                    } else {
-                        $data['paypay'][] = $tsuin;
-                    }
+        foreach ($data['shoken']['tsuin'] as $tsuin) {
+            foreach ($data['final']['other']['warranty'] as $warranty) {
+                if ($tsuin['date'] == $warranty['date']) {
+                    $data['no_pay'][] = $tsuin;
+                } else {
+                    $data['paypay'][] = $tsuin;
                 }
             }
         }
