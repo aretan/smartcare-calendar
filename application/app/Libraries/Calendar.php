@@ -41,7 +41,7 @@ class Calendar
             $data .= date('Y', mktime(0, 0, 0, $month, 1, $year)) . '年<br />';
         }
         $data .= date('n', mktime(0, 0, 0, $month, 1, $year)) . '月';
-        $data .= '</td>';
+        $data .= '</a></td>';
 
         for ($i=1; $i<=16; $i++) {
             $zeroi = sprintf('%02d', $i);
