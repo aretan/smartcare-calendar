@@ -649,7 +649,9 @@
           performance: true,
           duration: [100, 50],
       });
+  });
 
+  $(window).load(function(){
       $('#calendar').fullCalendar({
           views: {
               month: {
