@@ -581,9 +581,7 @@
               $(element).prop('title', title);
               tippy($(element)[0], {
                   content: function (reference) {
-                      const title = reference.getAttribute('title');
-                      reference.removeAttribute('title');
-                      return title;
+                      return reference.getAttribute('title');
                   },
                   onShow: function (options) {
                       return !!options.props.content
@@ -693,9 +691,7 @@
 
       tippy('#nenview>tbody>tr>td', {
           content: function (reference) {
-              const title = reference.getAttribute('title');
-              reference.removeAttribute('title');
-              return title;
+              return reference.getAttribute('title');
           },
           onShow: function (options) {
               return !!options.props.content
