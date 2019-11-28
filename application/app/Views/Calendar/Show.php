@@ -545,9 +545,7 @@
               }
           });
       });
-  });
 
-  $(window).on('load', function() {
       $('#calendar').fullCalendar({
           views: {
               month: {
@@ -706,6 +704,7 @@
           duration: [100, 50],
       });
 
+      $('#nenview').fadeTo(0, 1);
   });
 
   function createmodal(start, end) {
