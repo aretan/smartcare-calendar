@@ -449,10 +449,12 @@
   // ２つのカレンダーに表示するために、Ajaxをあきらめた（言い訳）
   var eventData = [
       {
+          id: 'warranty',
           events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['shujutsu'], ['ukeban_id' => $ukeban_id], 'warrantyStart', 'warrantyEnd') ?>,
           rendering: 'background',
       },
       {
+          id: 'warranty',
           events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['nyuin'], ['ukeban_id' => $ukeban_id], 'warrantyStart', 'warrantyEnd') ?>,
           rendering: 'background',
       },
@@ -566,9 +568,15 @@
           dayNamesShort: ['日', '月', '火', '水', '木', '金', '土'],
           eventSources: eventData,
           eventRender: function (info, element) {
+              if (element[0].className == 'fc-bgevent') {
+                  return true;
+              }
+
               title = info.description;
               if (!title) {
-                  parent = eventData.find(function(events){ return events.color == info.source.color });
+                  parent = eventData.find(function(events){
+                      return events.color == info.source.color
+                  });
                   title = parent.description;
               }
 
