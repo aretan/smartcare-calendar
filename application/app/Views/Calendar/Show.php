@@ -568,7 +568,7 @@
           dayNamesShort: ['日', '月', '火', '水', '木', '金', '土'],
           eventSources: eventData,
           eventRender: function (info, element) {
-              if (element[0].className == 'fc-bgevent') {
+              if ($(element).hasClass('fc-bgevent')) {
                   return true;
               }
 
