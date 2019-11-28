@@ -693,8 +693,6 @@
           return true;
       });
 
-      $('#nenview').fadeTo(0, 1);
-
       tippy('#nenview>tbody>tr>td', {
           content: function (reference) {
               const title = reference.getAttribute('title');
