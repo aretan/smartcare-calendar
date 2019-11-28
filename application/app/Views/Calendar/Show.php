@@ -651,7 +651,7 @@
       });
   });
 
-  $(window).load(function(){
+  $(window).on('load', function(){
       $('#calendar').fullCalendar({
           views: {
               month: {
