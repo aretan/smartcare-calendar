@@ -33,7 +33,7 @@
             </div>
             <div class="form-group<?=(!$validation->hasError('date'))?'': ' has-error' ?>">
               <label for="inputDate">契約日</label>
-              <input type="text" class="form-control datepicker" name="date" id="inputDate" placeholder="2018/07/06" value="<?= set_value('date') ?>" required>
+              <input type="text" class="form-control datepicker" name="date" id="inputDate" placeholder="2018/07/06" value="<?= set_value('date') ?>">
               <span class="help-block"><?= $validation->showError('date') ?></span>
             </div>
             <div class="form-group<?=(!$validation->hasError('comment'))?'': ' has-error' ?>">

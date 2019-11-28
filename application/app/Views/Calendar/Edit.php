@@ -28,7 +28,7 @@
             </div>
             <div class="form-group<?=(!$validation->hasError('name'))?'': ' has-error' ?>">
               <label for="inputDate">ニックネーム</label>
-              <input type="text" class="form-control" name="name" id="inputName" placeholder="アクサ 太郎" value="<?= set_value('name', $name) ?>">
+              <input type="text" class="form-control" name="name" id="inputName" placeholder="アクサ 太郎" value="<?= set_value('name', $name) ?>" required>
               <span class="help-block"><?= $validation->showError('name') ?></span>
             </div>
             <div class="form-group<?=(!$validation->hasError('date'))?'': ' has-error' ?>">

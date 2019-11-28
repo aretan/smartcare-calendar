@@ -36,7 +36,7 @@ class Calendar
         $year = (int) $year;
         $month = (int) $month;
         $data = "<tr id='nen-{$year}-{$month}-1'>";
-        $data .= "<td {$this->month_attr}><a href=\"javascript:month('{$year}-{$month}')\">";
+        $data .= "<td {$this->month_attr}><a href=\"javascript:month('{$year}-".sprintf('%02d', $month)."')\">";
         if ($print_year) {
             $data .= date('Y', mktime(0, 0, 0, $month, 1, $year)) . '年<br />';
         }
