@@ -602,19 +602,6 @@
           }
       });
 
-      tippy('#nenview>tbody>tr>td', {
-          content: function (reference) {
-              const title = reference.getAttribute('title');
-              reference.removeAttribute('title');
-              return title;
-          },
-          onShow: function (options) {
-              return !!options.props.content
-          },
-          performance: true,
-          duration: [100, 50],
-      });
-
       //Date range picker
       $('.daterange').daterangepicker({
           autoApply: true,
@@ -707,6 +694,20 @@
       });
 
       $('#nenview').fadeTo(0, 1);
+
+      tippy('#nenview>tbody>tr>td', {
+          content: function (reference) {
+              const title = reference.getAttribute('title');
+              reference.removeAttribute('title');
+              return title;
+          },
+          onShow: function (options) {
+              return !!options.props.content
+          },
+          performance: true,
+          duration: [100, 50],
+      });
+
   });
 
   function createmodal(start, end) {
