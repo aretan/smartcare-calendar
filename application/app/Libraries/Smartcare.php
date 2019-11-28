@@ -114,14 +114,6 @@ class Smartcare
             ];
         }
 
-        if (!empty($warrantyList)) {
-            // 開始日が早い順で並べる
-            foreach ($warrantyList as $key => $value) {
-                $sort[$key] = $value['warrantyStart'];
-            }
-            array_multisort($sort, SORT_ASC, $warrantyList);
-        }
-
         $other = [];
         foreach ($tsuinList as $tsuin) {
             // 適用可能な入院手術をリストアップ
@@ -147,13 +139,13 @@ class Smartcare
                     $minEnd = $key;
                     continue;
                 }
-                if ($activeWarranty[$minEnd] > $warranty['warrantyEnd']) {
+                if ($warranty['warrantyEnd'] > $activeWarranty[$minEnd]) {
                     $minEnd = $key;
                 }
             }
 
             // カウント
-            $warrantyList[$minEnd]['warrantyMax']--;
+            $warrantyList[$minEnd]['warrantyMax'] --;
             $warrantyList[$minEnd]['warranty'][] = $tsuin;
         }
 
