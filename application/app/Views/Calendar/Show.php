@@ -750,7 +750,7 @@
               end = event.end.format('YYYY-MM-DD').split('-');
               end = new Date(end[0], end[1]-1, end[2]-1);
               end = $.datepicker.formatDate("yy-m-dd", end);
-              $('#delete-modal-date').val(event.start.format('YYYY/MM/DD') + ' - ' + end);
+              $('#delete-modal-date').val(event.start.format('YYYY-MM-DD') + ' - ' + end);
           } else {
               end = event.end.split('-');
               end = new Date(end[0], end[1]-1, end[2]-1);
@@ -759,7 +759,7 @@
           }
       } else {
           if (event.start instanceof moment) {
-              $('#delete-modal-date').val(event.start.format('YYYY/MM/DD'));
+              $('#delete-modal-date').val(event.start.format('YYYY-MM-DD'));
           } else {
               $('#delete-modal-date').val(event.start);
           }
