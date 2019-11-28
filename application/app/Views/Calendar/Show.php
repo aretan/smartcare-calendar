@@ -548,7 +548,19 @@
 
       $('#nenview').fadeTo(0, 1);
 
-      //Date range picker
+      tippy('#nenview>tbody>tr>td', {
+          content: function (reference) {
+              return reference.getAttribute('title');
+          },
+          onShow: function (options) {
+              return !!options.props.content
+          },
+          performance: true,
+          duration: [100, 50],
+      });
+  });
+
+  $(window).on('load', function(){
       $('.daterange').daterangepicker({
           autoApply: true,
           drops: 'down',
@@ -561,14 +573,12 @@
           },
       });
 
-      //Date picker
       $('.datepicker').datepicker({
           autoclose: true,
           orientation: 'bottom',
           language: 'ja',
       });
 
-      //Date picker
       $('.monthrange').monthrangepicker({
           autoApply: true,
           drops: 'down',
@@ -637,17 +647,6 @@
           });
           form.attr('action', form.attr('original-action') + $('#batch-ukeban option:selected').val() + '/batch');
           return true;
-      });
-
-      tippy('#nenview>tbody>tr>td', {
-          content: function (reference) {
-              return reference.getAttribute('title');
-          },
-          onShow: function (options) {
-              return !!options.props.content
-          },
-          performance: true,
-          duration: [100, 50],
       });
 
       $('#calendar').fullCalendar({
