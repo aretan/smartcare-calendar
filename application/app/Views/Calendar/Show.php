@@ -546,58 +546,7 @@
           });
       });
 
-      $('#calendar').fullCalendar({
-          views: {
-              month: {
-                  columnFormat: 'ddd',
-                  titleFormat: 'YYYY年M月',
-              },
-          },
-          buttonText: {
-              today: '今日',
-          },
-          header: {
-              left: 'title',
-              center: '',
-              right: 'prev,next'
-          },
-          selectable: true,
-          dayNames: ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'],
-          dayNamesShort: ['日', '月', '火', '水', '木', '金', '土'],
-          eventSources: eventData,
-          eventRender: function (info, element) {
-              if ($(element).hasClass('fc-bgevent')) {
-                  return true;
-              }
-
-              title = info.description;
-              if (!title) {
-                  eventData.forEach(function(events){
-                      if (events.color == info.source.color) {
-                          title = events.description;
-                      }
-                  });
-              }
-
-              $(element).prop('title', title);
-              tippy($(element)[0], {
-                  content: function (reference) {
-                      return reference.getAttribute('title');
-                  },
-                  onShow: function (options) {
-                      return !!options.props.content
-                  },
-                  performance: true,
-                  duration: [100, 50],
-              });
-          },
-          select: function(start, end) {
-              createmodal(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
-          },
-          eventClick: function(info) {
-              deletemodal(info, info.source)
-          }
-      });
+      $('#nenview').fadeTo(0, 1);
 
       //Date range picker
       $('.daterange').daterangepicker({
@@ -701,7 +650,58 @@
           duration: [100, 50],
       });
 
-      $('#nenview').fadeTo(0, 1);
+      $('#calendar').fullCalendar({
+          views: {
+              month: {
+                  columnFormat: 'ddd',
+                  titleFormat: 'YYYY年M月',
+              },
+          },
+          buttonText: {
+              today: '今日',
+          },
+          header: {
+              left: 'title',
+              center: '',
+              right: 'prev,next'
+          },
+          selectable: true,
+          dayNames: ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'],
+          dayNamesShort: ['日', '月', '火', '水', '木', '金', '土'],
+          eventSources: eventData,
+          eventRender: function (info, element) {
+              if ($(element).hasClass('fc-bgevent')) {
+                  return true;
+              }
+
+              title = info.description;
+              if (!title) {
+                  eventData.forEach(function(events){
+                      if (events.color == info.source.color) {
+                          title = events.description;
+                      }
+                  });
+              }
+
+              $(element).prop('title', title);
+              tippy($(element)[0], {
+                  content: function (reference) {
+                      return reference.getAttribute('title');
+                  },
+                  onShow: function (options) {
+                      return !!options.props.content
+                  },
+                  performance: true,
+                  duration: [100, 50],
+              });
+          },
+          select: function(start, end) {
+              createmodal(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
+          },
+          eventClick: function(info) {
+              deletemodal(info, info.source)
+          }
+      });
   });
 
   function createmodal(start, end) {
