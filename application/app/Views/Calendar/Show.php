@@ -257,7 +257,7 @@
                       </div>
                     </div>
                     <?php } elseif ($warranty['type'] == 'other') { ?>
-                    <div class="box box-danger box-solid" style="margin-bottom: 5px">
+                    <div class="box <?=count($warranty['warranty']) ? 'box-danger' : 'box-default' ?> box-solid" style="margin-bottom: 5px">
                       <div class="box-header with-border">
                         <div class="box-title">
                           <a data-widget="collapse" href="#">
@@ -313,7 +313,7 @@
                 </ol>
               </div>
             </div>
-            <div class="box box-danger box-solid" style="margin-bottom: 5px">
+            <div class="box <?=count($shoken['other']) ? 'box-danger' : 'box-default' ?> box-solid" style="margin-bottom: 5px">
               <div class="box-header with-border">
                 <div class="box-title">
                   <a data-widget="collapse" href="#">
