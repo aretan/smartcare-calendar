@@ -128,6 +128,14 @@ class Smartcare
                 ];
             }
 
+            // 開始日が早い順で並べる
+            if (!empty($warrantyList)) {
+                foreach ($warrantyList as $i => $value) {
+                    $sort[$i] = $value['warrantyStart'];
+                }
+                array_multisort($sort, SORT_ASC, $warrantyList);
+            }
+
             // 既に支払済みの通院をつけかえる
             foreach ($tsuinList as $i => $tsuin) {
                 $j = self::selectWarranty($warrantyList, $tsuin);
