@@ -3,18 +3,6 @@
 class Smartcare
 {
     /**
-     * 受番で振り分ける
-     */
-    public static function groupByUkebanId($array)
-    {
-        $result = [];
-        foreach ($array as $line) {
-            $result[$line['ukeban_id']][] = $line;
-        }
-        return $result;
-    }
-
-    /**
      * 入院の保証期間と保証回数を埋める
      */
     public static function addNyuinWarranty($nyuin)
@@ -82,79 +70,132 @@ class Smartcare
     /**
      * 通院がどの入院/手術に属するか、振り分けた結果を返す
      *
-     * @param array $tsuinList
-     * @param array $nyuinList
-     * @param array $shujutsuList
+     * @param array $shoken
      *
      * @return array $result
      */
-    public static function tsuinResult($tsuinList, $nyuinList, $shujutsuList)
+    public static function calcTsuin($shoken)
     {
-        $result = $warrantyList = [];
-        $nyuinList = self::conbineNyuin($nyuinList);
-
-        foreach ($nyuinList as $j => $nyuin) {
-            $warrantyList[] = [
-                'type' => 'nyuin',
-                'date' => $nyuin['start'],
-                'warranty' => [],
-                'warrantyStart' => $nyuin['warrantyStart'],
-                'warrantyEnd' => $nyuin['warrantyEnd'],
-                'warrantyMax' => $nyuin['warrantyMax'],
-            ];
+        $ref = [];
+        foreach ($shoken['nyuin'] as $key => $nyuin) {
+            $ref[$nyuin['ukeban_id']]['nyuin'][] = $shoken['nyuin'][$key];
         }
-        foreach ($shujutsuList as $i => $shujutsu) {
-            $warrantyList[] = [
-                'type' => 'shujutsu',
-                'date' => $shujutsu['date'],
-                'warranty' => [],
-                'warrantyStart' => $shujutsu['warrantyStart'],
-                'warrantyEnd' => $shujutsu['warrantyEnd'],
-                'warrantyMax' => $shujutsu['warrantyMax'],
-            ];
+        foreach ($shoken['shujutsu'] as $key => $shujutsu) {
+            $ref[$shujutsu['ukeban_id']]['shujutsu'][] = $shoken['shujutsu'][$key];
+        }
+        foreach ($shoken['tsuin'] as $key => $tsuin) {
+            $ref[$tsuin['ukeban_id']]['tsuin'][] = $shoken['tsuin'][$key];
+        }
+        foreach ($shoken['bunsho'] as $key => $bunsho) {
+            $ref[$bunsho['ukeban_id']]['bunsho'][] = $shoken['bunsho'][$key];
         }
 
-        $other = [];
-        foreach ($tsuinList as $tsuin) {
-            // 適用可能な入院手術をリストアップ
-            $activeWarranty = [];
-            foreach ($warrantyList as $key => $warranty) {
-                if ($warranty['warrantyStart'] <= $tsuin['date'] &&
-                    $tsuin['date'] <= $warranty['warrantyEnd'] &&
-                    $warranty['warrantyMax'] != 0) {
-                    $activeWarranty[$key] = $warranty;
-                }
+        // 参照で受番にMappingする
+        foreach ($shoken['ukeban'] as $key => $ukeban) {
+            $shoken['ukeban'][$key]['nyuin'] = isset($ref[$ukeban['id']]['nyuin']) ? $ref[$ukeban['id']]['nyuin'] : [];
+            $shoken['ukeban'][$key]['shujutsu'] = isset($ref[$ukeban['id']]['shujutsu']) ? $ref[$ukeban['id']]['shujutsu'] : [];
+            $shoken['ukeban'][$key]['tsuin'] = isset($ref[$ukeban['id']]['tsuin']) ? $ref[$ukeban['id']]['tsuin'] : [];
+            $shoken['ukeban'][$key]['bunsho'] = isset($ref[$ukeban['id']]['bunsho']) ? $ref[$ukeban['id']]['bunsho'] : [];
+        }
+
+        $tsuinList = $otherList = $nyuinList = $shujutsuList = [];
+        foreach ($shoken['ukeban'] as $key => $ukeban) {
+            $otherList = array_merge($otherList, $ukeban['tsuin']);
+            $nyuinList = array_merge($nyuinList, $ukeban['nyuin']);
+            $nyuinList = self::conbineNyuin($nyuinList);
+            $shujutsuList = array_merge($shujutsuList, $ukeban['shujutsu']);
+
+            // 入院と手術を合体
+            $warrantyList = [];
+            foreach ($nyuinList as $nyuin) {
+                $warrantyList[] = [
+                    'type' => 'nyuin',
+                    'date' => $nyuin['start'],
+                    'warranty' => [],
+                    'warrantyStart' => $nyuin['warrantyStart'],
+                    'warrantyEnd' => $nyuin['warrantyEnd'],
+                    'warrantyMax' => $nyuin['warrantyMax'],
+                ];
+            }
+            foreach ($shujutsuList as $shujutsu) {
+                $warrantyList[] = [
+                    'type' => 'shujutsu',
+                    'date' => $shujutsu['date'],
+                    'warranty' => [],
+                    'warrantyStart' => $shujutsu['warrantyStart'],
+                    'warrantyEnd' => $shujutsu['warrantyEnd'],
+                    'warrantyMax' => $shujutsu['warrantyMax'],
+                ];
             }
 
-            // 適用不可能な場合
-            if (empty($activeWarranty)) {
-                $other[] = $tsuin;
-                continue;
+            // 既に支払済みの通院をつけかえる
+            foreach ($tsuinList as $i => $tsuin) {
+                $j = self::selectWarranty($warrantyList, $tsuin);
+
+                $warrantyList[$j]['warrantyMax'] --;
             }
 
-            // うち終了日が一番近いのを見つける
-            $minEnd = null;
-            foreach ($activeWarranty as $key => $warranty) {
-                if (is_null($minEnd)) {
-                    $minEnd = $key;
+            // 新しい通院を分類
+            foreach ($otherList as $i => $tsuin) {
+                $j = self::selectWarranty($warrantyList, $tsuin);
+
+                // 保障できない
+                if ($j === false) {
                     continue;
                 }
-                if ($warranty['warrantyEnd'] > $activeWarranty[$minEnd]) {
-                    $minEnd = $key;
-                }
+
+                $warrantyList[$j]['warrantyMax'] --;
+                $warrantyList[$j]['warranty'][] = $tsuin;
+                $tsuinList[] = $tsuin;
+                unset($otherList[$i]);
             }
 
-            // カウント
-            $warrantyList[$minEnd]['warrantyMax'] --;
-            $warrantyList[$minEnd]['warranty'][] = $tsuin;
+            $shoken['ukeban'][$key]['warranty'] = array_merge(
+                $warrantyList,
+                [
+                    'other' => [
+                        'type'     => 'other',
+                        'warranty' => $otherList,
+                    ]
+                ]);
         }
 
-        $warrantyList['other'] = [
-            'type'     => 'other',
-            'warranty' => $other,
-        ];
+        $shoken['warranty'] = $tsuinList;
+        $shoken['other'] = $otherList;
 
-        return $warrantyList;
+        return $shoken;
+
+    }
+
+    public static function selectWarranty($warrantyList, $tsuin) {
+        // 適用可能な入院手術をリストアップ
+        $activeWarranty = [];
+        foreach ($warrantyList as $key => $warranty) {
+            if ($warranty['warrantyStart'] <= $tsuin['date'] &&
+                $tsuin['date'] <= $warranty['warrantyEnd'] &&
+                $warranty['warrantyMax'] != 0) {
+                $activeWarranty[$key] = $warranty;
+            }
+        }
+
+        // 適用不可能な場合
+        if (empty($activeWarranty)) {
+            return false;
+        }
+
+        // うち終了日が一番近いのを見つける
+        $min = null;
+        foreach ($activeWarranty as $key => $warranty) {
+            if (is_null($min)) {
+                $min = $key;
+                continue;
+            }
+            if ($warranty['warrantyEnd'] > $activeWarranty[$min]) {
+                $min = $key;
+            }
+        }
+
+        return $min;
     }
 
     /**

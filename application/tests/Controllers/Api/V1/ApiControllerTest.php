@@ -31,7 +31,6 @@ class ApiControllerTest extends CIDatabaseTestCase
             ['\\App\\Controllers\\Api\\V1\\Shujutsu', 'Shujutsu'],
             ['\\App\\Controllers\\Api\\V1\\Nyuin', 'Nyuin'],
             ['\\App\\Controllers\\Api\\V1\\Tsuin', 'Tsuin'],
-            ['\\App\\Controllers\\Api\\V1\\Result', 'Result'],
         ];
     }
 

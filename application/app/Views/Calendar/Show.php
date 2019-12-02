@@ -96,36 +96,35 @@
                   <div class="timeline-body" style="padding-bottom: 0px;">
                     <?php if(!empty($line['nyuin'])){ ?>
                     <strong><i class="fa fa-hotel margin-r-5"></i>入院：<?= count($line['nyuin']) ?>件</strong>
-                    <p><small>
+                    <ol>
                       <?php foreach($line['nyuin'] as $i){ ?>
-                      <?= str_replace('-', '/', $i['start']) ?> -
-                      <?= str_replace('-', '/', $i['end']) ?><br />
+                      <li><?= $i['start'] ?> - <?= $i['end'] ?></li>
                       <?php } ?>
-                    </small></p>
+                    </ol>
                     <?php } ?>
                     <?php if(!empty($line['shujutsu'])){ ?>
                     <strong><i class="fa fa-calendar-times-o margin-r-5"></i>手術：<?= count($line['shujutsu']) ?>件</strong>
-                    <p><small>
+                    <ol>
                       <?php foreach($line['shujutsu'] as $i){ ?>
-                      <?= str_replace('-', '/', $i['date']) ?><br />
+                      <li><?= $i['date'] ?></li>
                       <?php } ?>
-                    </small></p>
+                    </ol>
                     <?php } ?>
                     <?php if(!empty($line['tsuin'])){ ?>
                     <strong><i class="fa fa-taxi margin-r-5"></i>通院：<?= count($line['tsuin']) ?>件</strong>
-                    <p><small>
+                    <ol>
                       <?php foreach($line['tsuin'] as $i){ ?>
-                      <?= str_replace('-', '/', $i['date']) ?>,
+                      <li><?= $i['date'] ?></li>
                       <?php } ?>
-                    </small></p>
+                    </ol>
                     <?php } ?>
                     <?php if(!empty($line['bunsho'])){ ?>
                     <strong><i class="fa fa-pencil-square-o margin-r-5"></i>文書：<?= count($line['bunsho']) ?>件</strong>
-                    <p><small>
+                    <ol>
                       <?php foreach($line['bunsho'] as $i){ ?>
-                      <?= str_replace('-', '/', $i['date']) ?>,
+                      <li><?= $i['date'] ?></li>
                       <?php } ?>
-                    </small></p>
+                    </ol>
                     <?php } ?>
                   </div>
                   <div class="timeline-footer">
@@ -167,29 +166,29 @@
                 <div class="timeline-item">
                   <span class="time"><i class="fa fa-clock-o"></i> <?= $line['date'] ?></span>
                   <h3 class="timeline-header"><?= $line['id'] ?></h3>
-                  <div class="timeline-body" style="padding-bottom: 0px;">
-                    <?php foreach ($line['result'] as $key => $warranty) { ?>
+                  <div class="timeline-body">
+                    <?php foreach ($line['warranty'] as $key => $warranty) { ?>
                     <?php if ($warranty['type'] == 'nyuin' && count($warranty['warranty'])) { ?>
                     <strong><i class="fa fa-hotel margin-r-5"></i>入院：<?=$warranty['date'] ?> <?= count($warranty['warranty']) ?>日</strong>
-                    <p><small>
+                    <ol>
                         <?php foreach ($warranty['warranty'] as $tsuin) { ?>
-                        <?= $tsuin['date'] ?>
+                        <li><?= $tsuin['date'] ?></li>
                         <?php } ?>
-                    </small></p>
+                    </ol>
                     <?php } elseif ($warranty['type'] == 'shujutsu' && count($warranty['warranty'])) { ?>
                     <strong><i class="fa fa-calendar-times-o margin-r-5"></i>手術：<?=$warranty['date'] ?> <?= count($warranty['warranty']) ?>日</strong>
-                    <p><small>
+                    <ol>
                         <?php foreach ($warranty['warranty'] as $tsuin) { ?>
-                        <?= $tsuin['date'] ?>
+                        <li><?= $tsuin['date'] ?></li>
                         <?php } ?>
-                    </small></p>
+                    </ol>
                     <?php } elseif ($warranty['type'] == 'other') { ?>
                     <strong><i class="fa fa-times-circle margin-r-5"></i>保障外 <?= count($warranty['warranty']) ?>日</strong>
-                    <p><small>
+                    <ol>
                         <?php foreach ($warranty['warranty'] as $tsuin) { ?>
-                        <?= $tsuin['date'] ?>
+                        <li><?= $tsuin['date'] ?></li>
                         <?php } ?>
-                    </small></p>
+                    </ol>
                     <?php } ?>
                     <?php } ?>
                   </div>
@@ -210,30 +209,18 @@
           <!-- /.tab-pane -->
 
           <div class="tab-pane" id="final">
-            <?php foreach ($final as $key => $warranty) { ?>
-            <?php if ($warranty['type'] == 'nyuin') { ?>
-            <strong><i class="fa fa-hotel margin-r-5"></i>入院：<?=$warranty['date'] ?> 計<?= count($warranty['warranty']) ?>日 残<?= $warranty['warrantyMax'] ?>日</strong>
-            <p><small>
-                <?php foreach ($warranty['warranty'] as $tsuin) { ?>
-                <?= $tsuin['date'] ?>
-                <?php } ?>
-            </small></p>
-            <?php } elseif ($warranty['type'] == 'shujutsu') { ?>
-            <strong><i class="fa fa-calendar-times-o margin-r-5"></i>手術：<?=$warranty['date'] ?> 計<?= count($warranty['warranty']) ?>日 残<?= $warranty['warrantyMax'] ?>日</strong>
-            <p><small>
-                <?php foreach ($warranty['warranty'] as $tsuin) { ?>
-                <?= $tsuin['date'] ?>
-                <?php } ?>
-            </small></p>
-            <?php } else { ?>
-            <strong><i class="fa fa-times-circle margin-r-5"></i>保障外 計<?= count($warranty['warranty']) ?>日</strong>
-            <p><small>
-                <?php foreach ($warranty['warranty'] as $tsuin) { ?>
-                <?= $tsuin['date'] ?>
-                <?php } ?>
-            </small></p>
+            <strong><i class="fa fa-times-circle margin-r-5"></i>支払済み <?= count($shoken['warranty']) ?>日</strong>
+            <ol>
+            <?php foreach ($shoken['warranty'] as $tsuin) { ?>
+            <li><?= $tsuin['date'] ?></li>
             <?php } ?>
+            </ol>
+            <strong><i class="fa fa-times-circle margin-r-5"></i>保障外 <?= count($shoken['other']) ?>日</strong>
+            <ol>
+            <?php foreach ($shoken['other'] as $tsuin) { ?>
+            <li><?= $tsuin['date'] ?></li>
             <?php } ?>
+            </ol>
           </div>
           <!-- /.tab-pane -->
 
@@ -460,13 +447,13 @@
       },
       {
           id: 'tsuin',
-          events: <?= \App\Libraries\Smartcare::toJsonEvents($paypay, ['ukeban_id' => $ukeban_id]) ?>,
+          events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['warranty'], ['ukeban_id' => $ukeban_id]) ?>,
           color: "#00a65a",
           description: "通院",
       },
       {
           id: 'tsuin',
-          events: <?= \App\Libraries\Smartcare::toJsonEvents($no_pay, ['ukeban_id' => $ukeban_id]) ?>,
+          events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['other'], ['ukeban_id' => $ukeban_id]) ?>,
           color: "#ffaaaa",
           description: "支払えない通院",
       },
