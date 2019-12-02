@@ -38,7 +38,7 @@
             </div>
             <div class="form-group<?=(!$validation->hasError('comment'))?'': ' has-error' ?>">
               <label for="inputComment">査定者メモ</label>
-              <textarea class="form-control" rows="15" name="comment" id="inputComment" placeholder="自由入力欄"><?= set_value('comment', $comment) ?></textarea>
+              <textarea class="form-control" rows="10" name="comment" id="inputComment" placeholder="自由入力欄"><?= set_value('comment', $comment) ?></textarea>
               <span class="help-block"><?= $validation->showError('comment') ?></span>
             </div>
           </div>
