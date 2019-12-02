@@ -95,36 +95,84 @@
                   <h3 class="timeline-header"><?= $line['id'] ?></h3>
                   <div class="timeline-body" style="padding-bottom: 0px;">
                     <?php if(!empty($line['nyuin'])){ ?>
-                    <strong><i class="fa fa-hotel margin-r-5"></i>入院：<?= count($line['nyuin']) ?>件</strong>
-                    <ol>
-                      <?php foreach($line['nyuin'] as $i){ ?>
-                      <li><?= $i['start'] ?> - <?= $i['end'] ?></li>
-                      <?php } ?>
-                    </ol>
+                    <div class="box box-widget collapsed-box" style="margin-bottom: 5px">
+                      <div class="box-header with-border">
+                        <div class="box-title">
+                          <a data-widget="collapse" href="#">
+                            <small>
+                              <i class="fa fa-hotel margin-r-5"></i>入院：<?= count($line['nyuin']) ?>件
+                            </small>
+                          </a>
+                        </div>
+                      </div>
+                      <div class="box-body">
+                        <ol>
+                          <?php foreach($line['nyuin'] as $i){ ?>
+                          <li><?= $i['start'] ?> - <?= $i['end'] ?></li>
+                          <?php } ?>
+                        </ol>
+                      </div>
+                    </div>
                     <?php } ?>
                     <?php if(!empty($line['shujutsu'])){ ?>
-                    <strong><i class="fa fa-calendar-times-o margin-r-5"></i>手術：<?= count($line['shujutsu']) ?>件</strong>
-                    <ol>
-                      <?php foreach($line['shujutsu'] as $i){ ?>
-                      <li><?= $i['date'] ?></li>
-                      <?php } ?>
-                    </ol>
+                    <div class="box box-widget collapsed-box" style="margin-bottom: 5px">
+                      <div class="box-header with-border">
+                        <div class="box-title">
+                          <a data-widget="collapse" href="#">
+                            <small>
+                              <i class="fa fa-calendar-times-o margin-r-5"></i>手術：<?= count($line['shujutsu']) ?>件
+                            </small>
+                          </a>
+                        </div>
+                      </div>
+                      <div class="box-body">
+                        <ol>
+                          <?php foreach($line['shujutsu'] as $i){ ?>
+                          <li><?= $i['date'] ?></li>
+                          <?php } ?>
+                        </ol>
+                      </div>
+                    </div>
                     <?php } ?>
                     <?php if(!empty($line['tsuin'])){ ?>
-                    <strong><i class="fa fa-taxi margin-r-5"></i>通院：<?= count($line['tsuin']) ?>件</strong>
-                    <ol>
-                      <?php foreach($line['tsuin'] as $i){ ?>
-                      <li><?= $i['date'] ?></li>
-                      <?php } ?>
-                    </ol>
+                    <div class="box box-widget collapsed-box" style="margin-bottom: 5px">
+                      <div class="box-header with-border">
+                        <div class="box-title">
+                          <a data-widget="collapse" href="#">
+                            <small>
+                              <i class="fa fa-taxi margin-r-5"></i>通院：<?= count($line['tsuin']) ?>件
+                            </small>
+                          </a>
+                        </div>
+                      </div>
+                      <div class="box-body">
+                        <ol>
+                          <?php foreach($line['tsuin'] as $i){ ?>
+                          <li><?= $i['date'] ?></li>
+                          <?php } ?>
+                        </ol>
+                      </div>
+                    </div>
                     <?php } ?>
                     <?php if(!empty($line['bunsho'])){ ?>
-                    <strong><i class="fa fa-pencil-square-o margin-r-5"></i>文書：<?= count($line['bunsho']) ?>件</strong>
-                    <ol>
-                      <?php foreach($line['bunsho'] as $i){ ?>
-                      <li><?= $i['date'] ?></li>
-                      <?php } ?>
-                    </ol>
+                    <div class="box box-widget collapsed-box" style="margin-bottom: 5px">
+                      <div class="box-header with-border">
+                        <div class="box-title">
+                          <a data-widget="collapse" href="#">
+                            <small>
+                              <i class="fa fa-pencil-square-o margin-r-5"></i>文書：<?= count($line['bunsho']) ?>件
+                            </small>
+                          </a>
+                        </div>
+                      </div>
+                      <div class="box-body">
+                        <ol>
+                          <?php foreach($line['bunsho'] as $i){ ?>
+                          <li><?= $i['date'] ?></li>
+                          <?php } ?>
+                        </ol>
+                      </div>
+                    </div>
                     <?php } ?>
                   </div>
                   <div class="timeline-footer">
@@ -169,26 +217,64 @@
                   <div class="timeline-body">
                     <?php foreach ($line['warranty'] as $key => $warranty) { ?>
                     <?php if ($warranty['type'] == 'nyuin' && count($warranty['warranty'])) { ?>
-                    <strong><i class="fa fa-hotel margin-r-5"></i>入院：<?=$warranty['date'] ?> <?= count($warranty['warranty']) ?>日</strong>
-                    <ol>
-                      <?php foreach ($warranty['warranty'] as $tsuin) { ?>
-                      <li><?= $tsuin['date'] ?></li>
-                      <?php } ?>
-                    </ol>
+                    <div class="box box-widget collapsed-box" style="margin-bottom: 5px">
+                      <div class="box-header with-border">
+                        <div class="box-title">
+                          <a data-widget="collapse" href="#">
+                            <small>
+                              <i class="fa fa-hotel margin-r-5"></i>入院：<?=$warranty['date'] ?> <?= count($warranty['warranty']) ?>日
+                            </small>
+                          </a>
+                        </div>
+                        <div class="description"><?= reset($warranty['warranty'])['date'] ?> - <?= end($warranty['warranty'])['date'] ?></div>
+                      </div>
+                      <div class="box-body">
+                        <ol>
+                          <?php foreach ($warranty['warranty'] as $tsuin) { ?>
+                          <li><?= $tsuin['date'] ?></li>
+                          <?php } ?>
+                        </ol>
+                      </div>
+                    </div>
                     <?php } elseif ($warranty['type'] == 'shujutsu' && count($warranty['warranty'])) { ?>
-                    <strong><i class="fa fa-calendar-times-o margin-r-5"></i>手術：<?=$warranty['date'] ?> <?= count($warranty['warranty']) ?>日</strong>
-                    <ol>
-                      <?php foreach ($warranty['warranty'] as $tsuin) { ?>
-                      <li><?= $tsuin['date'] ?></li>
-                      <?php } ?>
-                    </ol>
+                    <div class="box box-widget collapsed-box" style="margin-bottom: 5px">
+                      <div class="box-header with-border">
+                        <div class="box-title">
+                          <a data-widget="collapse" href="#">
+                            <small>
+                              <i class="fa fa-calendar-times-o margin-r-5"></i>手術：<?=$warranty['date'] ?> <?= count($warranty['warranty']) ?>日
+                            </small>
+                          </a>
+                        </div>
+                        <div class="description"><?= reset($warranty['warranty'])['date'] ?> - <?= end($warranty['warranty'])['date'] ?></div>
+                      </div>
+                      <div class="box-body">
+                        <ol>
+                          <?php foreach ($warranty['warranty'] as $tsuin) { ?>
+                          <li><?= $tsuin['date'] ?></li>
+                          <?php } ?>
+                        </ol>
+                      </div>
+                    </div>
                     <?php } elseif ($warranty['type'] == 'other') { ?>
-                    <strong><i class="fa fa-times-circle margin-r-5"></i>保障外 <?= count($warranty['warranty']) ?>日</strong>
-                    <ol>
-                      <?php foreach ($warranty['warranty'] as $tsuin) { ?>
-                      <li><?= $tsuin['date'] ?></li>
-                      <?php } ?>
-                    </ol>
+                    <div class="box box-widget collapsed-box" style="margin-bottom: 5px">
+                      <div class="box-header with-border">
+                        <div class="box-title">
+                          <a data-widget="collapse" href="#">
+                            <small>
+                              <i class="fa fa-times-circle margin-r-5"></i>保障外 <?= count($warranty['warranty']) ?>日
+                            </small>
+                          </a>
+                        </div>
+                      </div>
+                      <div class="box-body">
+                        <ol>
+                          <?php foreach ($warranty['warranty'] as $tsuin) { ?>
+                          <li><?= $tsuin['date'] ?></li>
+                          <?php } ?>
+                        </ol>
+                      </div>
+                    </div>
                     <?php } ?>
                     <?php } ?>
                   </div>
@@ -209,23 +295,46 @@
           <!-- /.tab-pane -->
 
           <div class="tab-pane" id="final">
-            <strong><i class="fa fa-times-circle margin-r-5"></i>支払済み <?= count($shoken['warranty']) ?>日</strong>
-            <ol>
-              <?php foreach ($shoken['warranty'] as $tsuin) { ?>
-              <li><?= $tsuin['date'] ?></li>
-              <?php } ?>
-            </ol>
-            <strong><i class="fa fa-times-circle margin-r-5"></i>保障外 <?= count($shoken['other']) ?>日</strong>
-            <ol>
-              <?php foreach ($shoken['other'] as $tsuin) { ?>
-              <li><?= $tsuin['date'] ?></li>
-              <?php } ?>
-            </ol>
+            <div class="box collapsed-box box-success box-solid" style="margin-bottom: 5px">
+              <div class="box-header with-border">
+                <div class="box-title">
+                  <a data-widget="collapse" href="#">
+                    <small>
+                      <i class="fa fa-times-circle margin-r-5"></i>支払済み <?= count($shoken['warranty']) ?>日
+                    </small>
+                  </a>
+                </div>
+              </div>
+              <div class="box-body">
+                <ol>
+                  <?php foreach ($shoken['warranty'] as $tsuin) { ?>
+                  <li><?= $tsuin['date'] ?></li>
+                  <?php } ?>
+                </ol>
+              </div>
+            </div>
+            <div class="box box-danger box-solid" style="margin-bottom: 5px">
+              <div class="box-header with-border">
+                <div class="box-title">
+                  <a data-widget="collapse" href="#">
+                    <small>
+                      <i class="fa fa-times-circle margin-r-5"></i>保障外 <?= count($shoken['other']) ?>日
+                    </small>
+                  </a>
+                </div>
+              </div>
+              <div class="box-body">
+                <ol>
+                  <?php foreach ($shoken['other'] as $tsuin) { ?>
+                  <li><?= $tsuin['date'] ?></li>
+                  <?php } ?>
+                </ol>
+              </div>
+            </div>
           </div>
           <!-- /.tab-pane -->
 
           <div class="tab-pane" id="batch">
-
             <?php if(isset($line)){ ?>
             <div class="box-body">
               <form class="form" original-action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/") ?>" method="POST">
