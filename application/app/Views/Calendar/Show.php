@@ -239,7 +239,7 @@
                 </div>
                 <div class="form-group">
                   <label>通院日</label>
-                  <textarea class="form-control" rows="15" name="date" placeholder="2019-09-10
+                  <textarea class="form-control" rows="10" name="date" placeholder="2019-09-10
 2019-10-10
 2019-11-10
 
