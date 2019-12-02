@@ -34,10 +34,11 @@ class Smartcare
      * 入院と入院が近いとき、一つの入院とみなされ、同一初回となる
      *
      * @param array $nyuinList
+     * @param bool  $remove
      *
      * @return array $nyuinList
      */
-    public static function conbineNyuin($nyuinList)
+    public static function conbineNyuin($nyuinList, $remove = false)
     {
         if (count($nyuinList) < 2) {
             return $nyuinList;
@@ -61,6 +62,9 @@ class Smartcare
                 $nyuinList[$i]['warrantyMax'] += $nyuinList[$i+1]['warrantyMax'] - 30;
                 $nyuinList[$i+1]['warrantyMax'] = 0;
                 $nyuinList[$i]['warranty'] = array_merge($nyuinList[$i]['warranty'], $nyuinList[$i+1]['warranty']);
+                if ($remove) {
+                    unset($nyuinList[$i+1]);
+                }
             }
         }
 

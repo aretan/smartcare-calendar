@@ -442,7 +442,7 @@
       },
       {
           id: 'warranty',
-          events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['nyuin'], ['ukeban_id' => $ukeban_id], 'warrantyStart', 'warrantyEnd') ?>,
+          events: <?= \App\Libraries\Smartcare::toJsonEvents(\App\Libraries\Smartcare::conbineNyuin($shoken['nyuin'], true), ['ukeban_id' => $ukeban_id], 'warrantyStart', 'warrantyEnd') ?>,
           rendering: 'background',
       },
       {
