@@ -44,6 +44,7 @@ class Smartcare
             return $nyuinList;
         }
 
+        $sort = [];
         foreach ($nyuinList as $key => $value) {
             $sort[$key] = $value['start'];
         }
@@ -132,14 +133,6 @@ class Smartcare
                 ];
             }
 
-            // 開始日が早い順で並べる
-            if (!empty($warrantyList)) {
-                foreach ($warrantyList as $i => $value) {
-                    $sort[$i] = $value['warrantyStart'];
-                }
-                array_multisort($sort, SORT_ASC, $warrantyList);
-            }
-
             // 既に支払済みの通院をつけかえる
             foreach ($tsuinList as $i => $tsuin) {
                 $j = self::selectWarranty($warrantyList, $tsuin);
@@ -172,7 +165,24 @@ class Smartcare
                 ]);
         }
 
+        if ($tsuinList) {
+            $sort = [];
+            foreach ($tsuinList as $key => $value) {
+                $sort[$key] = $value['date'];
+            }
+            array_multisort($sort, SORT_ASC, $tsuinList);
+        }
+
         $shoken['warranty'] = $tsuinList;
+
+        if ($otherList) {
+            $sort = [];
+            foreach ($otherList as $key => $value) {
+                $sort[$key] = $value['date'];
+            }
+            array_multisort($sort, SORT_ASC, $otherList);
+        }
+
         $shoken['other'] = $otherList;
 
         return $shoken;
@@ -202,7 +212,7 @@ class Smartcare
                 $min = $key;
                 continue;
             }
-            if ($warranty['warrantyEnd'] > $activeWarranty[$min]) {
+            if ($warranty['warrantyEnd'] > $activeWarranty[$min]['warrantyEnd']) {
                 $min = $key;
             }
         }

@@ -171,23 +171,23 @@
                     <?php if ($warranty['type'] == 'nyuin' && count($warranty['warranty'])) { ?>
                     <strong><i class="fa fa-hotel margin-r-5"></i>入院：<?=$warranty['date'] ?> <?= count($warranty['warranty']) ?>日</strong>
                     <ol>
-                        <?php foreach ($warranty['warranty'] as $tsuin) { ?>
-                        <li><?= $tsuin['date'] ?></li>
-                        <?php } ?>
+                      <?php foreach ($warranty['warranty'] as $tsuin) { ?>
+                      <li><?= $tsuin['date'] ?></li>
+                      <?php } ?>
                     </ol>
                     <?php } elseif ($warranty['type'] == 'shujutsu' && count($warranty['warranty'])) { ?>
                     <strong><i class="fa fa-calendar-times-o margin-r-5"></i>手術：<?=$warranty['date'] ?> <?= count($warranty['warranty']) ?>日</strong>
                     <ol>
-                        <?php foreach ($warranty['warranty'] as $tsuin) { ?>
-                        <li><?= $tsuin['date'] ?></li>
-                        <?php } ?>
+                      <?php foreach ($warranty['warranty'] as $tsuin) { ?>
+                      <li><?= $tsuin['date'] ?></li>
+                      <?php } ?>
                     </ol>
                     <?php } elseif ($warranty['type'] == 'other') { ?>
                     <strong><i class="fa fa-times-circle margin-r-5"></i>保障外 <?= count($warranty['warranty']) ?>日</strong>
                     <ol>
-                        <?php foreach ($warranty['warranty'] as $tsuin) { ?>
-                        <li><?= $tsuin['date'] ?></li>
-                        <?php } ?>
+                      <?php foreach ($warranty['warranty'] as $tsuin) { ?>
+                      <li><?= $tsuin['date'] ?></li>
+                      <?php } ?>
                     </ol>
                     <?php } ?>
                     <?php } ?>
@@ -211,15 +211,15 @@
           <div class="tab-pane" id="final">
             <strong><i class="fa fa-times-circle margin-r-5"></i>支払済み <?= count($shoken['warranty']) ?>日</strong>
             <ol>
-            <?php foreach ($shoken['warranty'] as $tsuin) { ?>
-            <li><?= $tsuin['date'] ?></li>
-            <?php } ?>
+              <?php foreach ($shoken['warranty'] as $tsuin) { ?>
+              <li><?= $tsuin['date'] ?></li>
+              <?php } ?>
             </ol>
             <strong><i class="fa fa-times-circle margin-r-5"></i>保障外 <?= count($shoken['other']) ?>日</strong>
             <ol>
-            <?php foreach ($shoken['other'] as $tsuin) { ?>
-            <li><?= $tsuin['date'] ?></li>
-            <?php } ?>
+              <?php foreach ($shoken['other'] as $tsuin) { ?>
+              <li><?= $tsuin['date'] ?></li>
+              <?php } ?>
             </ol>
           </div>
           <!-- /.tab-pane -->
