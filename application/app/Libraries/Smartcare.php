@@ -56,6 +56,7 @@ class Smartcare
             }
         }
 
+        $removes = [];
         for ($i=0; isset($nyuinList[$i+1]); $i++) {
             if ($nyuinList[$i+1]['warrantyStart'] <= $nyuinList[$i]['warrantyEnd'] &&
                 $nyuinList[$i]['warrantyStart'] <= $nyuinList[$i+1]['warrantyEnd']) {
@@ -64,9 +65,13 @@ class Smartcare
                 $nyuinList[$i+1]['warrantyMax'] = 0;
                 $nyuinList[$i]['warranty'] = array_merge($nyuinList[$i]['warranty'], $nyuinList[$i+1]['warranty']);
                 if ($remove) {
-                    unset($nyuinList[$i+1]);
+                    $removes[] = $i+1;
                 }
             }
+        }
+
+        foreach ($removes as $remove) {
+            unset($nyuinList[$remove]);
         }
 
         return $nyuinList;
