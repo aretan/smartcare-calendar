@@ -217,16 +217,16 @@
                   <div class="timeline-body">
                     <?php foreach ($line['warranty'] as $key => $warranty) { ?>
                     <?php if ($warranty['type'] == 'nyuin' && count($warranty['warranty'])) { ?>
-                    <div class="box box-widget collapsed-box" style="margin-bottom: 5px">
+                    <div class="box box-success collapsed-box" style="margin-bottom: 5px">
                       <div class="box-header with-border">
                         <div class="box-title">
                           <a data-widget="collapse" href="#">
                             <small>
-                              <i class="fa fa-hotel margin-r-5"></i>入院：<?=$warranty['date'] ?> <?= count($warranty['warranty']) ?>日
+                              <i class="fa fa-hotel margin-r-5"></i>入院：<?=$warranty['date'] ?>
                             </small>
                           </a>
                         </div>
-                        <div class="description"><?= reset($warranty['warranty'])['date'] ?> - <?= end($warranty['warranty'])['date'] ?></div>
+                        <div class="description"><?= reset($warranty['warranty'])['date'] ?> - <?= end($warranty['warranty'])['date'] ?> (<?= count($warranty['warranty']) ?>日)</div>
                       </div>
                       <div class="box-body">
                         <ol>
@@ -237,16 +237,16 @@
                       </div>
                     </div>
                     <?php } elseif ($warranty['type'] == 'shujutsu' && count($warranty['warranty'])) { ?>
-                    <div class="box box-widget collapsed-box" style="margin-bottom: 5px">
+                    <div class="box box-success collapsed-box" style="margin-bottom: 5px">
                       <div class="box-header with-border">
                         <div class="box-title">
                           <a data-widget="collapse" href="#">
                             <small>
-                              <i class="fa fa-calendar-times-o margin-r-5"></i>手術：<?=$warranty['date'] ?> <?= count($warranty['warranty']) ?>日
+                              <i class="fa fa-calendar-times-o margin-r-5"></i>手術：<?=$warranty['date'] ?>
                             </small>
                           </a>
                         </div>
-                        <div class="description"><?= reset($warranty['warranty'])['date'] ?> - <?= end($warranty['warranty'])['date'] ?></div>
+                        <div class="description"><?= reset($warranty['warranty'])['date'] ?> - <?= end($warranty['warranty'])['date'] ?> (<?= count($warranty['warranty']) ?>日)</div>
                       </div>
                       <div class="box-body">
                         <ol>
@@ -257,7 +257,7 @@
                       </div>
                     </div>
                     <?php } elseif ($warranty['type'] == 'other') { ?>
-                    <div class="box box-widget collapsed-box" style="margin-bottom: 5px">
+                    <div class="box box-danger box-solid" style="margin-bottom: 5px">
                       <div class="box-header with-border">
                         <div class="box-title">
                           <a data-widget="collapse" href="#">
