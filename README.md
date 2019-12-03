@@ -23,3 +23,4 @@ $ vagrant up
 + application - `PHPアプリケーション（API含む）`
 + public - `公開ディレクトリ（Bootstrap）`
 + Vagrantfile - `Vagrant環境の立上げスクリプト`
++ docker - `Dockerサンプル`
