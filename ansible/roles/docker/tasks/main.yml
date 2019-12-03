@@ -3,3 +3,7 @@
   vars:
     packages:
     - docker.io
+- user:
+    name: vagrant
+    groups: docker
+    append: yes
