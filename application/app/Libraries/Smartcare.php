@@ -60,10 +60,18 @@ class Smartcare
         for ($i=0; isset($nyuinList[$i+1]); $i++) {
             if ($nyuinList[$i+1]['warrantyStart'] <= $nyuinList[$i]['warrantyEnd'] &&
                 $nyuinList[$i]['warrantyStart'] <= $nyuinList[$i+1]['warrantyEnd']) {
-                $nyuinList[$i]['warrantyEnd'] = $nyuinList[$i+1]['warrantyEnd'];
-                $nyuinList[$i]['warrantyMax'] += $nyuinList[$i+1]['warrantyMax'] - 30;
+
+                $j = 0;
+                while (isset($nyuinList[$i+$j]['conbined']) && $nyuinList[$i+$j]['conbined']) {
+                    $j --;
+                }
+
+                $nyuinList[$i+$j]['warrantyEnd'] = $nyuinList[$i+1]['warrantyEnd'];
+                $nyuinList[$i+$j]['warrantyMax'] += $nyuinList[$i+1]['warrantyMax'] - 30;
                 $nyuinList[$i+1]['warrantyMax'] = 0;
-                $nyuinList[$i]['warranty'] = array_merge($nyuinList[$i]['warranty'], $nyuinList[$i+1]['warranty']);
+                $nyuinList[$i+$j]['warranty'] = array_merge($nyuinList[$i+$j]['warranty'], $nyuinList[$i+1]['warranty']);
+                $nyuinList[$i+1]['conbined'] = true;
+
                 if ($remove) {
                     $removes[] = $i+1;
                 }
