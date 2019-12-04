@@ -3,3 +3,6 @@ build:
 
 run:
 	docker run -p 8080:8080 smartcare-calendar &
+
+bash:
+	docker run -it smartcare-calendar /bin/bash
