@@ -7,7 +7,8 @@
     "require": {
         "php": ">=7.2",
         "codeigniter4/framework": "^4@rc",
-        "codeigniter4/translations": "@beta"
+        "codeigniter4/translations": "@beta",
+        "rpfk/hungarian": "dev-master"
     },
     "require-dev": {
         "mikey179/vfsstream": "1.6.*",
@@ -18,6 +19,12 @@
             "@composer dump-autoload"
         ]
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/rpfk/Hungarian"
+        }
+    ],
     "support": {
         "forum": "http://forum.codeigniter.com/",
         "source": "https://github.com/codeigniter4/CodeIgniter4",

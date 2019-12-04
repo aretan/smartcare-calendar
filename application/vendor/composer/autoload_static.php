@@ -33,6 +33,10 @@ class ComposerStaticInitd54feaa1987aebb5c626869dbdeaf7ab
         array (
             'Symfony\\Polyfill\\Ctype\\' => 23,
         ),
+        'R' => 
+        array (
+            'RPFK\\Hungarian\\' => 15,
+        ),
         'P' => 
         array (
             'Psr\\Log\\' => 8,
@@ -71,6 +75,10 @@ class ComposerStaticInitd54feaa1987aebb5c626869dbdeaf7ab
         'Symfony\\Polyfill\\Ctype\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
+        ),
+        'RPFK\\Hungarian\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/rpfk/hungarian/src',
         ),
         'Psr\\Log\\' => 
         array (
