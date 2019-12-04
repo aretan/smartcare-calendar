@@ -8,7 +8,7 @@
         "php": ">=7.2",
         "codeigniter4/framework": "^4@rc",
         "codeigniter4/translations": "@beta",
-        "rpfk/hungarian": "dev-master"
+        "jul13579/hungarian": "dev-master"
     },
     "require-dev": {
         "mikey179/vfsstream": "1.6.*",
@@ -22,7 +22,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/rpfk/Hungarian"
+            "url": "https://github.com/jul13579/Hungarian"
         }
     ],
     "support": {
