@@ -40,7 +40,7 @@ class Smartcare
      */
     public static function conbineNyuin($nyuinList, $remove = false)
     {
-        if (count($nyuinList) < 2) {
+        if (count($nyuinList) <= 1) {
             return $nyuinList;
         }
 
@@ -58,16 +58,15 @@ class Smartcare
 
         $removes = [];
         for ($i=0; isset($nyuinList[$i+1]); $i++) {
-            if ($nyuinList[$i+1]['warrantyStart'] <= $nyuinList[$i]['warrantyEnd'] &&
-                $nyuinList[$i]['warrantyStart'] <= $nyuinList[$i+1]['warrantyEnd']) {
+            $j = 0;
+            while (isset($nyuinList[$i+$j]['conbined']) && $nyuinList[$i+$j]['conbined']) {
+                $j --;
+            }
 
-                $j = 0;
-                while (isset($nyuinList[$i+$j]['conbined']) && $nyuinList[$i+$j]['conbined']) {
-                    $j --;
-                }
+            if ($nyuinList[$i+1]['warrantyStart'] <= $nyuinList[$i+$j]['warrantyEnd'] &&
+                $nyuinList[$i+$j]['warrantyStart'] <= $nyuinList[$i+1]['warrantyEnd']) {
 
                 $nyuinList[$i+$j]['warrantyEnd'] = $nyuinList[$i+1]['warrantyEnd'];
-                $nyuinList[$i+$j]['warrantyMax'] += $nyuinList[$i+1]['warrantyMax'] - 30;
                 $nyuinList[$i+1]['warrantyMax'] = 0;
                 $nyuinList[$i+$j]['warranty'] = array_merge($nyuinList[$i+$j]['warranty'], $nyuinList[$i+1]['warranty']);
                 $nyuinList[$i+1]['conbined'] = true;
@@ -120,12 +119,12 @@ class Smartcare
         foreach ($shoken['ukeban'] as $key => $ukeban) {
             $otherList = array_merge($otherList, $ukeban['tsuin']);
             $nyuinList = array_merge($nyuinList, $ukeban['nyuin']);
-            $nyuinList = self::conbineNyuin($nyuinList);
+            $conbinedNyuinList = self::conbineNyuin($nyuinList);
             $shujutsuList = array_merge($shujutsuList, $ukeban['shujutsu']);
 
             // 入院と手術を合体
             $warrantyList = [];
-            foreach ($nyuinList as $nyuin) {
+            foreach ($conbinedNyuinList as $nyuin) {
                 $warrantyList[] = [
                     'type' => 'nyuin',
                     'date' => $nyuin['start'],
@@ -144,6 +143,14 @@ class Smartcare
                     'warrantyEnd' => $shujutsu['warrantyEnd'],
                     'warrantyMax' => $shujutsu['warrantyMax'],
                 ];
+            }
+
+            if (count($warrantyList)) {
+                $sort = [];
+                foreach ($warrantyList as $i => $value) {
+                    $sort[$i] = $value['warrantyStart'];
+                }
+                array_multisort($sort, SORT_ASC, $warrantyList);
             }
 
             // 既に支払済みの通院をつけかえる
@@ -208,7 +215,7 @@ class Smartcare
         foreach ($warrantyList as $key => $warranty) {
             if ($warranty['warrantyStart'] <= $tsuin['date'] &&
                 $tsuin['date'] <= $warranty['warrantyEnd'] &&
-                $warranty['warrantyMax'] != 0) {
+                $warranty['warrantyMax'] > 0) {
                 $activeWarranty[$key] = $warranty;
             }
         }
