@@ -63,8 +63,13 @@
 
     <div class="col-md-4">
       <?php if($shoken['comment']){ ?>
-      <div class="callout callout-info">
-        <?=nl2br($shoken['comment']) ?>
+      <div class="small-box bg-green">
+        <div class="inner">
+          <p style="margin-bottom:0px;"><?=nl2br($shoken['comment']) ?></p>
+        </div>
+        <a href="<?= site_url("calendar/edit/{$shoken['id']}/") ?>" class="small-box-footer">
+          <i class="fa fa-pencil"></i>コメント編集
+        </a>
       </div>
       <?php } ?>
       <div class="nav-tabs-custom">
