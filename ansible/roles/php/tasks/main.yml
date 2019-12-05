@@ -5,6 +5,8 @@
     - php7.2-fpm
     - php7.2-intl
     - php7.2-curl
+    - php7.2-mysql
+    - php7.2-sqlite3
     - phpunit
   when:
    - ansible_distribution == "Ubuntu"
@@ -15,6 +17,8 @@
     - php7.3-fpm
     - php7.3-intl
     - php7.3-curl
+    - php7.3-mysql
+    - php7.3-sqlite3
     - phpunit
   when:
    - ansible_distribution == "Debian"

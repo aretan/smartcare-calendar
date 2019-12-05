@@ -7,10 +7,11 @@ class Smartcare
      */
     public static function addNyuinWarranty($nyuin)
     {
-        $ref = strtotime($nyuin['start']);
+        $start = strtotime($nyuin['start']);
+        $end = strtotime($nyuin['end']);
 
-        $nyuin['warrantyStart'] = date('Y/m/d', $ref - 60 * 60 * 24 * 60);
-        $nyuin['warrantyEnd'] = date('Y/m/d', $ref + 60 * 60 * 24 * 120);
+        $nyuin['warrantyStart'] = date('Y/m/d', $start - 60 * 60 * 24 * 60);
+        $nyuin['warrantyEnd'] = date('Y/m/d', $end + 60 * 60 * 24 * 120);
         $nyuin['warrantyMax'] = '30';
 
         return $nyuin;
@@ -128,6 +129,7 @@ class Smartcare
                 $warrantyList[] = [
                     'type' => 'nyuin',
                     'date' => $nyuin['start'],
+                    'already' => [],
                     'warranty' => [],
                     'warrantyStart' => $nyuin['warrantyStart'],
                     'warrantyEnd' => $nyuin['warrantyEnd'],
@@ -138,6 +140,7 @@ class Smartcare
                 $warrantyList[] = [
                     'type' => 'shujutsu',
                     'date' => $shujutsu['date'],
+                    'already' => [],
                     'warranty' => [],
                     'warrantyStart' => $shujutsu['warrantyStart'],
                     'warrantyEnd' => $shujutsu['warrantyEnd'],
@@ -153,26 +156,94 @@ class Smartcare
                 array_multisort($sort, SORT_ASC, $warrantyList);
             }
 
-            // 既に支払済みの通院をつけかえる
-            foreach ($tsuinList as $i => $tsuin) {
-                $j = self::selectWarranty($warrantyList, $tsuin);
+            // 縦が通院で横が補償の表にする
+            $matrix = [];
 
-                $warrantyList[$j]['warrantyMax'] --;
+            // 支払済み通院
+            foreach ($tsuinList as $i => $tsuin) {
+                foreach ($warrantyList as $warranty) {
+                    if ($warranty['warrantyStart'] <= $tsuin['date'] &&
+                        $tsuin['date'] <= $warranty['warrantyEnd']) {
+                        while ($warranty['warrantyMax'] --) {
+                            $matrix[$i][] = 0;
+                        }
+                    } else {
+                        while ($warranty['warrantyMax'] --) {
+                            $matrix[$i][] = 10;
+                        }
+                    }
+                }
             }
 
-            // 新しい通院を分類
+            // 新しい通院
+            $base = count($matrix);
             foreach ($otherList as $i => $tsuin) {
-                $j = self::selectWarranty($warrantyList, $tsuin);
-
-                // 保障できない
-                if ($j === false) {
-                    continue;
+                foreach ($warrantyList as $warranty) {
+                    if ($warranty['warrantyStart'] <= $tsuin['date'] &&
+                        $tsuin['date'] <= $warranty['warrantyEnd']) {
+                        while ($warranty['warrantyMax'] --) {
+                            $matrix[$i+$base][] = 1;
+                        }
+                    } else {
+                        while ($warranty['warrantyMax'] --) {
+                            $matrix[$i+$base][] = 10;
+                        }
+                    }
                 }
+            }
 
-                $warrantyList[$j]['warrantyMax'] --;
-                $warrantyList[$j]['warranty'][] = $tsuin;
-                $tsuinList[] = $tsuin;
-                unset($otherList[$i]);
+            // 正方形にしないといけないのでダミー差し込み
+            if (isset($matrix[0])) {
+                $gap = count($matrix[0]) - count($matrix);
+                if ($gap > 0) {
+                    while ($gap > 0) {
+                        $matrix[] = array_fill(0, count($matrix[0]), 10);
+                        $gap --;
+                    }
+                } else {
+                    while ($gap < 0) {
+                        foreach ($matrix as $i => $value) {
+                            $matrix[$i][] = 5;
+                        }
+                        $gap ++;
+                    }
+                }
+            }
+
+            // ハンガリアンで計算
+            $allocation = $matrix ? (new \Hungarian\Hungarian($matrix))->solve() : [];
+
+            // 結果を取り出す
+            $unsets = $tsuins = [];
+            foreach ($allocation as $tsuin_key => $warranty_key) {
+                foreach ($warrantyList as $j => $warranty) {
+                    $warranty_key -= $warranty['warrantyMax'];
+                    if ($warranty_key >= 0) {
+                        continue;
+                    }
+
+                    if (isset($tsuinList[$tsuin_key])) {
+                        $warrantyList[$j]['already'][] = $tsuinList[$tsuin_key];
+                    } elseif (isset($otherList[$tsuin_key-$base])) {
+                        $warrantyList[$j]['warranty'][] = $otherList[$tsuin_key-$base];
+                        $tsuins[] = $otherList[$tsuin_key-$base];
+                        $unsets[] = $tsuin_key-$base;
+                    }
+                    break;
+                }
+            }
+
+            $tsuinList = array_merge($tsuins, $tsuinList);
+            foreach ($unsets as $unset) {
+                unset($otherList[$unset]);
+            }
+
+            foreach ($warrantyList as $i => $warranty) {
+                $sort = [];
+                foreach ($warranty['warranty'] as $j => $value) {
+                    $sort[$j] = $value['date'];
+                }
+                array_multisort($sort, SORT_ASC, $warrantyList[$i]['warranty']);
             }
 
             $shoken['ukeban'][$key]['warranty'] = array_merge(
@@ -192,7 +263,6 @@ class Smartcare
             }
             array_multisort($sort, SORT_ASC, $tsuinList);
         }
-
         $shoken['warranty'] = $tsuinList;
 
         if ($otherList) {
@@ -202,14 +272,12 @@ class Smartcare
             }
             array_multisort($sort, SORT_ASC, $otherList);
         }
-
         $shoken['other'] = $otherList;
 
         return $shoken;
-
     }
 
-    public static function selectWarranty($warrantyList, $tsuin) {
+    public static function activeWarranty($warrantyList, $tsuin) {
         // 適用可能な入院手術をリストアップ
         $activeWarranty = [];
         foreach ($warrantyList as $key => $warranty) {
