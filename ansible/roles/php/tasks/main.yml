@@ -7,7 +7,21 @@
     - php7.2-curl
     - php7.2-mysql
     - php7.2-sqlite3
+    - php-redis
     - phpunit
+    - composer
+  when:
+   - ansible_distribution == "Ubuntu"
+- ini_file:
+    path: /etc/php/7.2/fpm/php.ini
+    section: PHP
+    option: max_execution_time
+    value: 300
+  when:
+   - ansible_distribution == "Ubuntu"
+- service:
+    name: php7.2-fpm
+    state: restarted
   when:
    - ansible_distribution == "Ubuntu"
 - apt:
@@ -19,16 +33,9 @@
     - php7.3-curl
     - php7.3-mysql
     - php7.3-sqlite3
+    - php-redis
     - phpunit
-  when:
-   - ansible_distribution == "Debian"
-- apt:
-    name: composer
-- ini_file:
-    path: /etc/php/7.2/fpm/php.ini
-    section: PHP
-    option: max_execution_time
-    value: 300
+    - composer
   when:
    - ansible_distribution == "Debian"
 - ini_file:
@@ -36,5 +43,10 @@
     section: PHP
     option: max_execution_time
     value: 300
+  when:
+   - ansible_distribution == "Debian"
+- service:
+    name: php7.3-fpm
+    state: restarted
   when:
    - ansible_distribution == "Debian"

@@ -215,7 +215,7 @@ class Smartcare
             $allocation = cache($hashkey);
             if (!$allocation) {
                 $allocation = $matrix ? (new \Hungarian\Hungarian($matrix))->solve() : [];
-                cache()->save($hashkey, $allocation, -1);
+                cache()->save($hashkey, $allocation, 0);
             }
 
             /* Show Matrix & Result

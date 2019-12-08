@@ -17,5 +17,6 @@
     - php
     - nginx
     - mysql_config
+    - redis
     - phpmyadmin
     - datadog
