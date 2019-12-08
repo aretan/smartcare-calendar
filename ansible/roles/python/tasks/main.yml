@@ -1,0 +1,15 @@
+- apt:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - python3-munkres
+    - uwsgi
+    - uwsgi-plugin-python3
+- file: path=/var/www/hungarian state=directory owner=www-data mode=0755
+- copy:
+    src: index.py
+    dest: /var/www/hungarian/index.py
+- copy:
+    src: hungarian.ini
+    dest: /etc/uwsgi/apps-enabled/hungarian.ini
+- service: name=uwsgi state=restarted

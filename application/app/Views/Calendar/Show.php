@@ -220,6 +220,7 @@
                   <span class="time"><i class="fa fa-clock-o"></i> <?= $line['date'] ?></span>
                   <h3 class="timeline-header"><?= $line['id'] ?></h3>
                   <div class="timeline-body">
+                    <?php if (isset($line['warranty'])) { ?>
                     <?php foreach ($line['warranty'] as $key => $warranty) { ?>
                     <?php if ($warranty['type'] == 'nyuin' && count($warranty['warranty'])) { ?>
                     <div class="box box-success collapsed-box" style="margin-bottom: 5px">
@@ -280,6 +281,7 @@
                         </ol>
                       </div>
                     </div>
+                    <?php } ?>
                     <?php } ?>
                     <?php } ?>
                   </div>

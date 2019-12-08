@@ -1,3 +1,14 @@
+# Hungarian
+server {
+       listen 80;
+       server_name localhost;
+
+       location / {
+           uwsgi_pass unix:/run/uwsgi/app/hungarian/socket;
+           include uwsgi_params;
+       }
+}
+
 # For Docker
 server {
        listen 8080;

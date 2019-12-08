@@ -14,6 +14,7 @@
     datadog_apikey: b5bf83818c93e58db07c347d5a50ce09
   roles:
     - common
+    - python
     - php
     - nginx
     - mysql

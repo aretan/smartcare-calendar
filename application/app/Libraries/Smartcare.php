@@ -148,13 +148,15 @@ class Smartcare
                 ];
             }
 
-            if (count($warrantyList)) {
-                $sort = [];
-                foreach ($warrantyList as $i => $value) {
-                    $sort[$i] = $value['warrantyStart'];
-                }
-                array_multisort($sort, SORT_ASC, $warrantyList);
+            if (!count($warrantyList)) {
+                continue;
             }
+
+            $sort = [];
+            foreach ($warrantyList as $i => $value) {
+                $sort[$i] = $value['warrantyStart'];
+            }
+            array_multisort($sort, SORT_ASC, $warrantyList);
 
             // 縦が通院で横が補償の表にする
             $matrix = [];
@@ -192,31 +194,68 @@ class Smartcare
                 }
             }
 
+            if (!count($matrix)) {
+                continue;
+            }
+
             // 正方形にしないといけないのでダミー差し込み
-            if (isset($matrix[0])) {
-                $gap = count($matrix[0]) - count($matrix);
-                if ($gap > 0) {
-                    while ($gap > 0) {
-                        $matrix[] = array_fill(0, count($matrix[0]), 10);
-                        $gap --;
+            $gap = count($matrix[0]) - count($matrix);
+            if ($gap > 0) {
+                while ($gap > 0) {
+                    $matrix[] = array_fill(0, count($matrix[0]), 10);
+                    $gap --;
+                }
+            } else {
+                while ($gap < 0) {
+                    foreach ($matrix as $i => $value) {
+                        $matrix[$i][] = 10;
                     }
-                } else {
-                    while ($gap < 0) {
-                        foreach ($matrix as $i => $value) {
-                            $matrix[$i][] = 10;
-                        }
-                        $gap ++;
-                    }
+                    $gap ++;
                 }
             }
 
             // ハンガリアンで計算
+
+            /* // Go
+            $body = json_encode($matrix);
+            $context = [
+                'http' => [
+                    'method'  => 'POST',
+                    'header'  => "Content-type: application/json\r\nContent-Length: " . strlen($body),
+                    'content' => $body,
+                ]
+            ];
+            $allocation = file_get_contents('http://localhost:8888/hungarian/', false, stream_context_create($context));
+            $allocation = json_decode($allocation, true);
+            foreach ($allocation as $i => $row) {
+                $allocation[$i] = key($row);
+            }
+            // */
+
+            //* // Python
+            $body = json_encode($matrix);
+            $context = [
+                'http' => [
+                    'method'  => 'POST',
+                    'header'  => "Content-type: application/json\r\nContent-Length: " . strlen($body),
+                    'content' => $body,
+                ]
+            ];
+            $result = file_get_contents('http://localhost/', false, stream_context_create($context));
+            $result = json_decode($result, true);
+            foreach ($result as $data) {
+                $allocation[$data[0]] = $data[1];
+            }
+            // */
+
+            /* //
             $hashkey = hash('sha256', json_encode($matrix));
             $allocation = cache($hashkey);
             if (!$allocation) {
                 $allocation = $matrix ? (new \Hungarian\Hungarian($matrix))->solve() : [];
                 cache()->save($hashkey, $allocation, 0);
             }
+            // */
 
             /* Show Matrix & Result
             echo "<table>";
@@ -233,7 +272,7 @@ class Smartcare
             }
             echo "</table>";
             echo "----- ----- ----- -----<br>";
-            */
+            // */
 
             // 結果を取り出す
             $unsets = $tsuins = [];
