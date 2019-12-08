@@ -211,7 +211,12 @@ class Smartcare
             }
 
             // ハンガリアンで計算
-            $allocation = $matrix ? (new \Hungarian\Hungarian($matrix))->solve() : [];
+            $hashkey = hash('sha256', json_encode($matrix));
+            $allocation = cache($hashkey);
+            if (!$allocation) {
+                $allocation = $matrix ? (new \Hungarian\Hungarian($matrix))->solve() : [];
+                cache()->save($hashkey, $allocation, -1);
+            }
 
             /* Show Matrix & Result
             echo "<table>";

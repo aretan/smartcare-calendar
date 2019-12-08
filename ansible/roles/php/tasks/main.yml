@@ -24,3 +24,17 @@
    - ansible_distribution == "Debian"
 - apt:
     name: composer
+- ini_file:
+    path: /etc/php/7.2/fpm/php.ini
+    section: PHP
+    option: max_execution_time
+    value: 300
+  when:
+   - ansible_distribution == "Debian"
+- ini_file:
+    path: /etc/php/7.3/fpm/php.ini
+    section: PHP
+    option: max_execution_time
+    value: 300
+  when:
+   - ansible_distribution == "Debian"
