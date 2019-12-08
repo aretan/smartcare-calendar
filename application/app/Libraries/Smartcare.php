@@ -203,7 +203,7 @@ class Smartcare
                 } else {
                     while ($gap < 0) {
                         foreach ($matrix as $i => $value) {
-                            $matrix[$i][] = 5;
+                            $matrix[$i][] = 10;
                         }
                         $gap ++;
                     }
@@ -213,9 +213,31 @@ class Smartcare
             // ハンガリアンで計算
             $allocation = $matrix ? (new \Hungarian\Hungarian($matrix))->solve() : [];
 
+            /* Show Matrix & Result
+            echo "<table>";
+            foreach ($matrix as $i => $row) {
+                echo "<tr>";
+                foreach ($row as $j => $col) {
+                    if ($allocation[$i] == $j) {
+                        echo "<td style='text-align:center; background-color:red;'>$col</td>";
+                    } else {
+                        echo "<td style='text-align:center;'>$col</td>";
+                    }
+                }
+                echo "</tr>";
+            }
+            echo "</table>";
+            echo "----- ----- ----- -----<br>";
+            */
+
             // 結果を取り出す
             $unsets = $tsuins = [];
             foreach ($allocation as $tsuin_key => $warranty_key) {
+                // 10の結果を省く
+                if ($matrix[$tsuin_key][$warranty_key] == 10) {
+                    continue;
+                }
+
                 foreach ($warrantyList as $j => $warranty) {
                     $warranty_key -= $warranty['warrantyMax'];
                     if ($warranty_key >= 0) {
