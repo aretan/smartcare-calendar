@@ -1,2 +1,2 @@
 [web]
-18.176.55.110 ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/develop.pem
+18.177.141.101 ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/develop.pem
