@@ -32,7 +32,8 @@ class Smartcare
     }
 
     /**
-     * 入院と入院が近いとき、一つの入院とみなされ、同一初回となる
+     * 入院と入院の入院期間が重複しているとき、合体する
+     * 入院と入院の補償期間が重複しているとき、新しい方が同一初回となる
      *
      * @param array $nyuinList
      * @param bool  $remove
@@ -64,13 +65,32 @@ class Smartcare
                 $j --;
             }
 
+            if ($nyuinList[$i+1]['start'] <= $nyuinList[$i+$j]['end'] &&
+                $nyuinList[$i+$j]['start'] <= $nyuinList[$i+1]['end']) {
+                $nyuinList[$i+1]['conbined'] = true;
+
+                $removes[] = $i+1;
+            }
+        }
+
+        foreach ($removes as $remove) {
+            unset($nyuinList[$remove]);
+        }
+
+        $removes = [];
+        for ($i=0; isset($nyuinList[$i+1]); $i++) {
+            $j = 0;
+            while (isset($nyuinList[$i+$j]['merged']) && $nyuinList[$i+$j]['merged']) {
+                $j --;
+            }
+
             if ($nyuinList[$i+1]['warrantyStart'] <= $nyuinList[$i+$j]['warrantyEnd'] &&
                 $nyuinList[$i+$j]['warrantyStart'] <= $nyuinList[$i+1]['warrantyEnd']) {
 
                 $nyuinList[$i+$j]['warrantyEnd'] = $nyuinList[$i+1]['warrantyEnd'];
                 $nyuinList[$i+1]['warrantyMax'] = 0;
                 $nyuinList[$i+$j]['warranty'] = array_merge($nyuinList[$i+$j]['warranty'], $nyuinList[$i+1]['warranty']);
-                $nyuinList[$i+1]['conbined'] = true;
+                $nyuinList[$i+1]['merged'] = true;
 
                 if ($remove) {
                     $removes[] = $i+1;
