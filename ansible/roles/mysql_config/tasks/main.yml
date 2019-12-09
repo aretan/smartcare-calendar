@@ -25,19 +25,3 @@
     state: import
   when:
     - create_db.changed
-
-- copy:
-    src: testdata.sql
-    dest: /tmp/testdata.sql
-  when:
-    - create_db.changed
-
-- mysql_db:
-    login_host: "{{ mysql_hostname }}"
-    login_user: "{{ mysql_username }}"
-    login_password: "{{ mysql_password }}"
-    name: "{{ mysql_database }}"
-    target: /tmp/testdata.sql
-    state: import
-  when:
-    - create_db.changed
