@@ -23,12 +23,12 @@
           <div class="box-body">
             <div class="form-group<?=(!$validation->hasError('shoken_id'))?'': ' has-error' ?>">
               <label for="inputShokenId">証券番号</label>
-              <input type="text" class="form-control" name="shoken_id" id="inputShokenId" placeholder="825-123456" value="<?= set_value('shoken_id', $shoken_id) ?>" readonly>
+              <input type="text" class="form-control" name="shoken_id" id="inputShokenId" placeholder="825123456" value="<?= set_value('shoken_id', $shoken_id) ?>" maxlength="9" readonly>
               <span class="help-block"><?= $validation->showError('shoken_id') ?></span>
             </div>
             <div class="form-group<?=(!$validation->hasError('id'))?'': ' has-error' ?>">
               <label for="inputId">受付番号</label>
-              <input type="text" class="form-control" name="id" id="inputId" placeholder="E01-1908-123456" value="<?= set_value('id') ?>" maxlength="16" required autofocus>
+              <input type="text" class="form-control" name="id" id="inputId" placeholder="E121234123456" value="<?= set_value('id') ?>" maxlength="14" required autofocus>
               <span class="help-block"><?= $validation->showError('id') ?></span>
             </div>
             <div class="form-group<?=(!$validation->hasError('date'))?'': ' has-error' ?>">

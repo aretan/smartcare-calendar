@@ -165,7 +165,7 @@
                         <div class="box-title">
                           <a data-widget="collapse" href="#">
                             <small>
-                              <i class="fa fa-pencil-square-o margin-r-5"></i>文書：<?= count($line['bunsho']) ?>件
+                              <i class="fa fa-pencil-square-o margin-r-5"></i>非該当通院：<?= count($line['bunsho']) ?>件
                             </small>
                           </a>
                         </div>
@@ -402,22 +402,28 @@
           </div>
           <div class="form-group">
             <label>種別</label>
-            <div class="row">
-              <label class="col-md-3">
-                <input type="radio" class="icheck" name="type" id="delete-modal-tsuin" value="tsuin" disabled>
-                <i class="fa fa-taxi margin-r-5"></i>通院
+            <div class="radio">
+              <label class="form-control">
+                <input type="radio" class="icheck" name="type" id="delete-modal-nyuin" value="nyuin" disabled>
+                <i class="fa fa-hotel margin-r-5"></i>入院
               </label>
-              <label class="col-md-3">
-                <input type="radio" class="icheck" name="type" id="delete-modal-bunsho" value="bunsho" disabled>
-                <i class="fa fa-pencil-square-o margin-r-5"></i>文書
-              </label>
-              <label class="col-md-3">
+            </div>
+            <div class="radio">
+              <label class="form-control">
                 <input type="radio" class="icheck" name="type" id="delete-modal-shujutsu" value="shujutsu" disabled>
                 <i class="fa fa-calendar-times-o margin-r-5"></i>手術
               </label>
-              <label class="col-md-3">
-                <input type="radio" class="icheck" name="type" id="delete-modal-nyuin" value="nyuin" disabled>
-                <i class="fa fa-hotel margin-r-5"></i>入院
+            </div>
+            <div class="radio">
+              <label class="form-control">
+                <input type="radio" class="icheck" name="type" id="delete-modal-tsuin" value="tsuin" disabled>
+                <i class="fa fa-taxi margin-r-5"></i>通院
+              </label>
+            </div>
+            <div class="radio">
+              <label class="form-control">
+                <input type="radio" class="icheck" name="type" id="delete-modal-bunsho" value="bunsho" disabled>
+                <i class="fa fa-pencil-square-o margin-r-5"></i>非該当通院
               </label>
             </div>
           </div>
@@ -462,22 +468,28 @@
           </div>
           <div class="form-group">
             <label>種別</label>
-            <div class="row">
-              <label class="col-md-3">
-                <input type="radio" class="icheck" name="type" id="create-modal-tsuin" value="tsuin" required>
-                <i class="fa fa-taxi margin-r-5"></i>通院
+            <div class="radio">
+              <label class="form-control">
+                <input type="radio" class="icheck" name="type" id="create-modal-nyuin" value="nyuin" checked>
+                <i class="fa fa-hotel margin-r-5"></i>入院
               </label>
-              <label class="col-md-3">
-                <input type="radio" class="icheck" name="type" id="create-modal-bunsho" value="bunsho">
-                <i class="fa fa-pencil-square-o margin-r-5"></i>文書
-              </label>
-              <label class="col-md-3">
+            </div>
+            <div class="radio">
+              <label class="form-control">
                 <input type="radio" class="icheck" name="type" id="create-modal-shujutsu" value="shujutsu">
                 <i class="fa fa-calendar-times-o margin-r-5"></i>手術
               </label>
-              <label class="col-md-3">
-                <input type="radio" class="icheck" name="type" id="create-modal-nyuin" value="nyuin" checked>
-                <i class="fa fa-hotel margin-r-5"></i>入院
+            </div>
+            <div class="radio">
+              <label class="form-control">
+                <input type="radio" class="icheck" name="type" id="create-modal-tsuin" value="tsuin" required>
+                <i class="fa fa-taxi margin-r-5"></i>通院
+              </label>
+            </div>
+            <div class="radio">
+              <label class="form-control">
+                <input type="radio" class="icheck" name="type" id="create-modal-bunsho" value="bunsho">
+                <i class="fa fa-pencil-square-o margin-r-5"></i>非該当通院
               </label>
             </div>
           </div>
@@ -589,7 +601,7 @@
           id: 'bunsho',
           events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['bunsho'], ['ukeban_id' => $ukeban_id]) ?>,
           color: "#d2d6de",
-          description: "文書",
+          description: "非該当通院",
       },
   ];
 
@@ -846,12 +858,12 @@
           if (event.start instanceof moment) {
               end = event.end.format('YYYY-MM-DD').split('-');
               end = new Date(end[0], end[1]-1, end[2]-1);
-              end = $.datepicker.formatDate("yy-m-dd", end);
+              end = $.datepicker.formatDate("yy-mm-dd", end);
               $('#delete-modal-date').val(event.start.format('YYYY-MM-DD') + ' - ' + end);
           } else {
               end = event.end.split('-');
               end = new Date(end[0], end[1]-1, end[2]-1);
-              end = $.datepicker.formatDate("yy-m-dd", end);
+              end = $.datepicker.formatDate("yy-mm-dd", end);
               $('#delete-modal-date').val(event.start + ' - ' + end);
           }
       } else {

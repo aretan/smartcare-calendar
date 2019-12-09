@@ -23,7 +23,7 @@
           <div class="box-body">
             <div class="form-group<?=(!$validation->hasError('id'))?'': ' has-error' ?>">
               <label for="inputId">証券番号</label>
-              <input type="text" class="form-control" name="id" id="inputId" placeholder="825-123456" value="<?= set_value('id', $id) ?>" readonly>
+              <input type="text" class="form-control" name="id" id="inputId" placeholder="825123456" value="<?= set_value('id', $id) ?>" maxlength="9" readonly>
               <span class="help-block"><?= $validation->showError('id') ?></span>
             </div>
             <div class="form-group<?=(!$validation->hasError('name'))?'': ' has-error' ?>">

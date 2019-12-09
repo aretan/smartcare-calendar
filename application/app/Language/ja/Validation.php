@@ -23,15 +23,15 @@ return [
    'invalidTemplate'       => '{0} is not a valid Validation template.',
 
     // Rule Messages
-   'alpha'                 => 'The {field} field may only contain alphabetical characters.',
+   'alpha'                 => 'The {field} field may only contain alphabetical characters',
    'alpha_dash'            => 'The {field} field may only contain alpha-numeric characters, underscores, and dashes.',
-   'alpha_numeric'         => 'The {field} field may only contain alpha-numeric characters.',
+   'alpha_numeric'         => '{field}は英数字で入力してください。',
    'alpha_numeric_space'   => 'The {field} field may only contain alpha-numeric characters and spaces.',
    'alpha_space'           => 'The {field} field may only contain alphabetical characters and spaces.',
    'decimal'               => 'The {field} field must contain a decimal number.',
    'differs'               => 'The {field} field must differ from the {param} field.',
    'equals'                => 'The {field} field must be exactly: {param}.',
-   'exact_length'          => 'The {field} field must be exactly {param} characters in length.',
+   'exact_length'          => '{field}は{param}文字で入力してください。',
    'greater_than'          => 'The {field} field must contain a number greater than {param}.',
    'greater_than_equal_to' => 'The {field} field must contain a number greater than or equal to {param}.',
    'in_list'               => 'The {field} field must be one of: {param}.',
@@ -45,7 +45,7 @@ return [
    'max_length'            => '{field}は{param}文字以内で入力してください。',
    'min_length'            => '{field}は{param}文字以上で入力してください。',
    'not_equals'            => 'The {field} field cannot be: {param}.',
-   'numeric'               => 'The {field} field must contain only numbers.',
+   'numeric'               => '{field}は数字で入力してください。',
    'regex_match'           => 'The {field} field is not in the correct format.',
    'required'              => '{field}は必須です。',
    'required_with'         => 'The {field} field is required when {param} is present.',
@@ -56,7 +56,7 @@ return [
    'valid_emails'          => 'The {field} field must contain all valid email addresses.',
    'valid_ip'              => 'The {field} field must contain a valid IP.',
    'valid_url'             => 'The {field} field must contain a valid URL.',
-   'valid_date'            => 'The {field} field must contain a valid date.',
+   'valid_date'            => '{field}は0000/00/00の形式で入力してください。',
 
     // Credit Cards
    'valid_cc_num'          => '{field} does not appear to be a valid credit card number.',
