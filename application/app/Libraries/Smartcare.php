@@ -32,7 +32,6 @@ class Smartcare
     }
 
     /**
-     * 入院と入院の入院期間が重複しているとき、合体する
      * 入院と入院の補償期間が重複しているとき、新しい方が同一初回となる
      *
      * @param array $nyuinList
@@ -56,25 +55,6 @@ class Smartcare
             if (!isset($nyuin['warranty'])) {
                 $nyuinList[$key]['warranty'] = [];
             }
-        }
-
-        $removes = [];
-        for ($i=0; isset($nyuinList[$i+1]); $i++) {
-            $j = 0;
-            while (isset($nyuinList[$i+$j]['conbined']) && $nyuinList[$i+$j]['conbined']) {
-                $j --;
-            }
-
-            if ($nyuinList[$i+1]['start'] <= $nyuinList[$i+$j]['end'] &&
-                $nyuinList[$i+$j]['start'] <= $nyuinList[$i+1]['end']) {
-                $nyuinList[$i+1]['conbined'] = true;
-
-                $removes[] = $i+1;
-            }
-        }
-
-        foreach ($removes as $remove) {
-            unset($nyuinList[$remove]);
         }
 
         $removes = [];
@@ -191,7 +171,7 @@ class Smartcare
                         }
                     } else {
                         while ($warranty['warrantyMax'] --) {
-                            $matrix[$i][] = 10;
+                            $matrix[$i][] = 100000000;
                         }
                     }
                 }
@@ -204,11 +184,11 @@ class Smartcare
                     if ($warranty['warrantyStart'] <= $tsuin['date'] &&
                         $tsuin['date'] <= $warranty['warrantyEnd']) {
                         while ($warranty['warrantyMax'] --) {
-                            $matrix[$i+$base][] = 1;
+                            $matrix[$i+$base][] = (int) str_replace('-', '', $tsuin['date']);
                         }
                     } else {
                         while ($warranty['warrantyMax'] --) {
-                            $matrix[$i+$base][] = 10;
+                            $matrix[$i+$base][] = 100000000;
                         }
                     }
                 }
@@ -218,41 +198,7 @@ class Smartcare
                 continue;
             }
 
-            // 正方形にしないといけないのでダミー差し込み
-            $gap = count($matrix[0]) - count($matrix);
-            if ($gap > 0) {
-                while ($gap > 0) {
-                    $matrix[] = array_fill(0, count($matrix[0]), 10);
-                    $gap --;
-                }
-            } else {
-                while ($gap < 0) {
-                    foreach ($matrix as $i => $value) {
-                        $matrix[$i][] = 10;
-                    }
-                    $gap ++;
-                }
-            }
-
-            // ハンガリアンで計算
-
-            /* // Go
-            $body = json_encode($matrix);
-            $context = [
-                'http' => [
-                    'method'  => 'POST',
-                    'header'  => "Content-type: application/json\r\nContent-Length: " . strlen($body),
-                    'content' => $body,
-                ]
-            ];
-            $allocation = file_get_contents('http://localhost:8888/hungarian/', false, stream_context_create($context));
-            $allocation = json_decode($allocation, true);
-            foreach ($allocation as $i => $row) {
-                $allocation[$i] = key($row);
-            }
-            // */
-
-            //* // Python
+            // Pythonで計算する
             $body = json_encode($matrix);
             $context = [
                 'http' => [
@@ -266,16 +212,6 @@ class Smartcare
             foreach ($result as $data) {
                 $allocation[$data[0]] = $data[1];
             }
-            // */
-
-            /* //
-            $hashkey = hash('sha256', json_encode($matrix));
-            $allocation = cache($hashkey);
-            if (!$allocation) {
-                $allocation = $matrix ? (new \Hungarian\Hungarian($matrix))->solve() : [];
-                cache()->save($hashkey, $allocation, 0);
-            }
-            // */
 
             /* Show Matrix & Result
             echo "<table>";
@@ -297,8 +233,8 @@ class Smartcare
             // 結果を取り出す
             $unsets = $tsuins = [];
             foreach ($allocation as $tsuin_key => $warranty_key) {
-                // 10の結果を省く
-                if ($matrix[$tsuin_key][$warranty_key] == 10) {
+                // 100000000の結果を省く
+                if ($matrix[$tsuin_key][$warranty_key] == 100000000) {
                     continue;
                 }
 

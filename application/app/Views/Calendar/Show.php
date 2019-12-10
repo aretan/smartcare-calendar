@@ -453,7 +453,7 @@
 <div class="modal fade" id="create-modal">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form id="create-modal-form" original-action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/") ?>" method="POST">
+      <form id="create-modal-form" action="<?= site_url("calendar/event/{$shoken['id']}/") ?>" method="POST">
         <div class="modal-header bg-green">
           <h4 class="modal-title">イベント登録</h4>
         </div>
@@ -470,7 +470,7 @@
             <label>種別</label>
             <div class="radio">
               <label class="form-control">
-                <input type="radio" class="icheck" name="type" id="create-modal-nyuin" value="nyuin" checked>
+                <input type="radio" class="icheck" name="type" id="create-modal-nyuin" value="nyuin" checked required>
                 <i class="fa fa-hotel margin-r-5"></i>入院
               </label>
             </div>
@@ -482,7 +482,7 @@
             </div>
             <div class="radio">
               <label class="form-control">
-                <input type="radio" class="icheck" name="type" id="create-modal-tsuin" value="tsuin" required>
+                <input type="radio" class="icheck" name="type" id="create-modal-tsuin" value="tsuin">
                 <i class="fa fa-taxi margin-r-5"></i>通院
               </label>
             </div>
@@ -733,22 +733,6 @@
           $('#create-modal-range-div').hide();
           $('#create-modal-date').prop("disabled", false);
           $('#create-modal-range').prop("disabled", true);
-      });
-
-      $('#create-modal-submit').on('click', function(event){
-          form = $(this).parents('form');
-          params = form.serializeArray();
-          type = ukeban = null;
-          params.forEach(function(param){
-              if (param.name == 'type') {
-                  type = param.value;
-              }
-              if (param.name == 'ukeban_id') {
-                  ukeban = param.value;
-              }
-          });
-          form.attr('action', form.attr('original-action') + ukeban + '/' + type);
-          return true;
       });
 
       $('#batch-submit').on('click', function(event){

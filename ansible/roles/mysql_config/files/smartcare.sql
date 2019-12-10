@@ -19,6 +19,7 @@ CREATE TABLE `ukeban` (
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted_at` DATETIME DEFAULT NULL,
+  UNIQUE(shoken_id, date),
   INDEX(shoken_id),
   INDEX(date) -- ORDER BY `date`
 ) COMMENT='受付番号';
@@ -34,6 +35,7 @@ CREATE TABLE `shujutsu` (
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted_at` DATETIME DEFAULT NULL,
+  UNIQUE(shoken_id, date),
   INDEX(shoken_id, ukeban_id),
   INDEX(warrantyStart) -- ORDER BY `warrantyStart`
 ) COMMENT='手術';
@@ -62,6 +64,7 @@ CREATE TABLE `tsuin` (
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted_at` DATETIME DEFAULT NULL,
+  UNIQUE(shoken_id, date),
   INDEX(shoken_id, ukeban_id),
   INDEX(date) -- ORDER BY `date`
 ) COMMENT='通院';
@@ -74,6 +77,7 @@ CREATE TABLE `bunsho` (
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted_at` DATETIME DEFAULT NULL,
+  UNIQUE(shoken_id, date),
   INDEX(shoken_id, ukeban_id),
   INDEX(date) -- ORDER BY `date`
 ) COMMENT='文書';

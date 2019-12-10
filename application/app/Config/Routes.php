@@ -87,6 +87,7 @@ $routes->group('/', ['namespace' => 'App\Controllers'], function($routes)
 {
     $routes->add('calendar/new', 'Calendar::new');
     $routes->post('calendar/create', 'Calendar::create');
+    $routes->add('calendar/event/(:any)', 'Calendar::event/$1');
     $routes->add('calendar/edit/(:any)', 'Calendar::edit/$1');
     $routes->post('calendar/update/(:any)', 'Calendar::update/$1');
     $routes->add('calendar/ukeban/(:any)', 'Calendar::ukeban/$1');

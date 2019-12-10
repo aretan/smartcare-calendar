@@ -18,7 +18,6 @@ class Calendar extends WebController
 
         // これ全部受番ModelにおしこんでViewから呼ぶように変更したい
         $data['shoken']['ukeban'] = (new \App\Models\UkebanModel())->where($condition)->orderBy('date')->findAll();
-
         $data['shoken']['nyuin'] = (new \App\Models\NyuinModel())->where($condition)->orderBy('warrantyStart')->findAll();
         $data['shoken']['shujutsu'] = (new \App\Models\ShujutsuModel())->where($condition)->orderBy('warrantyStart')->findAll();
         $data['shoken']['tsuin'] = (new \App\Models\TsuinModel())->where($condition)->orderBy('date')->findAll();
@@ -75,10 +74,68 @@ class Calendar extends WebController
         $model = new \App\Models\UkebanModel();
         $data['shoken_id'] = $shoken_id;
         $data = array_merge($data, $this->request->getPost());
+        if (isset($data['date'])) {
+            $exists = $model->where([
+                'shoken_id' => $data['shoken_id'],
+                'date' => $data['date'],
+            ])->selectCount('id')->first()['id'];
+            if ($exists) {
+                $data['validation'] = $model->getValidation();
+                $data['validation']->setError('date', '既に登録されている日付です。');
+                return view('Calendar/Ukeban', $data);
+            }
+        }
         $model->insert($data);
         if ($model->errors()) {
             $data['validation'] = $model->getValidation();
             return view('Calendar/Ukeban', $data);
+        }
+        return redirect()->to("/{$data['shoken_id']}/");
+    }
+
+    public function event($shoken_id=null)
+    {
+        $data = $this->request->getPost();
+        $data = array_merge($data, ['shoken_id' => $shoken_id]);
+        $model = 'App\\Models\\' . ucfirst($data['type']) . 'Model';
+        $model = new $model();
+
+        if ($data['type'] != 'nyuin') {
+            $exists = $model->where([
+                'shoken_id' => $data['shoken_id'],
+                'date' => $data['date'],
+            ])->selectCount('id')->first()['id'];
+            if ($exists) {
+                $data['validation'] = $model->getValidation();
+                $data['validation']->setError('date', '既に登録されている日付です。');
+                $data['ukeban'] = (new \App\Models\UkebanModel())->where(['shoken_id' => $shoken_id])->orderBy('date')->findAll();
+                return view('Calendar/Event', $data);
+            }
+        } else {
+            preg_match('/^(?<start>.+) - (?<end>.+)/', $data['daterange'], $matches);
+            $data['start'] = $matches['start'];
+            $data['end'] = $matches['end'];
+            $data = \App\Libraries\Smartcare::addNyuinWarranty($data);
+
+            $exists = $model->where([
+                'shoken_id' => $data['shoken_id'],
+                'start <=' => $data['end'],
+                'end >=' => $data['start'],
+            ])->selectCount('id')->first()['id'];
+
+            if ($exists) {
+                $data['validation'] = $model->getValidation();
+                $data['validation']->setError('daterange', '期間の重複する入院があります。');
+                $data['ukeban'] = (new \App\Models\UkebanModel())->where(['shoken_id' => $shoken_id])->orderBy('date')->findAll();
+                return view('Calendar/Event', $data);
+            }
+        }
+
+        $model->insert($data);
+        if ($model->errors()) {
+            $data['ukeban'] = (new \App\Models\UkebanModel())->where(['shoken_id' => $shoken_id])->orderBy('date')->findAll();
+            $data['validation'] = $model->getValidation();
+            return view('Calendar/Event', $data);
         }
         return redirect()->to("/{$data['shoken_id']}/");
     }
