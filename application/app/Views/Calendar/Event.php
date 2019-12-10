@@ -21,65 +21,70 @@
         <!-- form start -->
         <form role="form" method="POST" action="<?= site_url("calendar/event/{$shoken_id}/") ?>">
           <div class="box-body">
-          <div class="form-group<?=(!$validation->hasError('ukeban_id'))?'': ' has-error' ?>">
-            <label>受付番号</label>
-            <select class="form-control" name="ukeban_id">
-              <?php foreach($ukeban as $line){ ?>
-              <option value="<?=$line['id'] ?>" <?= ($line['id'] == $ukeban_id) ? 'selected' : '' ?>><?=$line['id'] ?> (<?=$line['date'] ?>)</option>
-              <?php } ?>
-            </select>
-            <span class="help-block"><?= $validation->showError('ukeban_id') ?></span>
-          </div>
-          <div class="form-group<?=(!$validation->hasError('type'))?'': ' has-error' ?>">
-            <label>種別</label>
-            <div class="radio">
-              <label class="form-control">
-                <input type="radio" class="icheck" name="type" id="create-modal-nyuin" value="nyuin" required checked>
-                <i class="fa fa-hotel margin-r-5"></i>入院
-              </label>
+            <div class="form-group<?=(!$validation->hasError('shoken_id'))?'': ' has-error' ?>">
+              <label for="inputId">証券番号</label>
+              <input type="text" class="form-control" name="shoken_id" id="inputId" placeholder="825123456" value="<?= set_value('shoken_id', $shoken_id) ?>" maxlength="9" readonly>
+              <span class="help-block"><?= $validation->showError('shoken_id') ?></span>
             </div>
-            <div class="radio">
-              <label class="form-control">
-                <input type="radio" class="icheck" name="type" id="create-modal-shujutsu" value="shujutsu">
-                <i class="fa fa-calendar-times-o margin-r-5"></i>手術
-              </label>
+            <div class="form-group<?=(!$validation->hasError('ukeban_id'))?'': ' has-error' ?>">
+              <label>受付番号</label>
+              <select class="form-control" name="ukeban_id">
+                <?php foreach($ukeban as $line){ ?>
+                <option value="<?=$line['id'] ?>" <?= ($line['id'] == $ukeban_id) ? 'selected' : '' ?>><?=$line['id'] ?> (<?=$line['date'] ?>)</option>
+                <?php } ?>
+              </select>
+              <span class="help-block"><?= $validation->showError('ukeban_id') ?></span>
             </div>
-            <div class="radio">
-              <label class="form-control">
-                <input type="radio" class="icheck" name="type" id="create-modal-tsuin" value="tsuin">
-                <i class="fa fa-taxi margin-r-5"></i>通院
-              </label>
-            </div>
-            <div class="radio">
-              <label class="form-control">
-                <input type="radio" class="icheck" name="type" id="create-modal-bunsho" value="bunsho">
-                <i class="fa fa-pencil-square-o margin-r-5"></i>非該当通院
-              </label>
-            </div>
-            <span class="help-block"><?= $validation->showError('type') ?></span>
-          </div>
-          <div class="form-group<?=(!$validation->hasError('date'))?'': ' has-error' ?>" id="create-modal-date-div">
-            <label>日付</label>
-            <div class="input-group date">
-              <div class="input-group-addon">
-                <i class="fa fa-calendar"></i>
+            <div class="form-group<?=(!$validation->hasError('type'))?'': ' has-error' ?>">
+              <label>種別</label>
+              <div class="radio">
+                <label class="form-control">
+                  <input type="radio" class="icheck" name="type" id="create-modal-nyuin" value="nyuin" required checked>
+                  <i class="fa fa-hotel margin-r-5"></i>入院
+                </label>
               </div>
-              <input type="text" name="date" class="form-control pull-right datepicker" id="create-modal-date" value="<?= set_value('date') ?>">
-            </div>
-            <!-- /.input group -->
-            <span class="help-block"><?= $validation->showError('date') ?></span>
-          </div>
-          <div class="form-group<?=(!$validation->hasError('daterange'))?'': ' has-error' ?>" id="create-modal-range-div">
-            <label>入院期間</label>
-            <div class="input-group">
-              <div class="input-group-addon">
-                <i class="fa fa-calendar"></i>
+              <div class="radio">
+                <label class="form-control">
+                  <input type="radio" class="icheck" name="type" id="create-modal-shujutsu" value="shujutsu">
+                  <i class="fa fa-calendar-times-o margin-r-5"></i>手術
+                </label>
               </div>
-              <input type="text" name="daterange" class="form-control pull-right daterange" id="create-modal-range" value="<?= set_value('daterange') ?>">
+              <div class="radio">
+                <label class="form-control">
+                  <input type="radio" class="icheck" name="type" id="create-modal-tsuin" value="tsuin">
+                  <i class="fa fa-taxi margin-r-5"></i>通院
+                </label>
+              </div>
+              <div class="radio">
+                <label class="form-control">
+                  <input type="radio" class="icheck" name="type" id="create-modal-bunsho" value="bunsho">
+                  <i class="fa fa-pencil-square-o margin-r-5"></i>非該当通院
+                </label>
+              </div>
+              <span class="help-block"><?= $validation->showError('type') ?></span>
             </div>
-            <!-- /.input group -->
-            <span class="help-block"><?= $validation->showError('daterange') ?></span>
-          </div>
+            <div class="form-group<?=(!$validation->hasError('date'))?'': ' has-error' ?>" id="create-modal-date-div">
+              <label>日付</label>
+              <div class="input-group date">
+                <div class="input-group-addon">
+                  <i class="fa fa-calendar"></i>
+                </div>
+                <input type="text" name="date" class="form-control pull-right datepicker" id="create-modal-date" value="<?= set_value('date') ?>">
+              </div>
+              <!-- /.input group -->
+              <span class="help-block"><?= $validation->showError('date') ?></span>
+            </div>
+            <div class="form-group<?=(!$validation->hasError('daterange'))?'': ' has-error' ?>" id="create-modal-range-div">
+              <label>入院期間</label>
+              <div class="input-group">
+                <div class="input-group-addon">
+                  <i class="fa fa-calendar"></i>
+                </div>
+                <input type="text" name="daterange" class="form-control pull-right daterange" id="create-modal-range" value="<?= set_value('daterange') ?>">
+              </div>
+              <!-- /.input group -->
+              <span class="help-block"><?= $validation->showError('daterange') ?></span>
+            </div>
           </div>
           <!-- /.box-body -->
 
