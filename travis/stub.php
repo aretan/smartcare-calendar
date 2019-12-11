@@ -1,6 +1,6 @@
 <?php
 
-require "../application/vendor/autoload.php";
+require __DIR__ . '/../application/vendor/autoload.php';
 
 $matrix = json_decode(file_get_contents('php://input'), true);
 $allocation = $matrix ? (new \Hungarian\Hungarian($matrix))->solve() : [];
