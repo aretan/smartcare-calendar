@@ -650,7 +650,7 @@
 
       $('#nenview').fadeTo(0, 1);
 
-      tippy('.calendar', {
+      tippy('.day', {
           content: function (reference) {
               list = $(reference).data('event') || [];
               title = [];
@@ -671,7 +671,7 @@
           multiple: true,
       });
 
-      tippy('.calendar', {
+      tippy('.day', {
           content: function (reference) {
               list = $(reference).data('event') || [];
               date = $(reference).attr('id').split('-');
