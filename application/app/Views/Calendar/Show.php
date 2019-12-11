@@ -666,7 +666,9 @@
               return !!options.props.content;
           },
           performance: true,
-          duration: [100, 50],
+          animation: false,
+          duration: 0,
+          delay: 0,
           placement: "top",
           multiple: true,
       });
@@ -705,7 +707,9 @@
               return true;
           },
           performance: true,
-          duration: [100, 50],
+          animation: false,
+          duration: 0,
+          delay: 0,
           theme: "light-border",
           interactive: true,
           placement: "bottom",
