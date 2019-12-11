@@ -93,7 +93,7 @@
               <li>
                 <i class="fa fa-envelope bg-blue"></i>
                 <div class="timeline-item">
-                  <span class="time"><i class="fa fa-clock-o"></i> <?= $line['date'] ?></span>
+                  <span class="time"><?= $line['date'] ?></span>
                   <h3 class="timeline-header"><?= $line['id'] ?></h3>
                   <div class="timeline-body" style="padding-bottom: 0px;">
                     <?php if(!empty($line['nyuin'])){ ?>
