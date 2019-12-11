@@ -214,7 +214,7 @@
               <li>
                 <i class="fa fa-bank bg-red"></i>
                 <div class="timeline-item">
-                  <span class="time"><i class="fa fa-clock-o"></i> <?= $line['date'] ?></span>
+                  <span class="time"><?= $line['date'] ?></span>
                   <h3 class="timeline-header"><?= $line['id'] ?></h3>
                   <div class="timeline-body">
                     <?php if (isset($line['warranty'])) { ?>
