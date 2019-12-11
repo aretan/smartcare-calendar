@@ -207,7 +207,7 @@ class Smartcare
                     'content' => $body,
                 ]
             ];
-            $result = file_get_contents('http://localhost/', false, stream_context_create($context));
+            $result = file_get_contents(getenv('hungarian.url'), false, stream_context_create($context));
             $result = json_decode($result, true);
             foreach ($result as $data) {
                 $allocation[$data[0]] = $data[1];
