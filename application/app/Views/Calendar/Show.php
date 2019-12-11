@@ -6,7 +6,6 @@
     <?=$shoken['name'] ?>
     <small><span class="label label-success"><?=$shoken['id'] ?></span></small>
   </h1>
-
   <div class="breadcrumb" style="padding:0; top:10px; right:15px;">
     <a class="btn btn-success" href="<?= site_url("calendar/edit/{$shoken['id']}/") ?>" role="button">証券編集</a>
   </div>
@@ -25,7 +24,6 @@
               <a href="<?= site_url("{$shoken['id']}/") ?>" class="btn btn-danger btn-xs">受番:<?=$ukeban_id ?></a>
               <?php } ?>
             </h4>
-
             <div class="box-tools pull-right">
               <div class="row">
                 <div class="col-lg-6">
@@ -57,7 +55,6 @@
           <div id="calendar"></div>
         </div>
       </div>
-
     </div>
     <!-- /.col -->
 
@@ -385,7 +382,7 @@
 <!-- /.content -->
 
 <?php if(isset($line)){ ?>
-<div class="modal fade" id="delete-modal">
+<div class="modal fade" id="delete-modal" data-keyboard="true" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <form id="delete-modal-form" original-action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/") ?>" method="POST">
@@ -450,7 +447,7 @@
 </div>
 <!-- /.modal -->
 
-<div class="modal fade" id="create-modal">
+<div class="modal fade" id="create-modal" data-keyboard="true" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <form id="create-modal-form" action="<?= site_url("calendar/event/{$shoken['id']}/") ?>" method="POST">
@@ -540,6 +537,8 @@
 <link rel="stylesheet" href="/vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/fullcalendar.print.min.css" media="print">
 <!-- iCheck for checkboxes and radio inputs -->
 <link rel="stylesheet" href="/vendor/adminlte-2.4.18/plugins/iCheck/all.css">
+<!-- tippy theme -->
+<link rel="stylesheet" href="/vendor/tippy/light-border.css">
 <?= $this->endSection() ?>
 
 <?= $this->section('javascripts') ?>
@@ -622,33 +621,21 @@
                           .css("color", 'green');
                   } else {
                       color = event.color ? event.color : events.color;
-                      if (events.id == "shujutsu") { // 手術
+                      event.source = events;
+                      list = $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).data('event') || [];
+                      list.push(event);
+                      if (events.id == "shujutsu") {
                           $("#day-"+$.datepicker.formatDate("yy-m-dd", start))
                               .css("font-weight", 'bold')
                               .css("color", 'red')
-                              .attr('onclick', '')
-                              .on('click', function(){
-                                  deletemodal(event, events)
-                              });
+                              .data('event', list);
                       } else {
                           $("#day-"+$.datepicker.formatDate("yy-m-dd", start))
                               .css("background-color", color)
-                              .attr('onclick', '')
-                              .on('click', function(){
-                                  deletemodal(event, events);
-                              });
+                              .data('event', list);
                       }
                   }
 
-                  description = event.description ? event.description : events.description;
-                  if (description) {
-                      title = $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).data('title');
-                      if (!title) title = [];
-                      title.push(description);
-                      $("#day-"+$.datepicker.formatDate("yy-m-dd", start))
-                          .data('title', title)
-                          .prop('title', title.join(', '));
-                  }
                   // 通院の時は通院数をカウントアップ
                   if (events.id == "tsuin") {
                       $("#sum-"+$.datepicker.formatDate("yy-m", start)).text(
@@ -663,15 +650,67 @@
 
       $('#nenview').fadeTo(0, 1);
 
-      tippy('#nenview>tbody>tr>td', {
+      tippy('.calendar', {
           content: function (reference) {
-              return reference.getAttribute('title');
+              list = $(reference).data('event') || [];
+              title = [];
+              list.forEach(function(event){
+                  title.push(
+                      event.description ?
+                          event.description :
+                          event.source.description);
+              });
+              return title.join(', ');
           },
           onShow: function (options) {
-              return !!options.props.content
+              return !!options.props.content;
           },
           performance: true,
           duration: [100, 50],
+          placement: "top",
+          multiple: true,
+      });
+
+      tippy('.calendar', {
+          content: function (reference) {
+              list = $(reference).data('event') || [];
+              date = $(reference).attr('id').split('-');
+              date = new Date(date[1], date[2]-1, date[3]);
+              link = 'javascript:createmodal(\'' + $.datepicker.formatDate("yy-mm-dd", date) + '\');tippy.hideAll();';
+              title = [
+                  '<div class="box-body">' + $.datepicker.formatDate("yy/mm/dd", date) + '</div>',
+                  '<a class="btn btn-success btn-block" href="' + link + '"><i class="fa fa-calendar-plus-o margin-r-5"></i>登録</a>',
+              ];
+              list.forEach(function(event){
+                  icons = {
+                      tsuin: '<i class="fa fa-taxi margin-r-5"></i>通院',
+                      shujutsu: '<i class="fa fa-calendar-times-o margin-r-5"></i>手術',
+                      nyuin: '<i class="fa fa-hotel margin-r-5"></i>入院',
+                      bunsho: '<i class="fa fa-pencil-square-o margin-r-5"></i>非該当通院',
+                  };
+                  link = 'javascript:deletemodalByDate(\'' + $.datepicker.formatDate("yy-m-dd", date) + '\', \'' + event.source.id + '\');tippy.hideAll();';
+                  title.push('<a class="btn btn-danger btn-block" href="' + link + '">'+icons[event.source.id]+'</a>');
+              });
+              return title.join('');
+          },
+          onShow: function (options) {
+              list = $(options.reference).data('event') || [];
+              if (list.length == 0) {
+                  date = $(options.reference).attr('id').split('-');
+                  date = new Date(date[1], date[2]-1, date[3])
+                  createmodal($.datepicker.formatDate("yy-mm-dd", date));
+                  return false;
+              }
+
+              return true;
+          },
+          performance: true,
+          duration: [100, 50],
+          theme: "light-border",
+          interactive: true,
+          placement: "bottom",
+          trigger: "click",
+          multiple: true,
       });
   });
 
@@ -825,6 +864,15 @@
           $('#create-modal-range').data('daterangepicker').setStartDate(start);
           $('#create-modal-range').data('daterangepicker').setEndDate(start);
       }
+  }
+
+  function deletemodalByDate(date, type){
+      list = $("#day-"+date).data('event');
+      list.forEach(function(event){
+          if (event.source.id == type) {
+              deletemodal(event, event.source);
+          }
+      });
   }
 
   function deletemodal(event, source){

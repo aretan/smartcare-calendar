@@ -101,6 +101,8 @@ class Calendar extends WebController
         $model = new $model();
 
         if ($data['type'] != 'nyuin') {
+            $data = \App\Libraries\Smartcare::addShujutsuWarranty($data);
+
             $exists = $model->where([
                 'shoken_id' => $data['shoken_id'],
                 'date' => $data['date'],
