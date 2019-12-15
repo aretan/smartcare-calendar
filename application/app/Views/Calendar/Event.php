@@ -64,7 +64,7 @@
               <span class="help-block"><?= $validation->showError('type') ?></span>
             </div>
             <div class="form-group<?=(!$validation->hasError('date'))?'': ' has-error' ?>" id="create-modal-date-div">
-              <label>日付</label>
+              <label for="create-modal-date">日付</label>
               <div class="input-group date">
                 <div class="input-group-addon">
                   <i class="fa fa-calendar"></i>
@@ -75,7 +75,7 @@
               <span class="help-block"><?= $validation->showError('date') ?></span>
             </div>
             <div class="form-group<?=(!$validation->hasError('daterange'))?'': ' has-error' ?>" id="create-modal-range-div">
-              <label>入院期間</label>
+              <label for="create-modal-range">入院期間</label>
               <div class="input-group">
                 <div class="input-group-addon">
                   <i class="fa fa-calendar"></i>
