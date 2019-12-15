@@ -712,6 +712,7 @@
           delay: 0,
           theme: "light-border",
           interactive: true,
+          appendTo: document.body,
           placement: "bottom",
           trigger: "click",
           multiple: true,
