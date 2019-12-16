@@ -357,7 +357,7 @@
 2019-11-10
 
 2019/01/01,2019-01-02,2019-01-13
-2019/02/01 2019-02-02 2019/02/13"></textarea>
+2019/02/01 2019-02-02 2019/02/13" required></textarea>
                 </div>
                 <!-- /.form group -->
                 <button type="submit" id="batch-submit" class="btn btn-success btn-block">
