@@ -60,17 +60,17 @@ class Smartcare
         $removes = [];
         for ($i=0; isset($nyuinList[$i+1]); $i++) {
             $j = 0;
-            while (isset($nyuinList[$i+$j]['merged']) && $nyuinList[$i+$j]['merged']) {
+            while ($nyuinList[$i+$j]['warrantyMax'] == 0) {
                 $j --;
             }
 
             if ($nyuinList[$i+1]['warrantyStart'] <= $nyuinList[$i+$j]['warrantyEnd'] &&
                 $nyuinList[$i+$j]['warrantyStart'] <= $nyuinList[$i+1]['warrantyEnd']) {
 
-                $nyuinList[$i+$j]['warrantyEnd'] = $nyuinList[$i+1]['warrantyEnd'];
+                $nyuinList[$i+$j]['originalEnd'] = $nyuinList[$i+$j]['warrantyEnd'];
+
+                $nyuinList[$i+$j]['newWarrantyEnd'] = $nyuinList[$i+1]['warrantyEnd'];
                 $nyuinList[$i+1]['warrantyMax'] = 0;
-                $nyuinList[$i+$j]['warranty'] = array_merge($nyuinList[$i+$j]['warranty'], $nyuinList[$i+1]['warranty']);
-                $nyuinList[$i+1]['merged'] = true;
 
                 if ($remove) {
                     $removes[] = $i+1;
@@ -80,6 +80,12 @@ class Smartcare
 
         foreach ($removes as $remove) {
             unset($nyuinList[$remove]);
+        }
+
+        foreach ($nyuinList as $key => $nyuin) {
+            if (isset($nyuin['newWarrantyEnd'])) {
+                $nyuinList[$key]['warrantyEnd'] = $nyuin['newWarrantyEnd'];
+            }
         }
 
         return $nyuinList;

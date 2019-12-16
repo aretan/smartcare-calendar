@@ -29,11 +29,11 @@ class Tsuin extends ApiController
     public function batch()
     {
         $data = [];
-        foreach (explode(' ', str_replace(["\n", ','], ' ', $this->request->getPost('date'))) as $date) {
+        foreach (explode(' ', str_replace('/', '-', str_replace(["\n", ','], ' ', $this->request->getPost('date')))) as $date) {
             $date = trim($date);
-            if (!$date) continue;
+            $int = preg_match('/^[1-2][0-9]{3}-[0-1]?[0-9]-[0-3]?[0-9]$/', $date);
+            if (!$int) continue;
             $request['date'] = $date;
-
             $data[] = array_merge($this->_getParentId($this), $request);
         }
 
