@@ -48,11 +48,11 @@
     option: innodb-encrypt-log
     value: "1"
 
-- ini_file:
-    path: /etc/mysql/mariadb.conf.d/50-server.cnf
-    section: mariadb
-    option: server_audit_logging
-    value: "ON"
+# - ini_file:
+#     path: /etc/mysql/mariadb.conf.d/50-server.cnf
+#     section: mariadb
+#     option: server_audit_logging
+#     value: "ON"
 
 - service:
     name: mysqld
