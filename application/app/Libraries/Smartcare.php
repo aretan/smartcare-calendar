@@ -67,8 +67,6 @@ class Smartcare
             if ($nyuinList[$i+1]['warrantyStart'] <= $nyuinList[$i+$j]['warrantyEnd'] &&
                 $nyuinList[$i+$j]['warrantyStart'] <= $nyuinList[$i+1]['warrantyEnd']) {
 
-                $nyuinList[$i+$j]['originalEnd'] = $nyuinList[$i+$j]['warrantyEnd'];
-
                 $nyuinList[$i+$j]['newWarrantyEnd'] = $nyuinList[$i+1]['warrantyEnd'];
                 $nyuinList[$i+1]['warrantyMax'] = 0;
 
@@ -303,37 +301,6 @@ class Smartcare
         $shoken['other'] = $otherList;
 
         return $shoken;
-    }
-
-    public static function activeWarranty($warrantyList, $tsuin) {
-        // 適用可能な入院手術をリストアップ
-        $activeWarranty = [];
-        foreach ($warrantyList as $key => $warranty) {
-            if ($warranty['warrantyStart'] <= $tsuin['date'] &&
-                $tsuin['date'] <= $warranty['warrantyEnd'] &&
-                $warranty['warrantyMax'] > 0) {
-                $activeWarranty[$key] = $warranty;
-            }
-        }
-
-        // 適用不可能な場合
-        if (empty($activeWarranty)) {
-            return false;
-        }
-
-        // うち終了日が一番近いのを見つける
-        $min = null;
-        foreach ($activeWarranty as $key => $warranty) {
-            if (is_null($min)) {
-                $min = $key;
-                continue;
-            }
-            if ($warranty['warrantyEnd'] > $activeWarranty[$min]['warrantyEnd']) {
-                $min = $key;
-            }
-        }
-
-        return $min;
     }
 
     /**
