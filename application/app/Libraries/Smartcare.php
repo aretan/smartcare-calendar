@@ -12,7 +12,7 @@ class Smartcare
 
         $nyuin['warrantyStart'] = date('Y/m/d', $start - 60 * 60 * 24 * 60);
         $nyuin['warrantyEnd'] = date('Y/m/d', $end + 60 * 60 * 24 * 120);
-        $nyuin['warrantyMax'] = '30';
+        $nyuin['warrantyMax'] = 30;
 
         return $nyuin;
     }
@@ -26,7 +26,7 @@ class Smartcare
 
         $shujutsu['warrantyStart'] = date('Y/m/d', $ref + 60 * 60 * 24 * 1);
         $shujutsu['warrantyEnd'] = date('Y/m/d', $ref + 60 * 60 * 24 * 120);
-        $shujutsu['warrantyMax'] = '30';
+        $shujutsu['warrantyMax'] = 30;
 
         return $shujutsu;
     }
