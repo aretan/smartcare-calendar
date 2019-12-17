@@ -32,7 +32,7 @@ class Smartcare
     }
 
     /**
-     * 入院と入院の補償期間が重複しているとき、新しい方が同一初回となる
+     * 先行する入院の補償期間と後続する入院の補償期間が重複しているとき後続する入院を同一初回とする
      *
      * @param array $nyuinList
      * @param bool  $remove
@@ -126,6 +126,8 @@ class Smartcare
             $nyuinList = array_merge($nyuinList, $ukeban['nyuin']);
             $conbinedNyuinList = self::conbineNyuin($nyuinList);
             $shujutsuList = array_merge($shujutsuList, $ukeban['shujutsu']);
+
+            // TODO: 入院中の通院はもう支払えない処理を入れる
 
             // 入院と手術を合体
             $warrantyList = [];
