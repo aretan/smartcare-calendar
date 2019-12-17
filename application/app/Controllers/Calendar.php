@@ -27,7 +27,27 @@ class Calendar extends WebController
         $data['ukeban_id'] = $ukeban_id;
 
         // カレンダー表示開始日
-        $data['date'] = '2019-01';
+        $data['date'] = date('Y-m-d', strtotime('- 1 year'));
+        foreach ($data['shoken']['nyuin'] as $value) {
+            if ($data['date'] > $value['warrantyStart']) {
+                $data['date'] = $value['warrantyStart'];
+            }
+        }
+        foreach ($data['shoken']['shujutsu'] as $value) {
+            if ($data['date'] > $value['warrantyStart']) {
+                $data['date'] = $value['warrantyStart'];
+            }
+        }
+        foreach ($data['shoken']['tsuin'] as $value) {
+            if ($data['date'] > $value['date']) {
+                $data['date'] = $value['date'];
+            }
+        }
+        foreach ($data['shoken']['bunsho'] as $value) {
+            if ($data['date'] > $value['date']) {
+                $data['date'] = $value['date'];
+            }
+        }
 
         return view('Calendar/Show', $data);
     }
