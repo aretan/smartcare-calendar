@@ -26,8 +26,6 @@ class ApiControllerTest extends CIDatabaseTestCase
     public function getControllerProvider()
     {
         return [
-            ['\\App\\Controllers\\Api\\V1\\Shoken', 'Shoken'],
-            ['\\App\\Controllers\\Api\\V1\\Ukeban', 'Ukeban'],
             ['\\App\\Controllers\\Api\\V1\\Shujutsu', 'Shujutsu'],
             ['\\App\\Controllers\\Api\\V1\\Nyuin', 'Nyuin'],
             ['\\App\\Controllers\\Api\\V1\\Tsuin', 'Tsuin'],
