@@ -78,9 +78,7 @@ $routes->group('api/v1', ['namespace' => 'App\Controllers\Api\V1'], function($ro
             $routes->resource('bunsho', ['only' => ['create', 'update', 'delete'], 'websafe' => 1]);
             $routes->post('batch', 'Tsuin::batch');
         });
-        $routes->resource('ukeban', ['only' => ['create', 'show', 'update', 'delete']]);
     });
-    $routes->resource('shoken', ['only' => ['index', 'create', 'show', 'update', 'delete']]);
 });
 
 $routes->group('/', ['namespace' => 'App\Controllers'], function($routes)

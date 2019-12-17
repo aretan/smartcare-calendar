@@ -1,27 +1,15 @@
 - apt:
     name: python-pymysql
 
-- mysql_db:
-    login_host: "{{ mysql_hostname }}"
-    login_user: "{{ mysql_username }}"
-    login_password: "{{ mysql_password }}"
-    db: "{{ mysql_database }}"
-    encoding: utf8mb4
-    collation: utf8mb4_general_ci
-  register: create_db
-
 - copy:
     src: smartcare.sql
     dest: /tmp/smartcare.sql
-  when:
-    - create_db.changed
 
 - mysql_db:
     login_host: "{{ mysql_hostname }}"
     login_user: "{{ mysql_username }}"
     login_password: "{{ mysql_password }}"
-    name: "{{ mysql_database }}"
+    name: all
     target: /tmp/smartcare.sql
     state: import
-  when:
-    - create_db.changed
+  ignore_errors: true

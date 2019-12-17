@@ -36,7 +36,7 @@
                 </div>
                 <div class="col-lg-6">
                   <div class="input-group input-group-sm" style="width:200px; float:right;">
-                    <input type="text" class="form-control monthrange" id="monthrange" name="monthrange" value="<?= date('Y/m', strtotime($shoken['date'])) ?> - <?= date('Y/m') ?>" onchange="nenview()">
+                    <input type="text" class="form-control monthrange" id="monthrange" name="monthrange" value="<?= date('Y/m', strtotime($date)) ?> - <?= date('Y/m') ?>" onchange="nenview()">
                     <span class="input-group-btn">
                       <button type="button" class="btn btn-info btn-flat" onclick="nenview_reset()">解除</button>
                     </span>
@@ -46,7 +46,7 @@
             </div>
           </div>
           <div class="box-body no-padding">
-            <?php (new \App\Libraries\Calendar)->render($shoken['date'], date('Y/m')); ?>
+            <?php (new \App\Libraries\Calendar)->render($date, date('Y/m')); ?>
           </div>
           <!-- /.box-body -->
         </div>
@@ -84,7 +84,7 @@
               <!-- timeline time label -->
               <li class="time-label">
                 <a class="btn-warning btn btn-block" href="<?= site_url("calendar/edit/{$shoken['id']}/") ?>" role="button">
-                  <i class="fa fa-pencil margin-r-5"></i>契約日 (<?= $shoken['date'] ?>)
+                  <i class="fa fa-pencil margin-r-5"></i>契約日
                 </a>
               </li>
               <!-- /.timeline-label -->
@@ -93,7 +93,6 @@
               <li>
                 <i class="fa fa-envelope bg-blue"></i>
                 <div class="timeline-item">
-                  <span class="time"><?= $line['date'] ?></span>
                   <h3 class="timeline-header"><?= $line['id'] ?></h3>
                   <div class="timeline-body" style="padding-bottom: 0px;">
                     <?php if(!empty($line['nyuin'])){ ?>
@@ -205,7 +204,7 @@
               <!-- timeline time label -->
               <li class="time-label">
                 <a class="btn-warning btn btn-block" href="<?= site_url("calendar/edit/{$shoken['id']}/") ?>" role="button">
-                  <i class="fa fa-pencil margin-r-5"></i>契約日 (<?= $shoken['date'] ?>)
+                  <i class="fa fa-pencil margin-r-5"></i>契約日
                 </a>
               </li>
               <!-- /.timeline-label -->
@@ -214,7 +213,6 @@
               <li>
                 <i class="fa fa-bank bg-red"></i>
                 <div class="timeline-item">
-                  <span class="time"><?= $line['date'] ?></span>
                   <h3 class="timeline-header"><?= $line['id'] ?></h3>
                   <div class="timeline-body">
                     <?php if (isset($line['warranty'])) { ?>
@@ -346,7 +344,7 @@
                   <label>受付番号</label>
                   <select class="form-control" id="batch-ukeban">
                     <?php foreach($shoken['ukeban'] as $line){ ?>
-                    <option value="<?=$line['id'] ?>" <?= ($line['id'] == $ukeban_id) ? '' : 'selected' ?>><?=$line['id'] ?> (<?=$line['date'] ?>)</option>
+                    <option value="<?=$line['id'] ?>" <?= ($line['id'] == $ukeban_id) ? '' : 'selected' ?>><?=$line['id'] ?></option>
                     <?php } ?>
                   </select>
                 </div>
@@ -459,7 +457,7 @@
             <label>受付番号</label>
             <select class="form-control" name="ukeban_id">
               <?php foreach($shoken['ukeban'] as $line){ ?>
-              <option value="<?=$line['id'] ?>" <?= ($line['id'] == $ukeban_id) ? '' : 'selected' ?>><?=$line['id'] ?> (<?=$line['date'] ?>)</option>
+              <option value="<?=$line['id'] ?>" <?= ($line['id'] == $ukeban_id) ? '' : 'selected' ?>><?=$line['id'] ?></option>
               <?php } ?>
             </select>
           </div>
@@ -741,7 +739,7 @@
       $('.monthrange').monthrangepicker({
           autoApply: true,
           drops: 'down',
-          minYear: <?= date('Y', strtotime($shoken['date'])) ?>,
+          minYear: <?= date('Y', strtotime($date)) ?>,
           maxYear: <?= date('Y') ?>,
           locale: {
               format:'YYYY/MM',
@@ -940,7 +938,7 @@
   }
 
   function nenview_reset() {
-      $('#monthrange').data('daterangepicker').setStartDate('<?= date('Y/m', strtotime($shoken['date'])) ?>');
+      $('#monthrange').data('daterangepicker').setStartDate('<?= date('Y/m', strtotime($date)) ?>');
       $('#monthrange').data('daterangepicker').setEndDate('<?= date('Y/m') ?>');
   }
 

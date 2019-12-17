@@ -14,18 +14,20 @@ class Calendar extends WebController
             return redirect()->to('/');
         }
 
-        $condition['shoken_id'] = $shoken_id;
-
         // これ全部受番ModelにおしこんでViewから呼ぶように変更したい
-        $data['shoken']['ukeban'] = (new \App\Models\UkebanModel())->where($condition)->orderBy('date')->findAll();
+        $condition['shoken_id'] = $shoken_id;
+        $data['shoken']['ukeban'] = (new \App\Models\UkebanModel())->where($condition)->orderBy('created_at')->findAll();
         $data['shoken']['nyuin'] = (new \App\Models\NyuinModel())->where($condition)->orderBy('warrantyStart')->findAll();
         $data['shoken']['shujutsu'] = (new \App\Models\ShujutsuModel())->where($condition)->orderBy('warrantyStart')->findAll();
         $data['shoken']['tsuin'] = (new \App\Models\TsuinModel())->where($condition)->orderBy('date')->findAll();
         $data['shoken']['bunsho'] = (new \App\Models\BunshoModel())->where($condition)->orderBy('date')->findAll();
+        $data['shoken'] = \App\Libraries\Smartcare::calcTsuin($data['shoken']);
 
         // 受番しぼりこみ機能
         $data['ukeban_id'] = $ukeban_id;
-        $data['shoken'] = \App\Libraries\Smartcare::calcTsuin($data['shoken']);
+
+        // カレンダー表示開始日
+        $data['date'] = '2019-01';
 
         return view('Calendar/Show', $data);
     }
@@ -74,17 +76,6 @@ class Calendar extends WebController
         $model = new \App\Models\UkebanModel();
         $data['shoken_id'] = $shoken_id;
         $data = array_merge($data, $this->request->getPost());
-        if (isset($data['date'])) {
-            $exists = $model->where([
-                'shoken_id' => $data['shoken_id'],
-                'date' => $data['date'],
-            ])->selectCount('id')->first()['id'];
-            if ($exists) {
-                $data['validation'] = $model->getValidation();
-                $data['validation']->setError('date', '既に登録されている日付です。');
-                return view('Calendar/Ukeban', $data);
-            }
-        }
         $model->insert($data);
         if ($model->errors()) {
             $data['validation'] = $model->getValidation();
@@ -110,7 +101,7 @@ class Calendar extends WebController
             if ($exists) {
                 $data['validation'] = $model->getValidation();
                 $data['validation']->setError('date', '既に登録されている日付です。');
-                $data['ukeban'] = (new \App\Models\UkebanModel())->where(['shoken_id' => $shoken_id])->orderBy('date')->findAll();
+                $data['ukeban'] = (new \App\Models\UkebanModel())->where(['shoken_id' => $shoken_id])->orderBy('created_at')->findAll();
                 return view('Calendar/Event', $data);
             }
         } else {
@@ -128,14 +119,14 @@ class Calendar extends WebController
             if ($exists) {
                 $data['validation'] = $model->getValidation();
                 $data['validation']->setError('daterange', '期間の重複する入院があります。');
-                $data['ukeban'] = (new \App\Models\UkebanModel())->where(['shoken_id' => $shoken_id])->orderBy('date')->findAll();
+                $data['ukeban'] = (new \App\Models\UkebanModel())->where(['shoken_id' => $shoken_id])->orderBy('created_at')->findAll();
                 return view('Calendar/Event', $data);
             }
         }
 
         $model->insert($data);
         if ($model->errors()) {
-            $data['ukeban'] = (new \App\Models\UkebanModel())->where(['shoken_id' => $shoken_id])->orderBy('date')->findAll();
+            $data['ukeban'] = (new \App\Models\UkebanModel())->where(['shoken_id' => $shoken_id])->orderBy('created_at')->findAll();
             $data['validation'] = $model->getValidation();
             return view('Calendar/Event', $data);
         }

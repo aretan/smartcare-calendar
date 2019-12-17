@@ -31,16 +31,6 @@
               <input type="text" class="form-control" name="id" id="inputId" placeholder="E121234123456" value="<?= set_value('id') ?>" maxlength="14" required>
               <span class="help-block"><?= $validation->showError('id') ?></span>
             </div>
-            <div class="form-group<?=(!$validation->hasError('date'))?'': ' has-error' ?>">
-              <label for="inputDate">受付日</label>
-              <div class="input-group date">
-                <div class="input-group-addon">
-                  <i class="fa fa-calendar"></i>
-                </div>
-                <input type="text" class="form-control datepicker" name="date" id="inputDate" placeholder="2018/07/06" value="<?= set_value('date') ?>">
-              </div>
-              <span class="help-block"><?= $validation->showError('date') ?></span>
-            </div>
           </div>
           <!-- /.box-body -->
 
@@ -61,24 +51,7 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('stylesheets') ?>
-<!-- bootstrap datepicker -->
-<link rel="stylesheet" href="/vendor/adminlte-2.4.18/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
 <?= $this->endSection() ?>
 
 <?= $this->section('javascripts') ?>
-<!-- bootstrap datepicker -->
-<script src="/vendor/adminlte-2.4.18/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-<script src="/vendor/adminlte-2.4.18/bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.ja.min.js"></script>
-
-<script>
-  $(function () {
-      //Date picker
-      $('.datepicker').datepicker({
-          autoclose: true,
-          orientation: 'bottom',
-          language: 'ja',
-      })
-
-  });
-</script>
 <?= $this->endSection() ?>

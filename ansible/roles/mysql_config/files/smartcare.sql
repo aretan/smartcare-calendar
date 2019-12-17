@@ -1,11 +1,11 @@
-INSTALL SONAME 'server_audit';
-
 START TRANSACTION;
+
+CREATE DATABASE `smartcare` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `smartcare`;
 
 CREATE TABLE `shoken` (
   `id` char(9) NOT NULL PRIMARY KEY COMMENT '証券番号',
   `name` varchar(255) NOT NULL COMMENT '被保険者名',
-  `date` date NOT NULL COMMENT '契約開始日',
   `comment` text DEFAULT NULL COMMENT '査定者コメント',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -15,13 +15,11 @@ CREATE TABLE `shoken` (
 CREATE TABLE `ukeban` (
   `id` char(14) NOT NULL PRIMARY KEY COMMENT '受付番号',
   `shoken_id` char(9) NOT NULL COMMENT '証券番号',
-  `date` date NOT NULL COMMENT '受付日付',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted_at` DATETIME DEFAULT NULL,
-  UNIQUE(shoken_id, date),
   INDEX(shoken_id),
-  INDEX(date) -- ORDER BY `date`
+  INDEX(created_at) -- ORDER BY `created_at`
 ) COMMENT='受付番号';
 
 CREATE TABLE `shujutsu` (

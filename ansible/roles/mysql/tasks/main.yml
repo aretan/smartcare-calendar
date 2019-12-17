@@ -48,11 +48,23 @@
     option: innodb-encrypt-log
     value: "1"
 
-# - ini_file:
-#     path: /etc/mysql/mariadb.conf.d/50-server.cnf
-#     section: mariadb
-#     option: server_audit_logging
-#     value: "ON"
+- copy:
+    src: audit.sql
+    dest: /tmp/audit.sql
+
+- mysql_db:
+    login_host: "{{ mysql_hostname }}"
+    login_user: "{{ mysql_username }}"
+    login_password: "{{ mysql_password }}"
+    name: all
+    target: /tmp/audit.sql
+    state: import
+
+- ini_file:
+    path: /etc/mysql/mariadb.conf.d/50-server.cnf
+    section: mariadb
+    option: server_audit_logging
+    value: "ON"
 
 - service:
     name: mysqld

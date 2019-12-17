@@ -31,16 +31,6 @@
               <input type="text" class="form-control" name="name" id="inputName" placeholder="アクサ 太郎" value="<?= set_value('name') ?>" required>
               <span class="help-block"><?= $validation->showError('name') ?></span>
             </div>
-            <div class="form-group<?=(!$validation->hasError('date'))?'': ' has-error' ?>">
-              <label for="inputDate">契約日</label>
-              <div class="input-group date">
-                <div class="input-group-addon">
-                  <i class="fa fa-calendar"></i>
-                </div>
-                <input type="text" class="form-control pull-right datepicker" name="date" id="inputDate" placeholder="2018/07/06" value="<?= set_value('date') ?>">
-              </div>
-              <span class="help-block"><?= $validation->showError('date') ?></span>
-            </div>
             <div class="form-group<?=(!$validation->hasError('comment'))?'': ' has-error' ?>">
               <label for="inputComment">査定者メモ</label>
               <textarea class="form-control" rows="10" name="comment" id="inputComment" placeholder="自由入力欄"><?= set_value('comment') ?></textarea>
@@ -66,24 +56,7 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('stylesheets') ?>
-<!-- bootstrap datepicker -->
-<link rel="stylesheet" href="/vendor/adminlte-2.4.18/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
 <?= $this->endSection() ?>
 
 <?= $this->section('javascripts') ?>
-<!-- bootstrap datepicker -->
-<script src="/vendor/adminlte-2.4.18/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-<script src="/vendor/adminlte-2.4.18/bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.ja.min.js"></script>
-
-<script>
-  $(function () {
-      //Date picker
-      $('.datepicker').datepicker({
-          autoclose: true,
-          orientation: 'bottom',
-          language: 'ja',
-      })
-
-  });
-</script>
 <?= $this->endSection() ?>
