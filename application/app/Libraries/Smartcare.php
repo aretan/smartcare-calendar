@@ -262,6 +262,20 @@ class Smartcare
             }
 
             $tsuinList = array_merge($tsuins, $tsuinList);
+
+            // 1095日制限
+            if (count($tsuinList) > 1095) {
+                $sort = [];
+                foreach ($tsuinList as $i => $value) {
+                    $sort[$i] = $value['date'];
+                }
+                array_multisort($sort, SORT_ASC, $tsuinList);
+
+                while (count($tsuinList) > 1095) {
+                    $otherList[] = array_pop($tsuinList);
+                }
+            }
+
             foreach ($unsets as $unset) {
                 unset($otherList[$unset]);
             }
