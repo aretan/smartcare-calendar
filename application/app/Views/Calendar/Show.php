@@ -581,21 +581,14 @@
       font-weight: bold;
       color: green;
   }
-  .day-tsuin {
-      background-color: #aaaaff;
-  }
   .day-other {
       background-color: #ff64c8;
-  }
-  .day-nyuin {
-      background-color: #0000ff;
-      color: white;
   }
   .day-bunsho {
       background-color: #a0a0a0;
   }
   .day-shujutsu {
-      color: red;
+      color: red !important;
   }
 </style>
 <?= $this->endSection() ?>
@@ -620,48 +613,7 @@
 <script src="/vendor/adminlte-2.4.18/plugins/iCheck/icheck.min.js"></script>
 <script>
   // ２つのカレンダーに表示するために、Ajaxをあきらめた（言い訳）
-  var eventData = [
-      {
-          id: 'warranty',
-          events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['shujutsu'], ['ukeban_id' => $ukeban_id], 'warrantyStart', 'warrantyEnd', $shoken['exclude']) ?>,
-          rendering: 'background',
-      },
-      {
-          id: 'warranty',
-          events: <?= \App\Libraries\Smartcare::toJsonEvents(\App\Libraries\Smartcare::conbineNyuin($shoken['nyuin']), ['ukeban_id' => $ukeban_id], 'warrantyStart', 'warrantyEnd', $shoken['exclude']) ?>,
-          rendering: 'background',
-      },
-      {
-          id: 'tsuin',
-          events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['warranty'], ['ukeban_id' => $ukeban_id], 'date', 'date') ?>,
-          color: "#aaaaff",
-          description: "通院",
-      },
-      {
-          id: 'other',
-          events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['other'], ['ukeban_id' => $ukeban_id], 'date', 'date') ?>,
-          color: "#ff64c8",
-          description: "支払えない通院",
-      },
-      {
-          id: 'nyuin',
-          events: <?= \App\Libraries\Smartcare::toJsonEvents(\App\Libraries\Smartcare::conbineNyuin($shoken['nyuin']), ['ukeban_id' => $ukeban_id], 'start', 'end') ?>,
-          color: "#0000ff",
-          description: "入院",
-      },
-      {
-          id: 'shujutsu',
-          events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['shujutsu'], ['ukeban_id' => $ukeban_id], 'date', 'date') ?>,
-          color: "red",
-          description: "手術",
-      },
-      {
-          id: 'bunsho',
-          events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['bunsho'], ['ukeban_id' => $ukeban_id], 'date', 'date') ?>,
-          color: "#a0a0a0",
-          description: "非該当通院",
-      },
-  ];
+  var eventData = <?= \App\Libraries\Smartcare::toJsonEvents($shoken, ['ukeban_id' => $ukeban_id]) ?>;
 
   $(function () {
       eventData.forEach(function(events){
@@ -674,8 +626,17 @@
               end = new Date(end[0], end[1]-1, end[2]);
 
               while (start < end) {
-                  $("#day-"+$.datepicker.formatDate("yy-m-dd", start))
-                      .addClass('day-' + events.id);
+                  if (events.id == 'nyuin') {
+                      $("#day-"+$.datepicker.formatDate("yy-m-dd", start))
+                          .css('color', 'white')
+                          .css('background-color', events.color);
+                  } else if(events.id == 'tsuin') {
+                      $("#day-"+$.datepicker.formatDate("yy-m-dd", start))
+                          .css('background-color', events.color);
+                  } else {
+                      $("#day-"+$.datepicker.formatDate("yy-m-dd", start))
+                          .addClass('day-' + events.id);
+                  }
                   if (!events.rendering) {
                       event.source = events;
                       list = $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).data('event') || [];

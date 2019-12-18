@@ -41,6 +41,13 @@ class Smartcare
      */
     public static function conbineNyuin($nyuinList, $remove = false)
     {
+        foreach ($nyuinList as $key => $nyuin) {
+            $nyuinList[$key]['date'] = $nyuinList[$key]['start'];
+            if (!isset($nyuin['warranty'])) {
+                $nyuinList[$key]['warranty'] = [];
+            }
+        }
+
         if (count($nyuinList) <= 1) {
             return $nyuinList;
         }
@@ -50,12 +57,6 @@ class Smartcare
             $sort[$key] = $value['start'];
         }
         array_multisort($sort, SORT_ASC, $nyuinList);
-
-        foreach ($nyuinList as $key => $nyuin) {
-            if (!isset($nyuin['warranty'])) {
-                $nyuinList[$key]['warranty'] = [];
-            }
-        }
 
         $removes = [];
         for ($i=0; isset($nyuinList[$i+1]); $i++) {
@@ -68,6 +69,7 @@ class Smartcare
                 $nyuinList[$i+$j]['warrantyStart'] <= $nyuinList[$i+1]['warrantyEnd']) {
 
                 $nyuinList[$i+$j]['newWarrantyEnd'] = $nyuinList[$i+1]['warrantyEnd'];
+                $nyuinList[$i+1]['date'] = $nyuinList[$i+$j]['start'];
                 $nyuinList[$i+1]['warrantyMax'] = 0;
 
                 if ($remove) {
@@ -132,7 +134,9 @@ class Smartcare
             foreach ($conbinedNyuinList as $nyuin) {
                 $warrantyList[] = [
                     'type' => 'nyuin',
-                    'date' => $nyuin['start'],
+                    'date' => $nyuin['date'],
+                    'start' => $nyuin['start'],
+                    'end' => $nyuin['end'],
                     'already' => [],
                     'warranty' => [],
                     'warrantyStart' => $nyuin['warrantyStart'],
@@ -336,11 +340,120 @@ class Smartcare
         return $shoken;
     }
 
+    public static function toJsonEvents($shoken, $filter)
+    {
+        $events = [
+            [
+                'id' => 'warranty',
+                'events' => self::toCalendarEvents($shoken['shujutsu'], $filter, 'warrantyStart', 'warrantyEnd', null, $shoken['exclude']),
+                'rendering' => 'background',
+            ],
+            [
+                'id' => 'warranty',
+                'events' => self::toCalendarEvents(self::conbineNyuin($shoken['nyuin']), $filter, 'warrantyStart', 'warrantyEnd', null, $shoken['exclude']),
+                'rendering' => 'background',
+            ],
+            [
+                'id' => 'other',
+                'events' => self::toCalendarEvents($shoken['other'], $filter, 'date', 'date', '支払えない通院'),
+                'color' => "#ff64c8",
+                'description' => '支払えない通院',
+            ],
+            [
+                'id' => 'bunsho',
+                'events' => self::toCalendarEvents($shoken['bunsho'], $filter, 'date', 'date', '非該当通院'),
+                'color' => "#a0a0a0",
+                'description' => '非該当通院',
+            ],
+        ];
+
+        $latest = array_pop($shoken['ukeban']);
+
+        // まず同一初回をマージする
+        $unsets = [];
+        foreach ($latest['warranty'] as $i => $child) {
+            if ($child['type'] == 'nyuin' && !$child['warrantyMax']) {
+                $unsets[] = $i;
+                foreach ($latest['warranty'] as $j => $parent) {
+                    if ($parent['type'] == 'nyuin' && $child['date'] == $parent['date']) {
+                        $latest['warranty'][$j]['child'][] = $child;
+                    }
+                }
+            }
+        }
+        foreach ($unsets as $unset) {
+            unset($latest['warranty'][$unset]);
+        }
+
+        $colorset = [
+            [
+                'nyuin' => '#0000ff',
+                'tsuin' => '#bbbbff',
+            ],
+            [
+                'nyuin' => '#00cc33',
+                'tsuin' => '#aaffaa',
+            ],
+        ];
+
+        $color = 0;
+        foreach ($latest['warranty'] as $warranty) {
+            if ($warranty['type'] == 'nyuin') {
+                $events[] = [
+                    'id' => 'nyuin',
+                    'events' => self::toCalendarEvents([$warranty], $filter, 'start', 'end', '入院'),
+                    'color' => $colorset[$color%2]['nyuin'],
+                    'description' => "同一初回[{$warranty['date']}]",
+                ];
+                $events[] = [
+                    'id' => 'nyuin',
+                    'events' => self::toCalendarEvents($warranty['child'], $filter, 'start', 'end', '入院'),
+                    'color' => $colorset[$color%2]['nyuin'],
+                    'description' => "同一初回[{$warranty['date']}]",
+                ];
+                $events[] = [
+                    'id' => 'tsuin',
+                    'events' => self::toCalendarEvents($warranty['already'], $filter, 'date', 'date', '通院'),
+                    'color' => $colorset[$color%2]['tsuin'],
+                    'description' => "通院[入院:{$warranty['date']}]",
+                ];
+                $events[] = [
+                    'id' => 'tsuin',
+                    'events' => self::toCalendarEvents($warranty['warranty'], $filter, 'date', 'date', '通院'),
+                    'color' => $colorset[$color%2]['tsuin'],
+                    'description' => "通院[入院:{$warranty['date']}]",
+                ];
+                $color ++;
+            } elseif ($warranty['type'] == 'shujutsu') {
+                $events[] = [
+                    'id' => 'shujutsu',
+                    'events' => self::toCalendarEvents([$warranty], $filter, 'date', 'date', '手術'),
+                    'color' => 'red',
+                    'description' => '手術',
+                ];
+                $events[] = [
+                    'id' => 'tsuin',
+                    'events' => self::toCalendarEvents($warranty['already'], $filter, 'date', 'date', '通院'),
+                    'color' => 'orange',
+                    'description' => "通院[手術:{$warranty['date']}]",
+                ];
+                $events[] = [
+                    'id' => 'tsuin',
+                    'events' => self::toCalendarEvents($warranty['warranty'], $filter, 'date', 'date', '通院'),
+                    'color' => 'orange',
+                    'description' => "通院[手術:{$warranty['date']}]",
+                ];
+            }
+        }
+
+        return json_encode($events, JSON_PRETTY_PRINT);
+    }
+
     /**
      * fullcalendarのevent jsonにする
      * Note: This value is exclusive. For example, if you have an all-day event that has an end of 2018-09-03, then it will span through 2018-09-02 and end before the start of 2018-09-03.
      */
-    public static function toJsonEvents($data, $filter, $start, $end, $exclude=[])
+    public static function toCalendarEvents($data, $filter, $start, $end, $title, $exclude=[])
     {
         $events = [];
 
@@ -372,18 +485,13 @@ class Smartcare
                 $events[] = $event;
             } else {
                 $event = [];
-                $event['event_id'] = $line['id'];
                 $event['start'] = $line[$start];
                 $event['end'] = $line[$end];
                 $event['end'] = date('Y-m-d', strtotime($event['end']) + 60 * 60 * 24);
-                if (isset($line['warrantyMax']) && $line['warrantyMax'] == 0) {
-                    $event['color'] = '#aaaaff';
-                    $event['description'] = '同一初回';
-                }
-                $event['title'] = $line['ukeban_id'];
+                $event['title'] = $title;
                 $events[] = $event;
             }
         }
-        return json_encode($events);
+        return $events;
     }
 }
