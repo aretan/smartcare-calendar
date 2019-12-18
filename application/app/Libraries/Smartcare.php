@@ -140,6 +140,7 @@ class Smartcare
                     'warrantyMax' => $nyuin['warrantyMax'],
                 ];
 
+                // 入院中は絶対払わない
                 while ($nyuin['start'] <= $nyuin['end']) {
                     $excludeList[$nyuin['start']] = true;
                     list($year, $month, $day) = explode('-', $nyuin['start']);
@@ -157,6 +158,7 @@ class Smartcare
                     'warrantyMax' => $shujutsu['warrantyMax'],
                 ];
 
+                // 手術日は絶対払わない
                 $excludeList[$shujutsu['date']] = true;
             }
 
@@ -170,7 +172,7 @@ class Smartcare
             }
             array_multisort($sort, SORT_ASC, $warrantyList);
 
-            // 縦が通院で横が補償の表にする
+            // 縦が通院で横が補償の表にして ハンガリアンで解く
             // 1000000000 = 補償範囲外の通院、又は入院中か手術日の通院
             // YYYYMMDD0 = 前受番で支払えなかった通院、又は新しい通院
             // YYYYMMDD = 支払済み通院
@@ -217,7 +219,7 @@ class Smartcare
                 continue;
             }
 
-            // Pythonで計算する
+            // PHPのライブラリだと１００秒以上かかるので、Pythonに投げる
             $body = json_encode($matrix);
             $context = [
                 'http' => [
@@ -270,29 +272,18 @@ class Smartcare
                     if (isset($tsuinList[$tsuin_key])) {
                         $warrantyList[$j]['already'][] = $tsuinList[$tsuin_key];
                     } elseif (isset($otherList[$tsuin_key-$base])) {
-                        $warrantyList[$j]['warranty'][] = $otherList[$tsuin_key-$base];
-                        $tsuins[] = $otherList[$tsuin_key-$base];
-                        $unsets[] = $tsuin_key-$base;
+                        // 1095日制限
+                        if (count($tsuinList) + count($tsuins) - 1095 < 0) {
+                            $warrantyList[$j]['warranty'][] = $otherList[$tsuin_key-$base];
+                            $tsuins[] = $otherList[$tsuin_key-$base];
+                            $unsets[] = $tsuin_key-$base;
+                        }
                     }
                     break;
                 }
             }
 
-            $tsuinList = array_merge($tsuins, $tsuinList);
-
-            // 1095日制限
-            if (count($tsuinList) > 1095) {
-                $sort = [];
-                foreach ($tsuinList as $i => $value) {
-                    $sort[$i] = $value['date'];
-                }
-                array_multisort($sort, SORT_ASC, $tsuinList);
-
-                // 新しいの捨てる
-                while (count($tsuinList) > 1095) {
-                    $otherList[] = array_pop($tsuinList);
-                }
-            }
+            $tsuinList = array_merge($tsuinList, $tsuins);
 
             foreach ($unsets as $unset) {
                 unset($otherList[$unset]);

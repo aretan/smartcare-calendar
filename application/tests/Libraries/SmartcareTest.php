@@ -52,6 +52,8 @@ class SmartcareTest extends \CIUnitTestCase
                 [
                     'start' => 'nyuin-1',
                     'ukeban_id' => 'ukeban-2',
+                    'start' => '2019-10-10',
+                    'end' => '2019-10-11',
                     'warrantyStart' => '2019-10-01',
                     'warrantyEnd' => '2019-10-31',
                     'warrantyMax' => '5',
@@ -59,6 +61,8 @@ class SmartcareTest extends \CIUnitTestCase
                 [
                     'start' => 'nyuin-2',
                     'ukeban_id' => 'ukeban-1',
+                    'start' => '2019-10-15',
+                    'end' => '2019-10-16',
                     'warrantyStart' => '2019-10-15',
                     'warrantyEnd' => '2019-11-15',
                     'warrantyMax' => '5',
@@ -80,8 +84,8 @@ class SmartcareTest extends \CIUnitTestCase
                 ['ukeban_id' => 'ukeban-2', 'date' => '2019-10-04'],
                 ['ukeban_id' => 'ukeban-2', 'date' => '2019-10-05'],
 
-                ['ukeban_id' => 'ukeban-1', 'date' => '2019-10-25'],
-                ['ukeban_id' => 'ukeban-1', 'date' => '2019-10-26'],
+                ['ukeban_id' => 'ukeban-1', 'date' => '2019-10-25'], // nyuin
+                ['ukeban_id' => 'ukeban-1', 'date' => '2019-10-26'], // nyuin
                 ['ukeban_id' => 'ukeban-1', 'date' => '2019-10-27'],
                 ['ukeban_id' => 'ukeban-1', 'date' => '2019-10-28'],
                 ['ukeban_id' => 'ukeban-1', 'date' => '2019-10-29'],
