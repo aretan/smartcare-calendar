@@ -405,12 +405,14 @@ class Smartcare
                     'color' => $colorset[$color%2]['nyuin'],
                     'description' => "同一初回[{$warranty['date']}]",
                 ];
-                $events[] = [
-                    'id' => 'nyuin',
-                    'events' => self::toCalendarEvents($warranty['child'], $filter, 'start', 'end', '入院'),
-                    'color' => $colorset[$color%2]['nyuin'],
-                    'description' => "同一初回[{$warranty['date']}]",
-                ];
+                if (isset($warranty['child'])) {
+                    $events[] = [
+                        'id' => 'nyuin',
+                        'events' => self::toCalendarEvents($warranty['child'], $filter, 'start', 'end', '入院'),
+                        'color' => $colorset[$color%2]['nyuin'],
+                        'description' => "同一初回[{$warranty['date']}]",
+                    ];
+                }
                 $events[] = [
                     'id' => 'tsuin',
                     'events' => self::toCalendarEvents($warranty['already'], $filter, 'date', 'date', '通院'),
@@ -456,6 +458,8 @@ class Smartcare
     public static function toCalendarEvents($data, $filter, $start, $end, $title, $exclude=[])
     {
         $events = [];
+
+        if (!$data) return $events;
 
         foreach ($data as $line) {
             foreach ($filter as $key => $value) {
