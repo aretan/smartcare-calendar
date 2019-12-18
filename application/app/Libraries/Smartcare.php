@@ -122,7 +122,7 @@ class Smartcare
             $shoken['ukeban'][$key]['bunsho'] = isset($ref[$ukeban['id']]['bunsho']) ? $ref[$ukeban['id']]['bunsho'] : [];
         }
 
-        $tsuinList = $otherList = $nyuinList = $shujutsuList = $banList = [];
+        $tsuinList = $otherList = $nyuinList = $shujutsuList = $banList = $excludeList = [];
         foreach ($shoken['ukeban'] as $key => $ukeban) {
             $otherList = array_merge($otherList, $ukeban['tsuin']);
             $nyuinList = array_merge($nyuinList, $ukeban['nyuin']);
@@ -334,7 +334,7 @@ class Smartcare
         }
         $shoken['other'] = $otherList;
 
-        ksort($excludeList);
+        if ($excludeList) ksort($excludeList);
         $shoken['exclude'] = $excludeList;
 
         return $shoken;
@@ -368,6 +368,8 @@ class Smartcare
         ];
 
         $latest = array_pop($shoken['ukeban']);
+
+        if (!isset($latest['warranty'])) return json_encode($events);
 
         // まず同一初回をマージする
         $unsets = [];
