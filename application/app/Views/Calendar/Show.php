@@ -276,6 +276,25 @@
                         </ol>
                       </div>
                     </div>
+                    <?php } elseif ($warranty['type'] == 'ban' && count($warranty['warranty'])) { ?>
+                    <div class="box box-danger box-solid" style="margin-bottom: 5px">
+                      <div class="box-header with-border">
+                        <div class="box-title">
+                          <a data-widget="collapse" href="#">
+                            <small>
+                              <i class="fa fa-times-circle margin-r-5"></i>過払い <?= count($warranty['warranty']) ?>日
+                            </small>
+                          </a>
+                        </div>
+                      </div>
+                      <div class="box-body">
+                        <ol>
+                          <?php foreach ($warranty['warranty'] as $tsuin) { ?>
+                          <li><?= $tsuin['date'] ?></li>
+                          <?php } ?>
+                        </ol>
+                      </div>
+                    </div>
                     <?php } ?>
                     <?php } ?>
                     <?php } ?>
@@ -562,41 +581,41 @@
   var eventData = [
       {
           id: 'warranty',
-          events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['shujutsu'], ['ukeban_id' => $ukeban_id], 'warrantyStart', 'warrantyEnd') ?>,
+          events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['shujutsu'], ['ukeban_id' => $ukeban_id], 'warrantyStart', 'warrantyEnd', $shoken['exclude']) ?>,
           rendering: 'background',
       },
       {
           id: 'warranty',
-          events: <?= \App\Libraries\Smartcare::toJsonEvents(\App\Libraries\Smartcare::conbineNyuin($shoken['nyuin'], true), ['ukeban_id' => $ukeban_id], 'warrantyStart', 'warrantyEnd') ?>,
+          events: <?= \App\Libraries\Smartcare::toJsonEvents(\App\Libraries\Smartcare::conbineNyuin($shoken['nyuin']), ['ukeban_id' => $ukeban_id], 'warrantyStart', 'warrantyEnd', $shoken['exclude']) ?>,
           rendering: 'background',
       },
       {
           id: 'tsuin',
-          events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['warranty'], ['ukeban_id' => $ukeban_id]) ?>,
+          events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['warranty'], ['ukeban_id' => $ukeban_id], 'date', 'date') ?>,
           color: "#00a65a",
           description: "通院",
       },
       {
           id: 'tsuin',
-          events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['other'], ['ukeban_id' => $ukeban_id]) ?>,
+          events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['other'], ['ukeban_id' => $ukeban_id], 'date', 'date') ?>,
           color: "#ffaaaa",
           description: "支払えない通院",
       },
       {
           id: 'nyuin',
-          events: <?= \App\Libraries\Smartcare::toJsonEvents(\App\Libraries\Smartcare::conbineNyuin($shoken['nyuin']), ['ukeban_id' => $ukeban_id]) ?>,
+          events: <?= \App\Libraries\Smartcare::toJsonEvents(\App\Libraries\Smartcare::conbineNyuin($shoken['nyuin']), ['ukeban_id' => $ukeban_id], 'start', 'end') ?>,
           color: "#00c0ef",
           description: "入院",
       },
       {
           id: 'shujutsu',
-          events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['shujutsu'], ['ukeban_id' => $ukeban_id]) ?>,
+          events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['shujutsu'], ['ukeban_id' => $ukeban_id], 'date', 'date') ?>,
           color: "#dd4b39",
           description: "手術",
       },
       {
           id: 'bunsho',
-          events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['bunsho'], ['ukeban_id' => $ukeban_id]) ?>,
+          events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['bunsho'], ['ukeban_id' => $ukeban_id], 'date', 'date') ?>,
           color: "#d2d6de",
           description: "非該当通院",
       },
@@ -605,6 +624,7 @@
   $(function () {
       eventData.forEach(function(events){
           events.events.forEach(function(event){
+              if (!event.start) return;
               start = event.start.split('-');
               end = event.end.split('-');
 
