@@ -122,7 +122,7 @@ class Smartcare
             $shoken['ukeban'][$key]['bunsho'] = isset($ref[$ukeban['id']]['bunsho']) ? $ref[$ukeban['id']]['bunsho'] : [];
         }
 
-        $tsuinList = $otherList = $bunshoList = $nyuinList = $shujutsuList = $excludeList = [];
+        $tsuinList = $otherList = $bunshoList = $nyuinList = $shujutsuList = $banList = $excludeList = [];
         foreach ($shoken['ukeban'] as $key => $ukeban) {
             $otherList = array_merge($otherList, $ukeban['tsuin']);
             $nyuinList = array_merge($nyuinList, $ukeban['nyuin']);
@@ -191,10 +191,14 @@ class Smartcare
                     if ($warranty['warrantyStart'] <= $tsuin['date'] &&
                         $tsuin['date'] <= $warranty['warrantyEnd']) {
                         while ($warranty['warrantyMax'] --) {
-                            // TODO: なるべく変わらない場所になるようにする
+                            $score = (int) str_replace('-', '', $tsuin['date']);
+                            if ($tsuin['warranty']['type'] == $warranty['type'] &&
+                                $tsuin['warranty']['date'] == $warranty['date']) {
+                                $score -= 10000000;
+                            }
                             $matrix[$i][] = isset($excludeList[$tsuin['date']]) ?
                                           1000000000 :
-                                          (int) str_replace('-', '', $tsuin['date']);
+                                          $score;
                         }
                     } else {
                         while ($warranty['warrantyMax'] --) {
@@ -266,7 +270,7 @@ class Smartcare
             // */
 
             // 結果を取り出す
-            $unsets = $tsuins = $banList = $changeList = [];
+            $unsets = $tsuins = $changeList = [];
             foreach ($allocation as $tsuin_key => $warranty_key) {
                 // 100000000の結果を省く
                 if ($matrix[$tsuin_key][$warranty_key] == 1000000000) {
