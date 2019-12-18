@@ -582,8 +582,7 @@
       color: green;
   }
   .day-tsuin {
-      background-color: #00a65a;
-      color: white;
+      background-color: #aaaaff;
   }
   .day-other {
       background-color: #ff64c8;
@@ -635,7 +634,7 @@
       {
           id: 'tsuin',
           events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['warranty'], ['ukeban_id' => $ukeban_id], 'date', 'date') ?>,
-          color: "#00a65a",
+          color: "#aaaaff",
           description: "通院",
       },
       {

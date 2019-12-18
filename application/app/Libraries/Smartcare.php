@@ -330,6 +330,7 @@ class Smartcare
         }
         $shoken['other'] = $otherList;
 
+        ksort($excludeList);
         $shoken['exclude'] = $excludeList;
 
         return $shoken;
