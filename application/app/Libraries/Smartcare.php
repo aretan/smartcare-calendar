@@ -122,7 +122,7 @@ class Smartcare
             $shoken['ukeban'][$key]['bunsho'] = isset($ref[$ukeban['id']]['bunsho']) ? $ref[$ukeban['id']]['bunsho'] : [];
         }
 
-        $tsuinList = $otherList = $bunshoList = $nyuinList = $shujutsuList = $banList = $excludeList = [];
+        $tsuinList = $otherList = $bunshoList = $nyuinList = $shujutsuList = $excludeList = [];
         foreach ($shoken['ukeban'] as $key => $ukeban) {
             $otherList = array_merge($otherList, $ukeban['tsuin']);
             $nyuinList = array_merge($nyuinList, $ukeban['nyuin']);
@@ -191,6 +191,7 @@ class Smartcare
                     if ($warranty['warrantyStart'] <= $tsuin['date'] &&
                         $tsuin['date'] <= $warranty['warrantyEnd']) {
                         while ($warranty['warrantyMax'] --) {
+                            // TODO: なるべく変わらない場所になるようにする
                             $matrix[$i][] = isset($excludeList[$tsuin['date']]) ?
                                           1000000000 :
                                           (int) str_replace('-', '', $tsuin['date']);
@@ -222,8 +223,8 @@ class Smartcare
                 }
             }
 
-            // 手元に計算結果置いておく
             if ($matrix) {
+                // 手元に計算結果置いておく
                 $hashkey = hash('sha256', json_encode($matrix));
                 $allocation = cache($hashkey);
                 if (!$allocation) {
@@ -265,7 +266,7 @@ class Smartcare
             // */
 
             // 結果を取り出す
-            $unsets = $tsuins = [];
+            $unsets = $tsuins = $banList = $changeList = [];
             foreach ($allocation as $tsuin_key => $warranty_key) {
                 // 100000000の結果を省く
                 if ($matrix[$tsuin_key][$warranty_key] == 1000000000) {
@@ -283,11 +284,23 @@ class Smartcare
                     }
 
                     if (isset($tsuinList[$tsuin_key])) {
+                        if ($tsuinList[$tsuin_key]['warranty']['date'] != $warranty['date']) {
+                            $tsuinList[$tsuin_key]['before'] = $tsuinList[$tsuin_key]['warranty'];
+                            $tsuinList[$tsuin_key]['warranty'] = [
+                                'type' => $warranty['type'],
+                                'date' => $warranty['date'],
+                            ];
+                            $changeList[] = $tsuinList[$tsuin_key];
+                        }
                         $warrantyList[$j]['already'][] = $tsuinList[$tsuin_key];
                     } elseif (isset($otherList[$tsuin_key-$base])) {
                         // 1095日制限
                         if (count($tsuinList) + count($tsuins) - 1095 < 0) {
                             $warrantyList[$j]['warranty'][] = $otherList[$tsuin_key-$base];
+                            $otherList[$tsuin_key-$base]['warranty'] = [
+                                'type' => $warranty['type'],
+                                'date' => $warranty['date'],
+                            ];
                             $tsuins[] = $otherList[$tsuin_key-$base];
                             $unsets[] = $tsuin_key-$base;
                         }
@@ -314,6 +327,7 @@ class Smartcare
             $shoken['ukeban'][$key]['all']['shujutsu'] = $shujutsuList;
             $shoken['ukeban'][$key]['all']['bunsho'] = $bunshoList;
             $shoken['ukeban'][$key]['all']['exclude'] = $excludeList;
+            $shoken['ukeban'][$key]['change'] = $changeList;
             $shoken['ukeban'][$key]['warranty'] = array_merge(
                 $warrantyList,
                 [

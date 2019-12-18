@@ -19,19 +19,17 @@
         <div class="panel box box-primary">
           <div class="box-header with-border">
             <i class="fa fa-calendar"></i>
-            <h3 class="box-title">
-              年間カレンダー
-            </h3>
-            <div class="box-tools row pull-right">
+            <h3 class="box-title">年間カレンダー</h3>
+            <div class="box-tools row pull-right" style="width:50%;">
               <div class="col-xs-8" style="padding-left:0;">
-                <select class="form-control" id="display-ukeban" onchange="display();">
+                <select class="form-control" id="display-ukeban" onchange="display();" style="height:30px;">
                   <?php foreach($shoken['ukeban'] as $line){ ?>
                   <option value="<?=$line['id'] ?>" <?= ($line['id'] == $ukeban_id) ? 'selected' : '' ?>><?=$line['id'] ?> <?= (end($shoken['ukeban']) == $line) ? '(最新)' : '' ?></option>
                   <?php } ?>
                 </select>
               </div>
               <div class="col-xs-4" style="padding-left:0;">
-                <select class="form-control" id="display-mode" onchange="display();">
+                <select class="form-control" id="display-mode" onchange="display();" style="height:30px;">
                   <option value="until" <?= ('until' == $mode) ? 'selected' : '' ?>>まで表示</option>
                   <option value="only" <?= ('only' == $mode) ? 'selected' : '' ?>>だけ表示</option>
                 </select>
@@ -284,6 +282,32 @@
                       </div>
                     </div>
                     <?php } ?>
+                    <?php } ?>
+                    <?php if($line['change']){ ?>
+                    <div class="box box-warning box-solid" style="margin-bottom: 5px">
+                      <div class="box-header with-border">
+                        <div class="box-title">
+                          <a data-widget="collapse" href="#">
+                            <small>
+                              <i class="fa fa-times-circle margin-r-5"></i>付け替え <?= count($line['change']) ?>日
+                            </small>
+                          </a>
+                        </div>
+                      </div>
+                      <div class="box-body">
+                        <ol>
+                          <?php foreach ($line['change'] as $tsuin) { ?>
+                          <li>
+                            <div>
+                              <i class="fa fa-taxi margin-r-5"></i>通院：<?= $tsuin['date'] ?><br />
+                              前：<?= ($tsuin['before']['type'] == 'nyuin') ? '入院' : '手術' ?>：<?= $tsuin['before']['date'] ?><br />
+                              後：<?= ($tsuin['warranty']['type'] == 'nyuin') ? '入院' : '手術' ?>：<?= $tsuin['warranty']['date'] ?>
+                              </div>
+                          </li>
+                          <?php } ?>
+                        </ol>
+                      </div>
+                    </div>
                     <?php } ?>
                     <?php } ?>
                   </div>
