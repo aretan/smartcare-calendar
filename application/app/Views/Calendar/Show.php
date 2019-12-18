@@ -657,7 +657,7 @@
                   }
 
                   // 通院の時は通院数をカウントアップ
-                  if (events.id == "tsuin") {
+                  if (events.id == "tsuin" || events.id == "other") {
                       $("#sum-"+$.datepicker.formatDate("yy-m", start)).text(
                           parseInt($("#sum-"+$.datepicker.formatDate("yy-m", start)).text(), 10) + 1
                       ).addClass('bg-red');

@@ -133,6 +133,7 @@ class Smartcare
             $warrantyList = $excludeList = [];
             foreach ($conbinedNyuinList as $nyuin) {
                 $warrantyList[] = [
+                    'ukeban_id' => $nyuin['ukeban_id'],
                     'type' => 'nyuin',
                     'date' => $nyuin['date'],
                     'start' => $nyuin['start'],
@@ -153,6 +154,7 @@ class Smartcare
             }
             foreach ($shujutsuList as $shujutsu) {
                 $warrantyList[] = [
+                    'ukeban_id' => $nyuin['ukeban_id'],
                     'type' => 'shujutsu',
                     'date' => $shujutsu['date'],
                     'already' => [],
