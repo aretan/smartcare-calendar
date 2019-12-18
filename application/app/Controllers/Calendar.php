@@ -7,7 +7,7 @@ class Calendar extends WebController
         return view('Calendar/Index');
     }
 
-    public function show($shoken_id=null, $ukeban_id=null)
+    public function show($shoken_id=null, $ukeban_id=null, $mode='until')
     {
         $data['shoken'] = (new \App\Models\ShokenModel())->find($shoken_id);
         if (!$data['shoken']) {
@@ -21,10 +21,16 @@ class Calendar extends WebController
         $data['shoken']['shujutsu'] = (new \App\Models\ShujutsuModel())->where($condition)->orderBy('warrantyStart')->findAll();
         $data['shoken']['tsuin'] = (new \App\Models\TsuinModel())->where($condition)->orderBy('date')->findAll();
         $data['shoken']['bunsho'] = (new \App\Models\BunshoModel())->where($condition)->orderBy('date')->findAll();
-        $data['shoken'] = \App\Libraries\Smartcare::calcTsuin($data['shoken']);
 
         // 受番しぼりこみ機能
+        if (!$ukeban_id && count($data['shoken']['ukeban'])) {
+            $ukeban_id = end($data['shoken']['ukeban'])['id'];
+        }
         $data['ukeban_id'] = $ukeban_id;
+        $data['mode'] = $mode;
+
+        // 計算
+        $data['shoken'] = \App\Libraries\Smartcare::calcTsuin($data['shoken']);
 
         // カレンダー表示開始日
         $data['date'] = date('Y-m-d', strtotime('- 1 year'));

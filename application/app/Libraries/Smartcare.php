@@ -122,10 +122,11 @@ class Smartcare
             $shoken['ukeban'][$key]['bunsho'] = isset($ref[$ukeban['id']]['bunsho']) ? $ref[$ukeban['id']]['bunsho'] : [];
         }
 
-        $tsuinList = $otherList = $nyuinList = $shujutsuList = $banList = $excludeList = [];
+        $tsuinList = $otherList = $bunshoList = $nyuinList = $shujutsuList = $banList = $excludeList = [];
         foreach ($shoken['ukeban'] as $key => $ukeban) {
             $otherList = array_merge($otherList, $ukeban['tsuin']);
             $nyuinList = array_merge($nyuinList, $ukeban['nyuin']);
+            $bunshoList = array_merge($bunshoList, $ukeban['bunsho']);
             $conbinedNyuinList = self::conbineNyuin($nyuinList);
             $shujutsuList = array_merge($shujutsuList, $ukeban['shujutsu']);
 
@@ -154,7 +155,7 @@ class Smartcare
             }
             foreach ($shujutsuList as $shujutsu) {
                 $warrantyList[] = [
-                    'ukeban_id' => $nyuin['ukeban_id'],
+                    'ukeban_id' => $shujutsu['ukeban_id'],
                     'type' => 'shujutsu',
                     'date' => $shujutsu['date'],
                     'already' => [],
@@ -168,15 +169,15 @@ class Smartcare
                 $excludeList[$shujutsu['date']] = true;
             }
 
-            if (!count($warrantyList)) {
-                continue;
-            }
+            if ($excludeList) ksort($excludeList);
 
-            $sort = [];
-            foreach ($warrantyList as $i => $value) {
-                $sort[$i] = $value['warrantyStart'];
+            if ($warrantyList) {
+                $sort = [];
+                foreach ($warrantyList as $i => $value) {
+                    $sort[$i] = $value['warrantyStart'];
+                }
+                array_multisort($sort, SORT_ASC, $warrantyList);
             }
-            array_multisort($sort, SORT_ASC, $warrantyList);
 
             // 縦が通院で横が補償の表にして ハンガリアンで解く
             // 1000000000 = 補償範囲外の通院、又は入院中か手術日の通院
@@ -221,23 +222,29 @@ class Smartcare
                 }
             }
 
-            if (!count($matrix)) {
-                continue;
-            }
-
-            // PHPのライブラリだと１００秒以上かかるので、Pythonに投げる
-            $body = json_encode($matrix);
-            $context = [
-                'http' => [
-                    'method'  => 'POST',
-                    'header'  => "Content-type: application/json\r\nContent-Length: " . strlen($body),
-                    'content' => $body,
-                ]
-            ];
-            $result = file_get_contents(getenv('hungarian.url'), false, stream_context_create($context));
-            $result = json_decode($result, true);
-            foreach ($result as $data) {
-                $allocation[$data[0]] = $data[1];
+            // 手元に計算結果置いておく
+            if ($matrix) {
+                $hashkey = hash('sha256', json_encode($matrix));
+                $allocation = cache($hashkey);
+                if (!$allocation) {
+                    // PHPのライブラリだと１００秒以上かかるので、Pythonに投げる
+                    $body = json_encode($matrix);
+                    $context = [
+                        'http' => [
+                            'method'  => 'POST',
+                            'header'  => "Content-type: application/json\r\nContent-Length: " . strlen($body),
+                            'content' => $body,
+                        ]
+                    ];
+                    $result = file_get_contents(getenv('hungarian.url'), false, stream_context_create($context));
+                    $result = json_decode($result, true);
+                    foreach ($result as $data) {
+                        $allocation[$data[0]] = $data[1];
+                    }
+                    cache()->save($hashkey, $allocation, 0);
+                }
+            } else {
+                $allocation = [];
             }
 
             /* Show Matrix & Result
@@ -303,6 +310,10 @@ class Smartcare
                 array_multisort($sort, SORT_ASC, $warrantyList[$i]['warranty']);
             }
 
+            $shoken['ukeban'][$key]['all']['nyuin'] = $nyuinList;
+            $shoken['ukeban'][$key]['all']['shujutsu'] = $shujutsuList;
+            $shoken['ukeban'][$key]['all']['bunsho'] = $bunshoList;
+            $shoken['ukeban'][$key]['all']['exclude'] = $excludeList;
             $shoken['ukeban'][$key]['warranty'] = array_merge(
                 $warrantyList,
                 [
@@ -336,57 +347,64 @@ class Smartcare
         }
         $shoken['other'] = $otherList;
 
-        if ($excludeList) ksort($excludeList);
-        $shoken['exclude'] = $excludeList;
-
         return $shoken;
     }
 
-    public static function toJsonEvents($shoken, $filter)
+    public static function toJsonEvents($shoken, $mode, $ukeban_id)
     {
+        $exclude = $ukeban = $filter = [];
+        if ($mode == 'until') {
+            foreach ($shoken['ukeban'] as $ukeban) {
+                if ($ukeban['id'] == $ukeban_id) {
+                    break;
+                }
+            }
+        } else {
+            $ukeban = end($shoken['ukeban']);
+            $filter = ['ukeban_id' => $ukeban_id];
+        }
+
+        if (!$ukeban) return json_encode([]);
+
+        $exclude = isset($ukeban['all']['exclude']) ?
+                 $ukeban['all']['exclude'] :
+                 [];
+
         $events = [
             [
                 'id' => 'warranty',
-                'events' => self::toCalendarEvents($shoken['shujutsu'], $filter, 'warrantyStart', 'warrantyEnd', null, $shoken['exclude']),
+                'events' => self::toCalendarEvents($ukeban['all']['shujutsu'], $filter, 'warrantyStart', 'warrantyEnd', null, $exclude),
                 'rendering' => 'background',
             ],
             [
                 'id' => 'warranty',
-                'events' => self::toCalendarEvents(self::conbineNyuin($shoken['nyuin']), $filter, 'warrantyStart', 'warrantyEnd', null, $shoken['exclude']),
+                'events' => self::toCalendarEvents($ukeban['all']['nyuin'], $filter, 'warrantyStart', 'warrantyEnd', null, $exclude),
                 'rendering' => 'background',
             ],
             [
-                'id' => 'other',
-                'events' => self::toCalendarEvents($shoken['other'], $filter, 'date', 'date', '支払えない通院'),
-                'color' => "#ff64c8",
-                'description' => '支払えない通院',
-            ],
-            [
                 'id' => 'bunsho',
-                'events' => self::toCalendarEvents($shoken['bunsho'], $filter, 'date', 'date', '非該当通院'),
+                'events' => self::toCalendarEvents($ukeban['all']['bunsho'], $filter, 'date', 'date', '非該当通院'),
                 'color' => "#a0a0a0",
                 'description' => '非該当通院',
             ],
         ];
 
-        $latest = array_pop($shoken['ukeban']);
-
-        if (!isset($latest['warranty'])) return json_encode($events);
+        if (!isset($ukeban['warranty'])) return json_encode($events);
 
         // まず同一初回をマージする
         $unsets = [];
-        foreach ($latest['warranty'] as $i => $child) {
+        foreach ($ukeban['warranty'] as $i => $child) {
             if ($child['type'] == 'nyuin' && !$child['warrantyMax']) {
                 $unsets[] = $i;
-                foreach ($latest['warranty'] as $j => $parent) {
+                foreach ($ukeban['warranty'] as $j => $parent) {
                     if ($parent['type'] == 'nyuin' && $child['date'] == $parent['date']) {
-                        $latest['warranty'][$j]['child'][] = $child;
+                        $ukeban['warranty'][$j]['child'][] = $child;
                     }
                 }
             }
         }
         foreach ($unsets as $unset) {
-            unset($latest['warranty'][$unset]);
+            unset($ukeban['warranty'][$unset]);
         }
 
         $colorset = [
@@ -401,7 +419,7 @@ class Smartcare
         ];
 
         $color = 0;
-        foreach ($latest['warranty'] as $warranty) {
+        foreach ($ukeban['warranty'] as $warranty) {
             if ($warranty['type'] == 'nyuin') {
                 $events[] = [
                     'id' => 'nyuin',
@@ -448,6 +466,13 @@ class Smartcare
                     'events' => self::toCalendarEvents($warranty['warranty'], $filter, 'date', 'date', '通院'),
                     'color' => 'orange',
                     'description' => "通院[手術:{$warranty['date']}]",
+                ];
+            } elseif ($warranty['type'] == 'other' || $warranty['type'] == 'ban') {
+                $events[] = [
+                    'id' => 'other',
+                    'events' => self::toCalendarEvents($warranty['warranty'], $filter, 'date', 'date', '支払えない通院'),
+                    'color' => "#ff64c8",
+                    'description' => '支払えない通院',
                 ];
             }
         }

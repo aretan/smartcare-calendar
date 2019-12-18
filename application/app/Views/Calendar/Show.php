@@ -20,26 +20,24 @@
           <div class="box-header with-border">
             <h4 class="box-title">
               年間カレンダー
-              <?php if ($ukeban_id){ ?>
-              <a href="<?= site_url("{$shoken['id']}/") ?>" class="btn btn-danger btn-xs">受番:<?=$ukeban_id ?></a>
-              <?php } ?>
             </h4>
             <div class="box-tools pull-right">
               <div class="row">
-                <div class="col-lg-6">
-                  <!-- checkbox -->
-                  <div class="form-group" style="margin:4px 0px 0px 0px;">
-                    <label>
-                      <input type="checkbox" class="flat-red" id="no-data" checked> 全表示
-                    </label>
+                <div class="col-lg-8">
+                  <div class="input-group input-group-sm" style="width:200px; float:right;">
+                    <select class="form-control" id="display-ukeban" onchange="display();">
+                      <?php foreach($shoken['ukeban'] as $line){ ?>
+                      <option value="<?=$line['id'] ?>" <?= ($line['id'] == $ukeban_id) ? 'selected' : '' ?>><?=$line['id'] ?> <?= (end($shoken['ukeban']) == $line) ? '(最新)' : '' ?></option>
+                      <?php } ?>
+                    </select>
                   </div>
                 </div>
-                <div class="col-lg-6">
-                  <div class="input-group input-group-sm" style="width:200px; float:right;">
-                    <input type="text" class="form-control monthrange" id="monthrange" name="monthrange" value="<?= date('Y/m', strtotime($date)) ?> - <?= date('Y/m') ?>" onchange="nenview()">
-                    <span class="input-group-btn">
-                      <button type="button" class="btn btn-info btn-flat" onclick="nenview_reset()">解除</button>
-                    </span>
+                <div class="col-lg-4">
+                  <div class="input-group input-group-sm" style="width:100px; float:right;">
+                    <select class="form-control" id="display-mode" onchange="display();">
+                      <option value="until" <?= ('until' == $mode) ? 'selected' : '' ?>>まで表示</option>
+                      <option value="only" <?= ('only' == $mode) ? 'selected' : '' ?>>だけ表示</option>
+                    </select>
                   </div>
                 </div>
               </div>
@@ -174,11 +172,6 @@
                         </ol>
                       </div>
                     </div>
-                    <?php } ?>
-                  </div>
-                  <div class="timeline-footer">
-                    <?php if($line['id'] != $ukeban_id){ ?>
-                    <a href="<?= site_url("{$shoken['id']}/{$line['id']}/") ?>" class="btn btn-danger btn-xs">これだけカレンダーに表示</a>
                     <?php } ?>
                   </div>
                 </div>
@@ -381,7 +374,7 @@
                   <label>受付番号</label>
                   <select class="form-control" id="batch-ukeban">
                     <?php foreach($shoken['ukeban'] as $line){ ?>
-                    <option value="<?=$line['id'] ?>" <?= ($line['id'] == $ukeban_id) ? '' : 'selected' ?>><?=$line['id'] ?></option>
+                    <option value="<?=$line['id'] ?>" <?= (end($shoken['ukeban']) == $line) ? 'selected' : '' ?>><?=$line['id'] ?></option>
                     <?php } ?>
                   </select>
                 </div>
@@ -494,7 +487,7 @@
             <label>受付番号</label>
             <select class="form-control" name="ukeban_id">
               <?php foreach($shoken['ukeban'] as $line){ ?>
-              <option value="<?=$line['id'] ?>" <?= ($line['id'] == $ukeban_id) ? '' : 'selected' ?>><?=$line['id'] ?></option>
+              <option value="<?=$line['id'] ?>" <?= (end($shoken['ukeban']) == $line) ? 'selected' : '' ?>><?=$line['id'] ?></option>
               <?php } ?>
             </select>
           </div>
@@ -566,7 +559,6 @@
 <link rel="stylesheet" href="/vendor/adminlte-2.4.18/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
 <!-- bootstrap daterangepicker -->
 <link rel="stylesheet" href="/vendor/adminlte-2.4.18/bower_components/bootstrap-daterangepicker/daterangepicker.css">
-<link rel="stylesheet" href="/vendor/adminlte-2.4.18/bower_components/bootstrap-monthrangepicker/daterangepicker.css">
 <!-- fullCalendar -->
 <link rel="stylesheet" href="/vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/fullcalendar.min.css">
 <link rel="stylesheet" href="/vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/fullcalendar.print.min.css" media="print">
@@ -602,7 +594,6 @@
 <script src="/vendor/adminlte-2.4.18/bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.ja.min.js"></script>
 <!-- bootstrap daterangepicker -->
 <script src="/vendor/adminlte-2.4.18/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
-<script src="/vendor/adminlte-2.4.18/bower_components/bootstrap-monthrangepicker/daterangepicker.js"></script>
 <!-- fullCalendar -->
 <script src="/vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
 <script src="/vendor/adminlte-2.4.18/bower_components/fullcalendar/dist/locale-all.js"></script>
@@ -613,7 +604,7 @@
 <script src="/vendor/adminlte-2.4.18/plugins/iCheck/icheck.min.js"></script>
 <script>
   // ２つのカレンダーに表示するために、Ajaxをあきらめた（言い訳）
-  var eventData = <?= \App\Libraries\Smartcare::toJsonEvents($shoken, ['ukeban_id' => $ukeban_id]) ?>;
+  var eventData = <?= \App\Libraries\Smartcare::toJsonEvents($shoken, $mode, $ukeban_id) ?>;
 
   $(function () {
       eventData.forEach(function(events){
@@ -759,19 +750,6 @@
           language: 'ja',
       });
 
-      $('.monthrange').monthrangepicker({
-          autoApply: true,
-          drops: 'down',
-          minYear: <?= date('Y', strtotime($date)) ?>,
-          maxYear: <?= date('Y') ?>,
-          locale: {
-              format:'YYYY/MM',
-              applyLabel: '反映',
-              cancelLabel: '取消',
-              monthNames: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
-          }
-      });
-
       $('.flat-red').iCheck({
           checkboxClass: 'icheckbox_flat-green',
           radioClass   : 'iradio_flat-green'
@@ -780,10 +758,6 @@
       $('.icheck').iCheck({
           checkboxClass: 'icheckbox_flat-red',
           radioClass   : 'iradio_flat-red'
-      });
-
-      $('#no-data').on('ifChanged', function(){
-          nenview();
       });
 
       $('#create-modal-date-div').hide();
@@ -936,36 +910,10 @@
       }
   }
 
-  function nenview() {
-      $('.no-data').parent().parent().show();
-      $('.no-data').parent().parent().next().show();
-
-      s_range = $('#monthrange').val().split(' - ');
-      start = s_range[0].split('/');
-      start = new Date(start[0], start[1]);
-      end = s_range[1].split('/');
-      end = new Date(end[0], end[1]);
-
-      $('#nenview tr').each(
-          function(index, element){
-              line = $(element).attr('id').split('-');
-              line = new Date(line[1], line[2])
-              if (start <= line && line <= end) {
-                  $(element).show();
-              } else {
-                  $(element).hide();
-              }
-          });
-
-      if (!$('#no-data').prop("checked")) {
-          $('.no-data').parent().parent().hide();
-          $('.no-data').parent().parent().next().hide();
-      }
-  }
-
-  function nenview_reset() {
-      $('#monthrange').data('daterangepicker').setStartDate('<?= date('Y/m', strtotime($date)) ?>');
-      $('#monthrange').data('daterangepicker').setEndDate('<?= date('Y/m') ?>');
+  function display() {
+      ukeban_id = $('#display-ukeban option:selected').val();
+      mode = $('#display-mode option:selected').val();
+      return location.href = '<?= site_url("{$shoken['id']}/") ?>' + ukeban_id + '/' + mode + '/';
   }
 
   function month(target) {
