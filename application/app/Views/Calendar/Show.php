@@ -352,6 +352,24 @@
                 </ol>
               </div>
             </div>
+            <div class="box collapsed-box box-default box-solid" style="margin-bottom: 5px">
+              <div class="box-header with-border">
+                <div class="box-title">
+                  <a data-widget="collapse" href="#">
+                    <small>
+                      <i class="fa fa-times-circle margin-r-5"></i>非該当通院 <?= count($shoken['bunsho']) ?>日
+                    </small>
+                  </a>
+                </div>
+              </div>
+              <div class="box-body">
+                <ol>
+                  <?php foreach ($shoken['bunsho'] as $tsuin) { ?>
+                  <li><?= $tsuin['date'] ?></li>
+                  <?php } ?>
+                </ol>
+              </div>
+            </div>
           </div>
           <!-- /.tab-pane -->
 
@@ -399,7 +417,7 @@
 <!-- /.content -->
 
 <?php if(isset($line)){ ?>
-<div class="modal fade" id="delete-modal" data-keyboard="true" tabindex="-1">
+<div class="modal" id="delete-modal" data-keyboard="true" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <form id="delete-modal-form" original-action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/") ?>" method="POST">
@@ -464,7 +482,7 @@
 </div>
 <!-- /.modal -->
 
-<div class="modal fade" id="create-modal" data-keyboard="true" tabindex="-1">
+<div class="modal" id="create-modal" data-keyboard="true" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <form id="create-modal-form" action="<?= site_url("calendar/event/{$shoken['id']}/") ?>" method="POST">
@@ -556,6 +574,31 @@
 <link rel="stylesheet" href="/vendor/adminlte-2.4.18/plugins/iCheck/all.css">
 <!-- tippy theme -->
 <link rel="stylesheet" href="/vendor/tippy/light-border.css">
+
+<style>
+  .day-warranty {
+      text-decoration: underline;
+      font-weight: bold;
+      color: green;
+  }
+  .day-tsuin {
+      background-color: #00a65a;
+      color: white;
+  }
+  .day-other {
+      background-color: #ff64c8;
+  }
+  .day-nyuin {
+      background-color: #0000ff;
+      color: white;
+  }
+  .day-bunsho {
+      background-color: #a0a0a0;
+  }
+  .day-shujutsu {
+      color: red;
+  }
+</style>
 <?= $this->endSection() ?>
 
 <?= $this->section('javascripts') ?>
@@ -596,27 +639,27 @@
           description: "通院",
       },
       {
-          id: 'tsuin',
+          id: 'other',
           events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['other'], ['ukeban_id' => $ukeban_id], 'date', 'date') ?>,
-          color: "#ffaaaa",
+          color: "#ff64c8",
           description: "支払えない通院",
       },
       {
           id: 'nyuin',
           events: <?= \App\Libraries\Smartcare::toJsonEvents(\App\Libraries\Smartcare::conbineNyuin($shoken['nyuin']), ['ukeban_id' => $ukeban_id], 'start', 'end') ?>,
-          color: "#00c0ef",
+          color: "#0000ff",
           description: "入院",
       },
       {
           id: 'shujutsu',
           events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['shujutsu'], ['ukeban_id' => $ukeban_id], 'date', 'date') ?>,
-          color: "#dd4b39",
+          color: "red",
           description: "手術",
       },
       {
           id: 'bunsho',
           events: <?= \App\Libraries\Smartcare::toJsonEvents($shoken['bunsho'], ['ukeban_id' => $ukeban_id], 'date', 'date') ?>,
-          color: "#d2d6de",
+          color: "#a0a0a0",
           description: "非該当通院",
       },
   ];
@@ -632,25 +675,24 @@
               end = new Date(end[0], end[1]-1, end[2]);
 
               while (start < end) {
-                  if (events.rendering) {
-                      $("#day-"+$.datepicker.formatDate("yy-m-dd", start))
-                          .css("text-decoration", 'underline')
-                          .css("font-weight", 'bold')
-                          .css("color", 'green');
-                  } else {
-                      color = event.color ? event.color : events.color;
+                  $("#day-"+$.datepicker.formatDate("yy-m-dd", start))
+                      .addClass('day-' + events.id);
+                  if (!events.rendering) {
                       event.source = events;
                       list = $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).data('event') || [];
                       list.push(event);
-                      if (events.id == "shujutsu") {
-                          $("#day-"+$.datepicker.formatDate("yy-m-dd", start))
-                              .css("font-weight", 'bold')
-                              .css("color", 'red')
-                              .data('event', list);
-                      } else {
-                          $("#day-"+$.datepicker.formatDate("yy-m-dd", start))
-                              .css("background-color", color)
-                              .data('event', list);
+                      $("#day-"+$.datepicker.formatDate("yy-m-dd", start))
+                          .data('event', list);
+
+                      if (events.id == 'shujutsu') {
+                          code = parseInt($("#day-"+$.datepicker.formatDate("yy-m-dd", start)).text());
+                          if (code > 20) {
+                              code += 12860;
+                          } else {
+                              code += 9311;
+                          }
+                          $("#day-"+$.datepicker.formatDate("yy-m-dd", start)).html(
+                              '&#' + code + ';');
                       }
                   }
 
@@ -704,6 +746,7 @@
               list.forEach(function(event){
                   icons = {
                       tsuin: '<i class="fa fa-taxi margin-r-5"></i>通院',
+                      other: '<i class="fa fa-taxi margin-r-5"></i>通院',
                       shujutsu: '<i class="fa fa-calendar-times-o margin-r-5"></i>手術',
                       nyuin: '<i class="fa fa-hotel margin-r-5"></i>入院',
                       bunsho: '<i class="fa fa-pencil-square-o margin-r-5"></i>非該当通院',
@@ -899,17 +942,20 @@
   }
 
   function deletemodal(event, source){
+      type = (source.id == 'other') ?
+          'tsuin' :
+          source.id;
       $('#delete-modal').modal();
       $('#delete-modal-tsuin').iCheck('disable');
       $('#delete-modal-bunsho').iCheck('disable');
       $('#delete-modal-shujutsu').iCheck('disable');
       $('#delete-modal-nyuin').iCheck('disable');
-      $('#delete-modal-form').attr('action', $('#delete-modal-form').attr('original-action') + event.title + '/' + source.id + '/' + event.event_id + '/delete');
-      $('#delete-modal-'+source.id).iCheck('check');
-      $('#delete-modal-'+source.id).iCheck('enable');
+      $('#delete-modal-form').attr('action', $('#delete-modal-form').attr('original-action') + event.title + '/' + type + '/' + event.event_id + '/delete');
+      $('#delete-modal-'+type).iCheck('check');
+      $('#delete-modal-'+type).iCheck('enable');
       $('#delete-modal-ukeban').val(event.title);
 
-      if (source.id == 'nyuin') {
+      if (type == 'nyuin') {
           if (event.start instanceof moment) {
               end = event.end.format('YYYY-MM-DD').split('-');
               end = new Date(end[0], end[1]-1, end[2]-1);
