@@ -18,28 +18,23 @@
       <div class="box-group">
         <div class="panel box box-primary">
           <div class="box-header with-border">
-            <h4 class="box-title">
+            <i class="fa fa-calendar"></i>
+            <h3 class="box-title">
               年間カレンダー
-            </h4>
-            <div class="box-tools pull-right">
-              <div class="row">
-                <div class="col-lg-8">
-                  <div class="input-group input-group-sm" style="width:200px; float:right;">
-                    <select class="form-control" id="display-ukeban" onchange="display();">
-                      <?php foreach($shoken['ukeban'] as $line){ ?>
-                      <option value="<?=$line['id'] ?>" <?= ($line['id'] == $ukeban_id) ? 'selected' : '' ?>><?=$line['id'] ?> <?= (end($shoken['ukeban']) == $line) ? '(最新)' : '' ?></option>
-                      <?php } ?>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-lg-4">
-                  <div class="input-group input-group-sm" style="width:100px; float:right;">
-                    <select class="form-control" id="display-mode" onchange="display();">
-                      <option value="until" <?= ('until' == $mode) ? 'selected' : '' ?>>まで表示</option>
-                      <option value="only" <?= ('only' == $mode) ? 'selected' : '' ?>>だけ表示</option>
-                    </select>
-                  </div>
-                </div>
+            </h3>
+            <div class="box-tools row pull-right">
+              <div class="col-xs-8" style="padding-left:0;">
+                <select class="form-control" id="display-ukeban" onchange="display();">
+                  <?php foreach($shoken['ukeban'] as $line){ ?>
+                  <option value="<?=$line['id'] ?>" <?= ($line['id'] == $ukeban_id) ? 'selected' : '' ?>><?=$line['id'] ?> <?= (end($shoken['ukeban']) == $line) ? '(最新)' : '' ?></option>
+                  <?php } ?>
+                </select>
+              </div>
+              <div class="col-xs-4" style="padding-left:0;">
+                <select class="form-control" id="display-mode" onchange="display();">
+                  <option value="until" <?= ('until' == $mode) ? 'selected' : '' ?>>まで表示</option>
+                  <option value="only" <?= ('only' == $mode) ? 'selected' : '' ?>>だけ表示</option>
+                </select>
               </div>
             </div>
           </div>
@@ -48,7 +43,7 @@
           </div>
           <!-- /.box-body -->
         </div>
-        <div class="panel box box-danger">
+        <div class="panel box box-danger no-print">
           <!-- THE CALENDAR -->
           <div id="calendar"></div>
         </div>
@@ -56,7 +51,7 @@
     </div>
     <!-- /.col -->
 
-    <div class="col-md-4">
+    <div class="col-md-4 no-print">
       <?php if($shoken['comment']){ ?>
       <div class="small-box bg-green">
         <div class="inner">
@@ -581,6 +576,11 @@
   }
   .day-shujutsu {
       color: red !important;
+  }
+  @media no-print {
+      .no-print {
+          display: none;
+      }
   }
 </style>
 <?= $this->endSection() ?>
