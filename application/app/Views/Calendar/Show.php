@@ -912,7 +912,7 @@
       $('#delete-modal-form').attr('action', $('#delete-modal-form').attr('original-action') + ids[0] + '/' + type + '/' + ids[1] + '/delete');
       $('#delete-modal-'+type).iCheck('check');
       $('#delete-modal-'+type).iCheck('enable');
-      $('#delete-modal-ukeban').val(event.title);
+      $('#delete-modal-ukeban').val(ids[0]);
 
       if (type == 'nyuin') {
           if (event.start instanceof moment) {
