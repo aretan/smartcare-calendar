@@ -31,12 +31,15 @@
               <input type="text" class="form-control" name="id" id="inputId" placeholder="E121234123456" value="<?= set_value('id') ?>" maxlength="14" required>
               <span class="help-block"><?= $validation->showError('id') ?></span>
             </div>
+
+            <div class="form-group">
+              <label for="inputCalendar">イベント（未実装）</label>
+              <div class="box-body no-padding">
+                <?php (new \App\Libraries\Calendar)->render(date('Y/m', strtotime('- 2 month')), date('Y/m')); ?>
+              </div>
+            </div>
           </div>
           <!-- /.box-body -->
-
-          <div class="box-body no-padding">
-            <?php (new \App\Libraries\Calendar)->render('2017/11', date('Y/m')); ?>
-          </div>
 
           <div class="box-footer">
             <button type="submit" class="btn btn-primary">登録</button>
