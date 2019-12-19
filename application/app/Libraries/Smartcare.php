@@ -154,6 +154,14 @@ class Smartcare
                     $nyuin['start'] = date('Y-m-d', mktime(0, 0, 0, $month, $day+1, $year));
                 }
             }
+            // 手術の補償は入院よりも優先度低い
+            if ($shujutsuList) {
+                $sort = [];
+                foreach ($shujutsuList as $i => $value) {
+                    $sort[$i] = $value['date'];
+                }
+                array_multisort($sort, SORT_ASC, $shujutsuList);
+            }
             foreach ($shujutsuList as $shujutsu) {
                 $warrantyList[] = [
                     'id' => $shujutsu['id'],
@@ -173,39 +181,41 @@ class Smartcare
 
             if ($excludeList) ksort($excludeList);
 
-            if ($warrantyList) {
+            if ($tsuinList) {
                 $sort = [];
-                foreach ($warrantyList as $i => $value) {
-                    $sort[$i] = $value['warrantyStart'];
+                foreach ($tsuinList as $i => $value) {
+                    $sort[$i] = $value['date'];
                 }
-                array_multisort($sort, SORT_ASC, $warrantyList);
+                array_multisort($sort, SORT_ASC, $tsuinList);
             }
 
             // 縦が通院で横が補償の表にして ハンガリアンで解く
-            // 1000000000 = 補償範囲外の通院、又は入院中か手術日の通院
-            // YYYYMMDD0 = 前受番で支払えなかった通院、又は新しい通院
-            // YYYYMMDD = 支払済み通院
-            // YYYYMMDD - 10000000 = 支払済み通院、かつ前回の補償
+            // 5000000000000 = 補償範囲外の通院、又は入院中か手術日の通院
+            // YYYYMMDD00000 = 前受番で支払えなかった通院、又は新しい通院
+            // YYYYMMDD0000 = 支払済み通院
+            // YYYYMMDD0000 - 100000000000 = 支払済み通院、かつ前回の補償と同一な場合
             $matrix = [];
 
             // 支払済み通院
             foreach ($tsuinList as $i => $tsuin) {
+                $counter = 0;
                 foreach ($warrantyList as $warranty) {
                     if ($warranty['warrantyStart'] <= $tsuin['date'] &&
                         $tsuin['date'] <= $warranty['warrantyEnd']) {
                         while ($warranty['warrantyMax'] --) {
-                            $score = (int) str_replace('-', '', $tsuin['date']);
+                            $score = (int) str_replace('-', '', $tsuin['date']) * 10000 + $counter;
                             if ($tsuin['warranty']['type'] == $warranty['type'] &&
                                 $tsuin['warranty']['date'] == $warranty['date']) {
-                                $score -= 10000000;
+                                $score -= 100000000000;
                             }
                             $matrix[$i][] = isset($excludeList[$tsuin['date']]) ?
-                                          1000000000 :
+                                          5000000000000 :
                                           $score;
+                            $counter ++;
                         }
                     } else {
                         while ($warranty['warrantyMax'] --) {
-                            $matrix[$i][] = 1000000000;
+                            $matrix[$i][] = 5000000000000;
                         }
                     }
                 }
@@ -214,17 +224,20 @@ class Smartcare
             // 新しい通院
             $base = count($matrix);
             foreach ($otherList as $i => $tsuin) {
+                $counter = 0;
                 foreach ($warrantyList as $warranty) {
                     if ($warranty['warrantyStart'] <= $tsuin['date'] &&
                         $tsuin['date'] <= $warranty['warrantyEnd']) {
                         while ($warranty['warrantyMax'] --) {
+                            $score = (int) str_replace('-', '', $tsuin['date']) * 100000 + $counter;
                             $matrix[$i+$base][] = isset($excludeList[$tsuin['date']]) ?
-                                                1000000000 :
-                                                (int) (str_replace('-', '', $tsuin['date']) . '0');
+                                                5000000000000 :
+                                                $score;
+                            $counter ++;
                         }
                     } else {
                         while ($warranty['warrantyMax'] --) {
-                            $matrix[$i+$base][] = 1000000000;
+                            $matrix[$i+$base][] = 5000000000000;
                         }
                     }
                 }
@@ -256,11 +269,20 @@ class Smartcare
             }
 
             /* Show Matrix & Result
+            echo "<style>body{overflow-x:scroll !important}</style>";
             echo "<table>";
+            echo "<tr>";
+            foreach ($warrantyList as $warranty) {
+                while ($warranty['warrantyMax'] --) {
+                    $date = str_replace('-', '', $warranty['date']);
+                    echo "<th style='text-align:center'>{$date}</th>";
+                }
+            }
+            echo "</tr>";
             foreach ($matrix as $i => $row) {
                 echo "<tr>";
                 foreach ($row as $j => $col) {
-                    if ($allocation[$i] == $j) {
+                    if (isset($allocation[$i]) && $allocation[$i] == $j) {
                         echo "<td style='text-align:center; background-color:red;'>$col</td>";
                     } else {
                         echo "<td style='text-align:center;'>$col</td>";
@@ -275,8 +297,8 @@ class Smartcare
             // 結果を取り出す
             $unsets = $tsuins = $changeList = [];
             foreach ($allocation as $tsuin_key => $warranty_key) {
-                // 100000000の結果を省く
-                if ($matrix[$tsuin_key][$warranty_key] == 1000000000) {
+                // 5000000000000の結果を省く
+                if ($matrix[$tsuin_key][$warranty_key] == 5000000000000) {
                     if (isset($tsuinList[$tsuin_key])) {
                         $banList[] = $tsuinList[$tsuin_key];
                         unset($tsuinList[$tsuin_key]);
@@ -291,7 +313,8 @@ class Smartcare
                     }
 
                     if (isset($tsuinList[$tsuin_key])) {
-                        if ($tsuinList[$tsuin_key]['warranty']['date'] != $warranty['date']) {
+                        if ($tsuinList[$tsuin_key]['warranty']['date'] != $warranty['date'] ||
+                            $tsuinList[$tsuin_key]['warranty']['type'] != $warranty['type']) {
                             $tsuinList[$tsuin_key]['before'] = $tsuinList[$tsuin_key]['warranty'];
                             $tsuinList[$tsuin_key]['warranty'] = [
                                 'type' => $warranty['type'],

@@ -55,14 +55,66 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('stylesheets') ?>
+<style>
+  .day {
+      -moz-user-select: -moz-none;
+      -khtml-user-select: none;
+      -webkit-user-select: none;
+      -o-user-select: none;
+      user-select: none;
+  }
+  .day-nyuin {
+      color: red !important;
+  }
+  .day-shujutsu {
+      background-color: green;
+  }
+  .day-tsuin {
+      background-color: #ff64c8;
+  }
+  .day-bunsho {
+      background-color: #a0a0a0;
+  }
+</style>
 <?= $this->endSection() ?>
 
 <?= $this->section('javascripts') ?>
+<!-- tippy -->
+<script src="/vendor/tippy/popper.js"></script>
+<script src="/vendor/tippy/tippy.js"></script>
+
 <script>
+  var eventType = [
+      'nyuin',
+      'shujutsu',
+      'tsuin',
+      'bunsho',
+      'none',
+  ];
+  var eventName = [
+      '入院',
+      '手術',
+      '通院',
+      '非該当通院',
+      '',
+  ];
+
   $(function () {
       $('.day').on('click', function(event){
-          console.log(event);
+          type = $(event.target).data('type');
+          if (type == undefined) {
+              type = 4;
+          }
+          type ++;
+
+          $(event.target).data('type', type);
+
+          $(event.target).attr('class', 'day day-'+eventType[type%5]);
+      }).on('contextmenu', function(event) {
+          type = 4;
+          $(event.target).data('type', type);
       });
+
       $('#nenview').fadeTo(0, 1);
   });
 </script>
