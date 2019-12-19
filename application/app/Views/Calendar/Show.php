@@ -399,7 +399,10 @@
                 </div>
                 <div class="form-group">
                   <label>通院日</label>
-                  <textarea class="form-control" rows="10" name="date" placeholder="2019-09-10
+                  <div class="box-tools pull-right">
+                    <button id="batch-insert" type="button" class="btn btn-primary btn-block" style="padding:3px 6px;"><i class="fa fa-hand-pointer-o"></i></button>
+                  </div>
+                  <textarea id="batch-textarea" class="form-control" rows="10" name="date" placeholder="2019-09-10
 2019-10-10
 2019-11-10
 
@@ -629,6 +632,7 @@
 <script>
   // ２つのカレンダーに表示するために、Ajaxをあきらめた（言い訳）
   var eventData = <?= \App\Libraries\Smartcare::toJsonEvents($shoken, $mode, $ukeban_id) ?>;
+  var insertMode = false;
 
   $(function () {
       eventData.forEach(function(events){
@@ -732,10 +736,17 @@
               return title.join('');
           },
           onShow: function (options) {
+              if (insertMode) {
+                  date = $(options.reference).attr('id').split('-');
+                  date = new Date(date[1], date[2]-1, date[3]);
+                  $('#batch-textarea').val($.datepicker.formatDate("yy-mm-dd", date)+'\n'+$('#batch-textarea').val());
+                  $(options.reference).css('background-color', 'green');
+                  return false;
+              }
               list = $(options.reference).data('event') || [];
               if (list.length == 0) {
                   date = $(options.reference).attr('id').split('-');
-                  date = new Date(date[1], date[2]-1, date[3])
+                  date = new Date(date[1], date[2]-1, date[3]);
                   createmodal($.datepicker.formatDate("yy-mm-dd", date));
                   return false;
               }
@@ -809,6 +820,15 @@
           });
           form.attr('action', form.attr('original-action') + $('#batch-ukeban option:selected').val() + '/batch');
           return true;
+      });
+
+      $('#batch-insert').on('click', function(event){
+          insertMode = !insertMode;
+          if (insertMode) {
+              $('#nenview').parent().css('border', 'black 1px solid');
+          } else {
+              $('#nenview').parent().css('border', '');
+          }
       });
 
       $('#calendar').fullCalendar({
