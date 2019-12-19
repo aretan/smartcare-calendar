@@ -50,6 +50,7 @@ class SmartcareTest extends \CIUnitTestCase
             ],
             'nyuin' => [
                 [
+                    'id' => '1',
                     'start' => 'nyuin-1',
                     'ukeban_id' => 'ukeban-2',
                     'start' => '2019-10-10',
@@ -59,6 +60,7 @@ class SmartcareTest extends \CIUnitTestCase
                     'warrantyMax' => '5',
                 ],
                 [
+                    'id' => '2',
                     'start' => 'nyuin-2',
                     'ukeban_id' => 'ukeban-1',
                     'start' => '2019-10-15',
@@ -70,6 +72,7 @@ class SmartcareTest extends \CIUnitTestCase
             ],
             'shujutsu' => [
                 [
+                    'id' => '1',
                     'date' => 'shujutsu-1',
                     'ukeban_id' => 'ukeban-2',
                     'warrantyStart' => '2019-10-15',

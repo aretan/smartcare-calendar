@@ -35,7 +35,7 @@
           <!-- /.box-body -->
 
           <div class="box-body no-padding">
-            <?php (new \App\Libraries\Calendar)->render('2018/01', date('Y/m')); ?>
+            <?php (new \App\Libraries\Calendar)->render('2017/11', date('Y/m')); ?>
           </div>
 
           <div class="box-footer">
