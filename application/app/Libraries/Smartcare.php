@@ -134,6 +134,7 @@ class Smartcare
             $warrantyList = $excludeList = [];
             foreach ($conbinedNyuinList as $nyuin) {
                 $warrantyList[] = [
+                    'id' => $nyuin['id'],
                     'ukeban_id' => $nyuin['ukeban_id'],
                     'type' => 'nyuin',
                     'date' => $nyuin['date'],
@@ -155,6 +156,7 @@ class Smartcare
             }
             foreach ($shujutsuList as $shujutsu) {
                 $warrantyList[] = [
+                    'id' => $shujutsu['id'],
                     'ukeban_id' => $shujutsu['ukeban_id'],
                     'type' => 'shujutsu',
                     'date' => $shujutsu['date'],
@@ -541,6 +543,7 @@ class Smartcare
                 $event['end'] = $line[$end];
                 $event['end'] = date('Y-m-d', strtotime($event['end']) + 60 * 60 * 24);
                 $event['title'] = $title;
+                $event['event_id'] = "{$line['ukeban_id']}/{$line['id']}";
                 $events[] = $event;
             }
         }

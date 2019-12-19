@@ -903,12 +903,13 @@
       type = (source.id == 'other') ?
           'tsuin' :
           source.id;
+      ids = event.event_id.split('/');
       $('#delete-modal').modal();
       $('#delete-modal-tsuin').iCheck('disable');
       $('#delete-modal-bunsho').iCheck('disable');
       $('#delete-modal-shujutsu').iCheck('disable');
       $('#delete-modal-nyuin').iCheck('disable');
-      $('#delete-modal-form').attr('action', $('#delete-modal-form').attr('original-action') + event.title + '/' + type + '/' + event.event_id + '/delete');
+      $('#delete-modal-form').attr('action', $('#delete-modal-form').attr('original-action') + ids[0] + '/' + type + '/' + ids[1] + '/delete');
       $('#delete-modal-'+type).iCheck('check');
       $('#delete-modal-'+type).iCheck('enable');
       $('#delete-modal-ukeban').val(event.title);

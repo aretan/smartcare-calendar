@@ -34,6 +34,10 @@
           </div>
           <!-- /.box-body -->
 
+          <div class="box-body no-padding">
+            <?php (new \App\Libraries\Calendar)->render('2018/01', date('Y/m')); ?>
+          </div>
+
           <div class="box-footer">
             <button type="submit" class="btn btn-primary">登録</button>
           </div>
@@ -54,4 +58,12 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('javascripts') ?>
+<script>
+  $(function () {
+      $('.day').on('click', function(event){
+          console.log(event);
+      });
+      $('#nenview').fadeTo(0, 1);
+  });
+</script>
 <?= $this->endSection() ?>
