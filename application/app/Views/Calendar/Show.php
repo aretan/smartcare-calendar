@@ -394,10 +394,10 @@
           <div class="tab-pane" id="batch">
             <?php if(isset($line)){ ?>
             <div class="box-body">
-              <form class="form" original-action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/") ?>" method="POST">
+              <form class="form" action="<?= site_url("calendar/batch/{$shoken['id']}/{$ukeban_id}/{$mode}/") ?>" method="POST">
                 <div class="form-group">
                   <label>受付番号</label>
-                  <select class="form-control" id="batch-ukeban">
+                  <select name="ukeban_id" class="form-control" id="batch-ukeban">
                     <?php foreach($shoken['ukeban'] as $line){ ?>
                     <option value="<?=$line['id'] ?>" <?= ($line['id'] == $ukeban_id) ? 'selected' : '' ?>><?=$line['id'] ?> <?= (end($shoken['ukeban']) == $line) ? '(最新)' : '' ?></option>
                     <?php } ?>
@@ -441,7 +441,7 @@
 <div class="modal" id="delete-modal" data-keyboard="true" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form id="delete-modal-form" original-action="<?= site_url("api/v1/shoken/{$shoken['id']}/ukeban/") ?>" method="POST">
+      <form id="delete-modal-form" action="<?= site_url("calendar/delete/{$shoken['id']}/{$ukeban_id}/{$mode}/") ?>" method="POST">
         <div class="modal-header bg-red">
           <h4 class="modal-title">イベント削除</h4>
         </div>
@@ -449,7 +449,8 @@
           <div class="form-group">
             <label>受付番号</label>
             <div class="input-group date">
-              <input type="text" name="date" class="form-control pull-right" id="delete-modal-ukeban" readonly>
+              <input type="text" name="ukeban_id" class="form-control pull-right" id="delete-modal-ukeban" readonly>
+              <input type="hidden" name="id" id="delete-modal-id">
             </div>
             <!-- /.input group -->
           </div>
@@ -486,7 +487,7 @@
               <div class="input-group-addon">
                 <i class="fa fa-calendar"></i>
               </div>
-              <input type="text" name="date" class="form-control pull-right" id="delete-modal-date" readonly>
+              <input type="text" class="form-control pull-right" id="delete-modal-date" readonly>
             </div>
             <!-- /.input group -->
           </div>
@@ -506,7 +507,7 @@
 <div class="modal" id="create-modal" data-keyboard="true" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form id="create-modal-form" action="<?= site_url("calendar/event/{$shoken['id']}/") ?>" method="POST">
+      <form id="create-modal-form" action="<?= site_url("calendar/event/{$shoken['id']}/{$ukeban_id}/{$mode}/") ?>" method="POST">
         <div class="modal-header bg-green">
           <h4 class="modal-title">イベント登録</h4>
         </div>
@@ -826,19 +827,6 @@
           $('#create-modal-range').prop("disabled", true);
       });
 
-      $('#batch-submit').on('click', function(event){
-          form = $(this).parents('form');
-          params = form.serializeArray();
-          ukeban = null;
-          params.forEach(function(param){
-              if (param.name == 'ukeban_id') {
-                  ukeban = param.value;
-              }
-          });
-          form.attr('action', form.attr('original-action') + $('#batch-ukeban option:selected').val() + '/batch');
-          return true;
-      });
-
       $('#batch-insert').on('click', function(event){
           insertMode = !insertMode;
           if (insertMode) {
@@ -955,10 +943,10 @@
       $('#delete-modal-bunsho').iCheck('disable');
       $('#delete-modal-shujutsu').iCheck('disable');
       $('#delete-modal-nyuin').iCheck('disable');
-      $('#delete-modal-form').attr('action', $('#delete-modal-form').attr('original-action') + ids[0] + '/' + type + '/' + ids[1] + '/delete');
       $('#delete-modal-'+type).iCheck('check');
       $('#delete-modal-'+type).iCheck('enable');
       $('#delete-modal-ukeban').val(ids[0]);
+      $('#delete-modal-id').val(ids[1]);
 
       if (type == 'nyuin') {
           if (event.start instanceof moment) {

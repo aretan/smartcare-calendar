@@ -19,7 +19,7 @@
       <!-- general form elements -->
       <div class="box box-primary">
         <!-- form start -->
-        <form role="form" method="POST" action="<?= site_url("calendar/event/{$shoken_id}/") ?>">
+        <form role="form" method="POST" action="<?= site_url("calendar/event/{$shoken_id}/{$ukeban_id}/{$mode}/") ?>">
           <div class="box-body">
             <div class="form-group<?=(!$validation->hasError('shoken_id'))?'': ' has-error' ?>">
               <label for="inputId">証券番号</label>

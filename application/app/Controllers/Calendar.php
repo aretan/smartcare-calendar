@@ -110,7 +110,7 @@ class Calendar extends WebController
         return redirect()->to("/{$data['shoken_id']}/");
     }
 
-    public function event($shoken_id=null)
+    public function event($shoken_id, $ukeban_id, $mode)
     {
         $data = $this->request->getPost();
         $data = array_merge($data, ['shoken_id' => $shoken_id]);
@@ -127,6 +127,8 @@ class Calendar extends WebController
             if ($exists) {
                 $data['validation'] = $model->getValidation();
                 $data['validation']->setError('date', '既に登録されている日付です。');
+                $data['ukeban_id'] = $ukeban_id;
+                $data['mode'] = $mode;
                 $data['ukeban'] = (new \App\Models\UkebanModel())->where(['shoken_id' => $shoken_id])->orderBy('created_at')->findAll();
                 return view('Calendar/Event', $data);
             }
@@ -145,6 +147,8 @@ class Calendar extends WebController
             if ($exists) {
                 $data['validation'] = $model->getValidation();
                 $data['validation']->setError('daterange', '期間の重複する入院があります。');
+                $data['ukeban_id'] = $ukeban_id;
+                $data['mode'] = $mode;
                 $data['ukeban'] = (new \App\Models\UkebanModel())->where(['shoken_id' => $shoken_id])->orderBy('created_at')->findAll();
                 return view('Calendar/Event', $data);
             }
@@ -156,6 +160,39 @@ class Calendar extends WebController
             $data['validation'] = $model->getValidation();
             return view('Calendar/Event', $data);
         }
-        return redirect()->to("/{$data['shoken_id']}/");
+        return redirect()->to("/{$shoken_id}/{$ukeban_id}/{$mode}/");
+    }
+
+    public function delete($shoken_id, $ukeban_id, $mode)
+    {
+        $data = $this->request->getPost();
+        $data = array_merge($data, ['shoken_id' => $shoken_id]);
+        $model = 'App\\Models\\' . ucfirst($data['type']) . 'Model';
+        $model = new $model();
+
+        $model->delete($data['id']);
+        return redirect()->to("/{$shoken_id}/{$ukeban_id}/{$mode}/");
+    }
+
+    public function batch($shoken_id, $ukeban_id, $mode)
+    {
+        $tsuin = [
+            'shoken_id' => $shoken_id,
+            'ukeban_id' => $this->request->getPost('ukeban_id'),
+        ];
+
+        $data = [];
+        foreach (explode(' ', str_replace('/', '-', str_replace(["\n", ','], ' ', $this->request->getPost('date')))) as $date) {
+            $date = trim($date);
+            $int = preg_match('/^[1-2][0-9]{3}-[0-1]?[0-9]-[0-3]?[0-9]$/', $date);
+            if (!$int) continue;
+            $request['date'] = $date;
+            $data[] = array_merge($tsuin, $request);
+        }
+
+        $model = new \App\Models\TsuinModel();
+        $model->insertBatch($data);
+
+        return redirect()->to("/{$shoken_id}/{$ukeban_id}/{$mode}/");
     }
 }

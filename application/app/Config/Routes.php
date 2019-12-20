@@ -66,26 +66,14 @@ $routes->setAutoRoute(false);
  * Route Definitions
  * --------------------------------------------------------------------
  */
-$routes->group('api/v1', ['namespace' => 'App\Controllers\Api\V1'], function($routes)
-{
-    $routes->group('shoken/(:any)', ['namespace' => 'App\Controllers\Api\V1'], function($routes)
-    {
-        $routes->group('ukeban/(:any)', ['namespace' => 'App\Controllers\Api\V1'], function($routes)
-        {
-            $routes->resource('shujutsu', ['only' => ['create', 'update', 'delete'], 'websafe' => 1]);
-            $routes->resource('tsuin', ['only' => ['create', 'update', 'delete'], 'websafe' => 1]);
-            $routes->resource('nyuin', ['only' => ['create', 'update', 'delete'], 'websafe' => 1]);
-            $routes->resource('bunsho', ['only' => ['create', 'update', 'delete'], 'websafe' => 1]);
-            $routes->post('batch', 'Tsuin::batch');
-        });
-    });
-});
 
 $routes->group('/', ['namespace' => 'App\Controllers'], function($routes)
 {
     $routes->add('calendar/new', 'Calendar::new');
     $routes->post('calendar/create', 'Calendar::create');
-    $routes->add('calendar/event/(:any)', 'Calendar::event/$1');
+    $routes->add('calendar/event/(:any)/(:any)/(:any)', 'Calendar::event/$1/$2/$3');
+    $routes->add('calendar/delete/(:any)/(:any)/(:any)', 'Calendar::delete/$1/$2/$3');
+    $routes->add('calendar/batch/(:any)/(:any)/(:any)', 'Calendar::batch/$1/$2/$3');
     $routes->add('calendar/edit/(:any)', 'Calendar::edit/$1');
     $routes->post('calendar/update/(:any)', 'Calendar::update/$1');
     $routes->add('calendar/ukeban/(:any)', 'Calendar::ukeban/$1');
