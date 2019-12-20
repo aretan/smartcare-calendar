@@ -291,7 +291,7 @@ class Smartcare
                     foreach ($result as $data) {
                         $allocation[$data[0]] = $data[1];
                     }
-                    cache()->save($hashkey, $allocation, 0);
+                    cache()->save($hashkey, $allocation, -1);
                 }
             } else {
                 $allocation = [];
