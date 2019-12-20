@@ -399,7 +399,7 @@
                   <label>受付番号</label>
                   <select class="form-control" id="batch-ukeban">
                     <?php foreach($shoken['ukeban'] as $line){ ?>
-                    <option value="<?=$line['id'] ?>" <?= (end($shoken['ukeban']) == $line) ? 'selected' : '' ?>><?=$line['id'] ?></option>
+                    <option value="<?=$line['id'] ?>" <?= ($line['id'] == $ukeban_id) ? 'selected' : '' ?>><?=$line['id'] ?> <?= (end($shoken['ukeban']) == $line) ? '(最新)' : '' ?></option>
                     <?php } ?>
                   </select>
                 </div>
@@ -515,7 +515,7 @@
             <label>受付番号</label>
             <select class="form-control" name="ukeban_id">
               <?php foreach($shoken['ukeban'] as $line){ ?>
-              <option value="<?=$line['id'] ?>" <?= (end($shoken['ukeban']) == $line) ? 'selected' : '' ?>><?=$line['id'] ?></option>
+              <option value="<?=$line['id'] ?>" <?= ($line['id'] == $ukeban_id) ? 'selected' : '' ?>><?=$line['id'] ?> <?= (end($shoken['ukeban']) == $line) ? '(最新)' : '' ?></option>
               <?php } ?>
             </select>
           </div>
@@ -651,6 +651,8 @@
               end = new Date(end[0], end[1]-1, end[2]);
 
               while (start < end) {
+                  $("#day-"+$.datepicker.formatDate("yy-m-dd", start))
+                      .addClass('day-' + events.id);
                   if (events.id == 'nyuin') {
                       $("#day-"+$.datepicker.formatDate("yy-m-dd", start))
                           .css('color', 'white')
@@ -658,9 +660,6 @@
                   } else if(events.id == 'tsuin') {
                       $("#day-"+$.datepicker.formatDate("yy-m-dd", start))
                           .css('background-color', events.color);
-                  } else {
-                      $("#day-"+$.datepicker.formatDate("yy-m-dd", start))
-                          .addClass('day-' + events.id);
                   }
                   if (!events.rendering) {
                       event.source = events;
@@ -743,10 +742,22 @@
           },
           onShow: function (options) {
               if (insertMode) {
-                  date = $(options.reference).attr('id').split('-');
+                  date = $(options.reference).attr('id');
+                  select = $('#batch-insert').data('select') || [];
+                  if (select[date] ||
+                      $(options.reference).hasClass('day-tsuin') ||
+                      $(options.reference).hasClass('day-other')) {
+                      return false;
+                  }
+
+                  select[date] = $(options.reference).css('background-color');
+                  $('#batch-insert').data('select', select);
+
+                  date = date.split('-');
                   date = new Date(date[1], date[2]-1, date[3]);
                   $('#batch-textarea').val($.datepicker.formatDate("yy-mm-dd", date)+'\n'+$('#batch-textarea').val());
-                  $(options.reference).css('background-color', 'green');
+                  $(options.reference).css('background-color', 'lime');
+
                   return false;
               }
               list = $(options.reference).data('event') || [];
@@ -833,6 +844,11 @@
           if (insertMode) {
               $('#nenview').parent().css('border', 'black 1px solid');
           } else {
+              select = $('#batch-insert').data('select');
+
+              for (key in select) {
+                  $('#'+key).css('background-color', select[key]);
+              }
               $('#nenview').parent().css('border', '');
           }
       });
