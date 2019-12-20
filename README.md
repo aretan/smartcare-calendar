@@ -24,3 +24,12 @@ $ vagrant up
 + public - `公開ディレクトリ（Bootstrap）`
 + Vagrantfile - `Vagrant環境の立上げスクリプト`
 + docker - `Dockerサンプル`
+
+### Middleware
+
+* Nginx - `HTTPを受けてPHP-FPMとUWSGIにリクエストを投げる`
+* PHP-FPM - `PHPを動かすためのバックエンドサーバ`
+* UWSGI - `PythonのMunkresを動かすためのバックエンドサーバ`
+* Redis - `PHPから使うキャッシュサーバ`
+* MariaDB - `データベースサーバ`
+* Datadog - `サーバーのメトリクス取集アプリケーション`
