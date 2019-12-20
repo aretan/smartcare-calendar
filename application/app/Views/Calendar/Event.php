@@ -30,7 +30,7 @@
               <label>受付番号</label>
               <select class="form-control" name="ukeban_id">
                 <?php foreach($ukeban as $line){ ?>
-                <option value="<?=$line['id'] ?>" <?= ($line['id'] == $ukeban_id) ? 'selected' : '' ?>><?=$line['id'] ?> (<?=$line['date'] ?>)</option>
+                <option value="<?=$line['id'] ?>" <?= ($line['id'] == $ukeban_id) ? 'selected' : '' ?>><?=$line['id'] ?></option>
                 <?php } ?>
               </select>
               <span class="help-block"><?= $validation->showError('ukeban_id') ?></span>

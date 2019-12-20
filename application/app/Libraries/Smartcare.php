@@ -201,7 +201,8 @@ class Smartcare
             // 99999999 = 補償範囲外の通院、又は入院中か手術日の通院
             // XYYMMDD0 = 前受番で支払えなかった通院、又は新しい通院
             // XYYMMDD = 支払済み通院
-            // 0 = 支払済み通院、かつ前回の補償と同一な場合
+            // YYMMDD = 支払済み通院、かつ前回の補償と同一な場合
+            // 値の小さいものが割り当てられる
 
             // 優先順位
             // 1. 支払済みの通院 AND 補償した入院・手術の組み合わせ
@@ -228,7 +229,7 @@ class Smartcare
                         while ($warranty['warrantyMax'] --) {
                             if ($tsuin['warranty']['type'] == $warranty['type'] &&
                                 $tsuin['warranty']['date'] == $warranty['date']) {
-                                $score = 0;
+                                $score = substr(str_replace('-', '', $tsuinList[$i]['date']), 2);
                             } else {
                                 $score = sprintf(
                                     '%01d%04d',
