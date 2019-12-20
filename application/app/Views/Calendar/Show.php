@@ -922,6 +922,8 @@
           $('#create-modal-range').data('daterangepicker').setStartDate(start);
           $('#create-modal-range').data('daterangepicker').setEndDate(start);
       }
+
+      $('#create-modal-submit').focus();
   }
 
   function deletemodalByDate(date, type){
@@ -967,6 +969,8 @@
               $('#delete-modal-date').val(event.start);
           }
       }
+
+      $('#delete-modal-submit').focus();
   }
 
   function display() {
