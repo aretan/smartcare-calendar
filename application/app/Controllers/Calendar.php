@@ -73,6 +73,16 @@ class Calendar extends Controller
     {
         $model = new \App\Models\ShokenModel();
         $data = $this->request->getPost();
+
+        if (isset($data['id'])) {
+            $exists = $model->find($data['id']);
+            if ($exists) {
+                $data['validation'] = $model->getValidation();
+                $data['validation']->setError('id', 'この証券番号は既に登録されています。');
+                return view('Calendar/New', $data);
+            }
+        }
+
         $model->insert($data);
         if ($model->errors()) {
             $data['validation'] = $model->getValidation();
@@ -106,6 +116,16 @@ class Calendar extends Controller
         $model = new \App\Models\UkebanModel();
         $data['shoken_id'] = $shoken_id;
         $data = array_merge($data, $this->request->getPost());
+
+        if (isset($data['id'])) {
+            $exists = $model->find($data['id']);
+            if ($exists) {
+                $data['validation'] = $model->getValidation();
+                $data['validation']->setError('id', 'この受付番号は既に登録されています。');
+                return view('Calendar/Ukeban', $data);
+            }
+        }
+
         $model->insert($data);
         if ($model->errors()) {
             $data['validation'] = $model->getValidation();

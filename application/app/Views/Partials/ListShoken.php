@@ -1,5 +1,5 @@
 <?php foreach ($shoken as $value) { ?>
-<li <?=(strpos(current_url(), $value['id']) === false)?'': ' class="active"' ?>>
+<li <?=(strpos(current_url(), site_url($value['id'])) === 0) ? 'class="active"' : '' ?>>
   <a href="<?=site_url("{$value['id']}/") ?>">
     <span><?=$value['name'] ?></span>
     <span class="pull-right-container">
