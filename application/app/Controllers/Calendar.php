@@ -1,7 +1,11 @@
 <?php namespace App\Controllers;
 
-class Calendar extends WebController
+use CodeIgniter\Controller;
+
+class Calendar extends Controller
 {
+    protected $helpers = ['form'];
+
     public function index()
     {
         return view('Calendar/Index');
