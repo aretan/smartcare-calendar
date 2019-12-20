@@ -275,7 +275,7 @@ class Smartcare
             if ($matrix) {
                 // 手元に計算結果置いておく
                 $hashkey = hash('sha256', json_encode($matrix));
-                $allocation = null;//cache($hashkey);
+                $allocation = cache($hashkey);
                 if (!$allocation) {
                     // PHPのライブラリだと１００秒以上かかるので、Pythonに投げる
                     $body = json_encode($matrix);
