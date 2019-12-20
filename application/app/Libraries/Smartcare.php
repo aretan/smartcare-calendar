@@ -229,13 +229,15 @@ class Smartcare
                         while ($warranty['warrantyMax'] --) {
                             if ($tsuin['warranty']['type'] == $warranty['type'] &&
                                 $tsuin['warranty']['date'] == $warranty['date']) {
+                                // 前回の組み合わせ
                                 $score = substr(str_replace('-', '', $tsuinList[$i]['date']), 2);
                             } else {
+                                // 切り替えはなるべく発生しないように
                                 $score = sprintf(
                                     '%01d%04d',
                                     $number[$warranty['type']],
                                     substr(str_replace('-', '', $tsuinList[$i]['date']), 2)
-                                );
+                                ) * 2;
                             }
                             $matrix[$i][] = isset($excludeList[$tsuin['date']]) ?
                                           $number['disallow'] :
@@ -257,10 +259,10 @@ class Smartcare
                         $tsuin['date'] <= $warranty['warrantyEnd']) {
                         while ($warranty['warrantyMax'] --) {
                             $score = sprintf(
-                                '%01d%04d0',
+                                '1%01d%04d',
                                 $number[$warranty['type']],
                                 substr(str_replace('-', '', $otherList[$i]['date']), 2)
-                            );
+                            ) * 2;
                             $matrix[$i+$base][] = isset($excludeList[$tsuin['date']]) ?
                                                 $number['disallow'] :
                                                 (int) $score;
