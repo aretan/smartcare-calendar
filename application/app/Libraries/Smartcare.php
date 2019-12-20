@@ -422,7 +422,7 @@ class Smartcare
         }
 
         // 新しい通院
-        $base = count($tsuinList);
+        $base = count($matrix);
         foreach ($otherList as $i => $tsuin) {
             foreach ($warrantyList as $warranty) {
                 if ($warranty['warrantyStart'] <= $tsuin['date'] &&
