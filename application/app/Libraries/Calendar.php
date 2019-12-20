@@ -3,7 +3,7 @@
 class Calendar
 {
     public $table_attr = 'id="nenview" class="table table-bordered table-striped" style="opacity:0.3;"';
-    public $month_attr = 'rowspan="2" style="width:10%; text-align:center; vertical-align:middle;"';
+    public $month_attr = 'rowspan="2" style="width:10%; text-align:center; vertical-align:middle;" class="month"';
     public $count_attr = 'rowspan="2" style="width:10%; text-align:center; vertical-align:middle;"';
     public $day_attr = 'style="text-align:center; padding:3px; cursor:pointer;" class="day"';
     public $non_attr = '';
@@ -35,8 +35,8 @@ class Calendar
     public function line($year, $month, $print_year) {
         $year = (int) $year;
         $month = (int) $month;
-        $data = "<tr id='nen-{$year}-{$month}-1'>";
-        $data .= "<td {$this->month_attr}><a href=\"javascript:month('{$year}-".sprintf('%02d', $month)."')\">";
+        $data = "<tr>";
+        $data .= "<td id='month-{$year}-".sprintf('%02d', $month)."' {$this->month_attr}><a href=\"javascript:month('{$year}-".sprintf('%02d', $month)."')\">";
         if ($print_year) {
             $data .= date('Y', mktime(0, 0, 0, $month, 1, $year)) . '年<br />';
         }
@@ -49,7 +49,7 @@ class Calendar
         }
 
         $data .= "<td {$this->count_attr}><span id='sum-{$year}-{$month}' class='badge no-data'>0</span></td>";
-        $data .= "</tr><tr id='nen-{$year}-{$month}-2'>";
+        $data .= "</tr><tr>";
 
         for (; date('d', mktime(0, 0, 0, $month, $i, $year)) > 16; $i++) {
             $data .= "<td id='day-{$year}-{$month}-{$i}' {$this->day_attr}>{$i}</td>";

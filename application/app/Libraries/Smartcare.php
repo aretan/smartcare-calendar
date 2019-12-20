@@ -198,48 +198,47 @@ class Smartcare
             }
 
             // 縦が通院で横が補償の表にして ハンガリアンで解く
-            // 50000000000000 = 補償範囲外の通院、又は入院中か手術日の通院
-            // XYYYYMMDD00000 + counter = 前受番で支払えなかった通院、又は新しい通院
-            // XYYYYMMDD0000 + counter = 支払済み通院
-            // XYYYYMMDD0000 + counter - 2000000000000 = 支払済み通院、かつ前回の補償と同一な場合
+            // 99999999 = 補償範囲外の通院、又は入院中か手術日の通院
+            // XYYMMDD0 = 前受番で支払えなかった通院、又は新しい通院
+            // XYYMMDD = 支払済み通院
+            // 0 = 支払済み通院、かつ前回の補償と同一な場合
 
             // 優先順位
             // 1. 支払済みの通院 AND 補償した入院・手術の組み合わせ
-            // 2. 支払済みの通院 AND 入院前後
-            // 3. 支払済みの通院 AND 手術後
-            // 4. 未払いの通院 AND 入院前後
-            // 5. 未払いの通院 AND 手術後
+            // 2. 支払済みの通院 AND 入院前後 X=1
+            // 3. 支払済みの通院 AND 手術後 X=2
+            // 4. 未払いの通院 AND 入院前後 X=1
+            // 5. 未払いの通院 AND 手術後 X=2
             // 条件
-            // + 常に入院中と手術日の通院は適用外
-            // + 各順位において通院は過去のものから適用
+            // + 常に入院中と手術日の通院は適用外 $excludeList
+            // + 各順位において通院は過去のものから適用 YYMMDD
             $matrix = [];
 
             $number = [
-                'disallow' => 50000000000000,
-                'already'  => 2000000000000,
-                'xother'   => 100000,
-                'xalready' => 10000,
-                'counter'  => 0,
-                'nyuin'    => 2,
-                'shujutsu' => 1,
+                'disallow' => 99999999,
+                'nyuin'    => 1,
+                'shujutsu' => 2,
             ];
 
             // 支払済み通院
             foreach ($tsuinList as $i => $tsuin) {
-                $counter = $number['counter'];
                 foreach ($warrantyList as $warranty) {
                     if ($warranty['warrantyStart'] <= $tsuin['date'] &&
                         $tsuin['date'] <= $warranty['warrantyEnd']) {
                         while ($warranty['warrantyMax'] --) {
-                            $counter ++;
-                            $score = (int) str_replace('-', '', $number[$warranty['type']].$tsuin['date']) * $number['xalready'] + $counter;
                             if ($tsuin['warranty']['type'] == $warranty['type'] &&
                                 $tsuin['warranty']['date'] == $warranty['date']) {
-                                $score -= $number['already'];
+                                $score = 0;
+                            } else {
+                                $score = sprintf(
+                                    '%01d%04d',
+                                    $number[$warranty['type']],
+                                    substr(str_replace('-', '', $tsuinList[$i]['date']), 2),
+                                );
                             }
                             $matrix[$i][] = isset($excludeList[$tsuin['date']]) ?
                                           $number['disallow'] :
-                                          $score;
+                                          (int) $score;
                         }
                     } else {
                         while ($warranty['warrantyMax'] --) {
@@ -252,16 +251,18 @@ class Smartcare
             // 新しい通院
             $base = count($matrix);
             foreach ($otherList as $i => $tsuin) {
-                $counter = $number['counter'];
                 foreach ($warrantyList as $warranty) {
                     if ($warranty['warrantyStart'] <= $tsuin['date'] &&
                         $tsuin['date'] <= $warranty['warrantyEnd']) {
                         while ($warranty['warrantyMax'] --) {
-                            $counter ++;
-                            $score = (int) str_replace('-', '', $number[$warranty['type']].$tsuin['date']) * $number['xother'] + $counter;
+                            $score = sprintf(
+                                '%01d%04d0',
+                                $number[$warranty['type']],
+                                substr(str_replace('-', '', $otherList[$i]['date']), 2),
+                            );
                             $matrix[$i+$base][] = isset($excludeList[$tsuin['date']]) ?
                                                 $number['disallow'] :
-                                                $score;
+                                                (int) $score;
                         }
                     } else {
                         while ($warranty['warrantyMax'] --) {
@@ -274,7 +275,7 @@ class Smartcare
             if ($matrix) {
                 // 手元に計算結果置いておく
                 $hashkey = hash('sha256', json_encode($matrix));
-                $allocation = cache($hashkey);
+                $allocation = null;//cache($hashkey);
                 if (!$allocation) {
                     // PHPのライブラリだと１００秒以上かかるので、Pythonに投げる
                     $body = json_encode($matrix);
@@ -300,18 +301,29 @@ class Smartcare
             echo "<style>body{overflow-x:scroll !important}</style>";
             echo "<table>";
             echo "<tr>";
+            echo "<th></th>";
             foreach ($warrantyList as $warranty) {
                 while ($warranty['warrantyMax'] --) {
                     $date = str_replace('-', '', $warranty['date']);
-                    echo "<th style='text-align:center'>{$date}</th>";
+                    $type = $warranty['type'] == 'nyuin' ? '入' : '手';
+                    echo "<th style='text-align:center'>{$type}:{$date}</th>";
                 }
             }
             echo "</tr>";
+            $total = 0;
             foreach ($matrix as $i => $row) {
                 echo "<tr>";
+                $gap = $i - $base;
+                $date = ($gap >= 0) ?
+                      str_replace('-', '', $otherList[$gap]['date']) :
+                      str_replace('-', '', $tsuinList[$i]['date']);
+                echo "<th style='text-align:center'>{$date}</th>";
                 foreach ($row as $j => $col) {
-                    if (isset($allocation[$i]) && $allocation[$i] == $j) {
+                    if ($col == $number['disallow']) {
+                        echo "<td style='text-align:center; background-color:gray;'>$col</td>";
+                    } else if (isset($allocation[$i]) && $allocation[$i] == $j) {
                         echo "<td style='text-align:center; background-color:red;'>$col</td>";
+                        $total += $col;
                     } else {
                         echo "<td style='text-align:center;'>$col</td>";
                     }
@@ -319,6 +331,7 @@ class Smartcare
                 echo "</tr>";
             }
             echo "</table>";
+            echo "<b>Total Cost: {$total}</b><br>";
             echo "----- ----- ----- -----<br>";
             // */
 

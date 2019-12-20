@@ -209,7 +209,7 @@
                         <div class="box-title">
                           <a data-widget="collapse" href="#">
                             <small>
-                              <i class="fa fa-hotel margin-r-5"></i>入院：<?=$warranty['date'] ?>
+                              <i class="fa fa-hotel margin-r-5"></i>入院：<?=$warranty['date'] ?> (<?= count($warranty['warranty']) + count($warranty['already']) ?>日)
                             </small>
                           </a>
                         </div>
@@ -218,7 +218,10 @@
                       <div class="box-body">
                         <ol>
                           <?php foreach ($warranty['warranty'] as $tsuin) { ?>
-                          <li><?= $tsuin['date'] ?></li>
+                          <li><?= $tsuin['date'] ?> (new)</li>
+                          <?php } ?>
+                          <?php foreach ($warranty['already'] as $tsuin) { ?>
+                          <li style="color:gray;"><?= $tsuin['date'] ?></li>
                           <?php } ?>
                         </ol>
                       </div>
@@ -229,7 +232,7 @@
                         <div class="box-title">
                           <a data-widget="collapse" href="#">
                             <small>
-                              <i class="fa fa-calendar-times-o margin-r-5"></i>手術：<?=$warranty['date'] ?>
+                              <i class="fa fa-calendar-times-o margin-r-5"></i>手術：<?=$warranty['date'] ?> (<?= count($warranty['warranty']) + count($warranty['already']) ?>日)
                             </small>
                           </a>
                         </div>
@@ -238,7 +241,10 @@
                       <div class="box-body">
                         <ol>
                           <?php foreach ($warranty['warranty'] as $tsuin) { ?>
-                          <li><?= $tsuin['date'] ?></li>
+                          <li><?= $tsuin['date'] ?> (new)</li>
+                          <?php } ?>
+                          <?php foreach ($warranty['already'] as $tsuin) { ?>
+                          <li style="color:gray;"><?= $tsuin['date'] ?></li>
                           <?php } ?>
                         </ol>
                       </div>
@@ -875,6 +881,10 @@
                   performance: true,
                   duration: [100, 50],
               });
+          },
+          viewRender: function (info, element) {
+              $('.month').css('background-color', '#f9f9f9');
+              $('#month-'+info.intervalStart.format('YYYY-MM')).css('background-color', '#ccffff');
           },
           select: function(start, end) {
               createmodal(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
