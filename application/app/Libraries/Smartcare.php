@@ -233,7 +233,7 @@ class Smartcare
                                 $score = sprintf(
                                     '%01d%04d',
                                     $number[$warranty['type']],
-                                    substr(str_replace('-', '', $tsuinList[$i]['date']), 2),
+                                    substr(str_replace('-', '', $tsuinList[$i]['date']), 2)
                                 );
                             }
                             $matrix[$i][] = isset($excludeList[$tsuin['date']]) ?
@@ -258,7 +258,7 @@ class Smartcare
                             $score = sprintf(
                                 '%01d%04d0',
                                 $number[$warranty['type']],
-                                substr(str_replace('-', '', $otherList[$i]['date']), 2),
+                                substr(str_replace('-', '', $otherList[$i]['date']), 2)
                             );
                             $matrix[$i+$base][] = isset($excludeList[$tsuin['date']]) ?
                                                 $number['disallow'] :
