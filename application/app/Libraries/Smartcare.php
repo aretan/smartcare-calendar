@@ -181,8 +181,7 @@ class Smartcare
                 $excludeList[$shujutsu['date']] = true;
             }
 
-            $base = count($tsuinList);
-            $matrix = self::createMatrix($warrantyList, $tsuinList, $otherList, $excludeList);
+            list($matrix, $base) = self::createMatrix($warrantyList, $tsuinList, $otherList, $excludeList);
 
             if ($matrix) {
                 // 手元に計算結果置いておく
@@ -446,7 +445,10 @@ class Smartcare
             }
         }
 
-        return $matrix;
+        return [
+            $matrix,
+            $base,
+        ];
     }
 
     public static function toJsonEvents($shoken, $mode, $ukeban_id)
