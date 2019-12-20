@@ -41,12 +41,8 @@ class SmartcareTest extends \CIUnitTestCase
     {
         $shoken = [
             'ukeban' => [
-                [
-                    'id' => 'ukeban-1',
-                ],
-                [
-                    'id' => 'ukeban-2',
-                ],
+                ['id' => 'ukeban-1'],
+                ['id' => 'ukeban-2'],
             ],
             'nyuin' => [
                 [
