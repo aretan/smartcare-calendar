@@ -124,7 +124,7 @@ class Smartcare
             $shoken['ukeban'][$key]['bunsho'] = isset($ref[$ukeban['id']]['bunsho']) ? $ref[$ukeban['id']]['bunsho'] : [];
         }
 
-        $tsuinList = $otherList = $bunshoList = $nyuinList = $shujutsuList = $banList = $excludeList = [];
+        $tsuinList = $otherList = $bunshoList = $nyuinList = $shujutsuList = $banList = [];
         foreach ($shoken['ukeban'] as $key => $ukeban) {
             $otherList = array_merge($otherList, $ukeban['tsuin']);
             $nyuinList = array_merge($nyuinList, $ukeban['nyuin']);
@@ -383,8 +383,6 @@ class Smartcare
             }
             array_multisort($sort, SORT_ASC, $otherList);
         }
-
-        if ($excludeList) ksort($excludeList);
 
         $number = [
             'nyuin'    => 1,
