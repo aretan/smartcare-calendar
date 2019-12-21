@@ -2,6 +2,8 @@
 
 class Smartcare
 {
+    const DISALLOWED = 99999999;
+
     /**
      * 入院の保証期間と保証回数を埋める
      */
@@ -122,7 +124,7 @@ class Smartcare
             $shoken['ukeban'][$key]['bunsho'] = isset($ref[$ukeban['id']]['bunsho']) ? $ref[$ukeban['id']]['bunsho'] : [];
         }
 
-        $tsuinList = $otherList = $bunshoList = $nyuinList = $shujutsuList = $banList = $excludeList = [];
+        $tsuinList = $otherList = $bunshoList = $nyuinList = $shujutsuList = $banList = [];
         foreach ($shoken['ukeban'] as $key => $ukeban) {
             $otherList = array_merge($otherList, $ukeban['tsuin']);
             $nyuinList = array_merge($nyuinList, $ukeban['nyuin']);
@@ -154,6 +156,7 @@ class Smartcare
                     $nyuin['start'] = date('Y-m-d', mktime(0, 0, 0, $month, $day+1, $year));
                 }
             }
+
             // 手術の補償は入院よりも優先度低い
             if ($shujutsuList) {
                 $sort = [];
@@ -162,6 +165,7 @@ class Smartcare
                 }
                 array_multisort($sort, SORT_ASC, $shujutsuList);
             }
+
             foreach ($shujutsuList as $shujutsu) {
                 $warrantyList[] = [
                     'id' => $shujutsu['id'],
@@ -179,8 +183,6 @@ class Smartcare
                 $excludeList[$shujutsu['date']] = true;
             }
 
-            if ($excludeList) ksort($excludeList);
-
             if ($tsuinList) {
                 $sort = [];
                 foreach ($tsuinList as $i => $value) {
@@ -197,83 +199,9 @@ class Smartcare
                 array_multisort($sort, SORT_ASC, $otherList);
             }
 
-            // 縦が通院で横が補償の表にして ハンガリアンで解く
-            // 99999999 = 補償範囲外の通院、又は入院中か手術日の通院
-            // XYYMMDD0 = 前受番で支払えなかった通院、又は新しい通院
-            // XYYMMDD = 支払済み通院
-            // YYMMDD = 支払済み通院、かつ前回の補償と同一な場合
-            // 値の小さいものが割り当てられる
+            if ($excludeList) ksort($excludeList);
 
-            // 優先順位
-            // 1. 支払済みの通院 AND 補償した入院・手術の組み合わせ
-            // 2. 支払済みの通院 AND 入院前後 X=1
-            // 3. 支払済みの通院 AND 手術後 X=2
-            // 4. 未払いの通院 AND 入院前後 X=1
-            // 5. 未払いの通院 AND 手術後 X=2
-            // 条件
-            // + 常に入院中と手術日の通院は適用外 $excludeList
-            // + 各順位において通院は過去のものから適用 YYMMDD
-            $matrix = [];
-
-            $number = [
-                'disallow' => 99999999,
-                'nyuin'    => 1,
-                'shujutsu' => 2,
-            ];
-
-            // 支払済み通院
-            foreach ($tsuinList as $i => $tsuin) {
-                foreach ($warrantyList as $warranty) {
-                    if ($warranty['warrantyStart'] <= $tsuin['date'] &&
-                        $tsuin['date'] <= $warranty['warrantyEnd']) {
-                        while ($warranty['warrantyMax'] --) {
-                            if ($tsuin['warranty']['type'] == $warranty['type'] &&
-                                $tsuin['warranty']['date'] == $warranty['date']) {
-                                // 前回の組み合わせ
-                                $score = substr(str_replace('-', '', $tsuinList[$i]['date']), 2);
-                            } else {
-                                // 切り替えはなるべく発生しないように
-                                $score = sprintf(
-                                    '%01d%04d',
-                                    $number[$warranty['type']],
-                                    substr(str_replace('-', '', $tsuinList[$i]['date']), 2)
-                                ) * 2;
-                            }
-                            $matrix[$i][] = isset($excludeList[$tsuin['date']]) ?
-                                          $number['disallow'] :
-                                          (int) $score;
-                        }
-                    } else {
-                        while ($warranty['warrantyMax'] --) {
-                            $matrix[$i][] = $number['disallow'];
-                        }
-                    }
-                }
-            }
-
-            // 新しい通院
-            $base = count($matrix);
-            foreach ($otherList as $i => $tsuin) {
-                foreach ($warrantyList as $warranty) {
-                    if ($warranty['warrantyStart'] <= $tsuin['date'] &&
-                        $tsuin['date'] <= $warranty['warrantyEnd']) {
-                        while ($warranty['warrantyMax'] --) {
-                            $score = sprintf(
-                                '1%01d%04d',
-                                $number[$warranty['type']],
-                                substr(str_replace('-', '', $otherList[$i]['date']), 2)
-                            ) * 2;
-                            $matrix[$i+$base][] = isset($excludeList[$tsuin['date']]) ?
-                                                $number['disallow'] :
-                                                (int) $score;
-                        }
-                    } else {
-                        while ($warranty['warrantyMax'] --) {
-                            $matrix[$i+$base][] = $number['disallow'];
-                        }
-                    }
-                }
-            }
+            $matrix = self::createMatrix($warrantyList, $tsuinList, $otherList, $excludeList);
 
             if ($matrix) {
                 // 手元に計算結果置いておく
@@ -282,16 +210,15 @@ class Smartcare
                 if (!$allocation) {
                     // PHPのライブラリだと１００秒以上かかるので、Pythonに投げる
                     $body = json_encode($matrix);
-                    $context = [
+                    $context = stream_context_create([
                         'http' => [
                             'method'  => 'POST',
                             'header'  => "Content-type: application/json\r\nContent-Length: " . strlen($body),
                             'content' => $body,
                         ]
-                    ];
-                    $result = file_get_contents(getenv('hungarian.url'), false, stream_context_create($context));
-                    $result = json_decode($result, true);
-                    foreach ($result as $data) {
+                    ]);
+                    $result = file_get_contents(getenv('hungarian.url'), false, $context);
+                    foreach (json_decode($result, true) as $data) {
                         $allocation[$data[0]] = $data[1];
                     }
                     cache()->save($hashkey, $allocation, -1);
@@ -316,13 +243,13 @@ class Smartcare
             $total = 0;
             foreach ($matrix as $i => $row) {
                 echo "<tr>";
-                $gap = $i - $base;
+                $gap = $i - count($tsuinList);
                 $date = ($gap >= 0) ?
                       str_replace('-', '', $otherList[$gap]['date']) :
                       str_replace('-', '', $tsuinList[$i]['date']);
                 echo "<th style='text-align:center'>{$date}</th>";
                 foreach ($row as $j => $col) {
-                    if ($col == $number['disallow']) {
+                    if ($col == self::DISALLOWED) {
                         echo "<td style='text-align:center; background-color:gray;'>$col</td>";
                     } else if (isset($allocation[$i]) && $allocation[$i] == $j) {
                         echo "<td style='text-align:center; background-color:red;'>$col</td>";
@@ -340,9 +267,10 @@ class Smartcare
 
             // 結果を取り出す
             $unsets = $tsuins = $changeList = [];
+            $tsuinCount = count($tsuinList);
             foreach ($allocation as $tsuin_key => $warranty_key) {
                 // 対象外の結果を省く
-                if ($matrix[$tsuin_key][$warranty_key] == $number['disallow']) {
+                if ($matrix[$tsuin_key][$warranty_key] == self::DISALLOWED) {
                     if (isset($tsuinList[$tsuin_key])) {
                         $banList[] = $tsuinList[$tsuin_key];
                         unset($tsuinList[$tsuin_key]);
@@ -367,24 +295,24 @@ class Smartcare
                             $changeList[] = $tsuinList[$tsuin_key];
                         }
                         $warrantyList[$j]['already'][] = $tsuinList[$tsuin_key];
-                    } elseif (isset($otherList[$tsuin_key-$base])) {
+                    } elseif (isset($otherList[$tsuin_key-$tsuinCount])) {
                         // 1095日制限
                         if (count($tsuinList) + count($tsuins) - 1095 < 0) {
-                            $warrantyList[$j]['warranty'][] = $otherList[$tsuin_key-$base];
-                            $otherList[$tsuin_key-$base]['warranty'] = [
+                            $warrantyList[$j]['warranty'][] = $otherList[$tsuin_key-$tsuinCount];
+                            $otherList[$tsuin_key-$tsuinCount]['warranty'] = [
                                 'type' => $warranty['type'],
                                 'date' => $warranty['date'],
                             ];
-                            $tsuins[] = $otherList[$tsuin_key-$base];
-                            $unsets[] = $tsuin_key-$base;
+                            $tsuins[] = $otherList[$tsuin_key-$tsuinCount];
+                            $unsets[] = $tsuin_key-$tsuinCount;
                         }
                     }
                     break;
                 }
             }
 
+            // 結果を反映
             $tsuinList = array_merge($tsuinList, $tsuins);
-
             foreach ($unsets as $unset) {
                 unset($otherList[$unset]);
             }
@@ -438,6 +366,9 @@ class Smartcare
         return $shoken;
     }
 
+    /**
+     * 計算結果からfullcalendar用のJSONを生成する
+     */
     public static function toJsonEvents($shoken, $mode, $ukeban_id)
     {
         $exclude = $ukeban = $filter = [];
@@ -569,7 +500,8 @@ class Smartcare
     }
 
     /**
-     * fullcalendarのevent jsonにする
+     * fullcalendarのevent objectにする
+     * https://fullcalendar.io/docs/event-object
      * Note: This value is exclusive. For example, if you have an all-day event that has an end of 2018-09-03, then it will span through 2018-09-02 and end before the start of 2018-09-03.
      */
     public static function toCalendarEvents($data, $filter, $start, $end, $title, $exclude=[])
@@ -615,5 +547,91 @@ class Smartcare
             }
         }
         return $events;
+    }
+
+    /**
+     * ハンガリアンで解く為の縦が通院で横が補償の表を作る
+     * 選択した数字の総コストが最も低い組み合わせを選ぶ
+     *
+     * 条件
+     * + 常に入院中と手術日の通院は適用外
+     * + 各順位において通院は過去のものから適用
+     * + 過去の受番の結果はなるべく変更しない
+     *
+     * 99999999   = 補償範囲外の通院、又は入院中か手術日の通院
+     * 1XYYMMDD*2 = 前受番で支払えなかった通院、又は新しい通院
+     *  XYYMMDD*2 = 支払済み通院
+     *   YYMMDD   = 支払済み通院、かつ前回の補償と同一な場合
+     *
+     * 優先順位（選択順ではない）
+     * 1. 支払済みの通院 AND 補償した入院・手術の組み合わせ (exp: 191230)
+     * 2. 支払済みの通院 AND 入院前後 X=1 (exp: 2382460)
+     * 3. 支払済みの通院 AND 手術後 X=2 (exp: 4382460)
+     * 4. 未払いの通院 AND 入院前後 X=1 (exp: 22382460)
+     * 5. 未払いの通院 AND 手術後 X=2 (exp: 24382460)
+     */
+    public static function createMatrix($warrantyList, $tsuinList, $otherList, $excludeList)
+    {
+        $matrix = [];
+
+        $number = [
+            'nyuin'    => 1,
+            'shujutsu' => 2,
+        ];
+
+        // 支払済み通院
+        foreach ($tsuinList as $i => $tsuin) {
+            foreach ($warrantyList as $warranty) {
+                if ($warranty['warrantyStart'] <= $tsuin['date'] &&
+                    $tsuin['date'] <= $warranty['warrantyEnd']) {
+                    while ($warranty['warrantyMax'] --) {
+                        if ($tsuin['warranty']['type'] == $warranty['type'] &&
+                            $tsuin['warranty']['date'] == $warranty['date']) {
+                            // 前回の組み合わせ
+                            $score = substr(str_replace('-', '', $tsuinList[$i]['date']), 2);
+                        } else {
+                            // 切り替えはなるべく発生しないように
+                            $score = sprintf(
+                                '%01d%06d',
+                                $number[$warranty['type']],
+                                substr(str_replace('-', '', $tsuinList[$i]['date']), 2)
+                            ) * 2;
+                        }
+                        $matrix[$i][] = isset($excludeList[$tsuin['date']]) ?
+                                      self::DISALLOWED :
+                                      (int) $score;
+                    }
+                } else {
+                    while ($warranty['warrantyMax'] --) {
+                        $matrix[$i][] = self::DISALLOWED;
+                    }
+                }
+            }
+        }
+
+        // 新しい通院
+        $base = count($matrix);
+        foreach ($otherList as $i => $tsuin) {
+            foreach ($warrantyList as $warranty) {
+                if ($warranty['warrantyStart'] <= $tsuin['date'] &&
+                    $tsuin['date'] <= $warranty['warrantyEnd']) {
+                    while ($warranty['warrantyMax'] --) {
+                        $score = sprintf(
+                            '1%01d%06d',
+                            $number[$warranty['type']],
+                            substr(str_replace('-', '', $otherList[$i]['date']), 2)
+                        ) * 2;
+                        $matrix[$i+$base][] = isset($excludeList[$tsuin['date']]) ?
+                                            self::DISALLOWED :
+                                            (int) $score;
+                    }
+                } else {
+                    while ($warranty['warrantyMax'] --) {
+                        $matrix[$i+$base][] = self::DISALLOWED;
+                    }
+                }
+            }
+        }
+        return $matrix;
     }
 }
