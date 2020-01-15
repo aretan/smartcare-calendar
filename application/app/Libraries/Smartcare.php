@@ -397,7 +397,7 @@ class Smartcare
             ],
             [
                 'id' => 'warranty',
-                'events' => self::toCalendarEvents($ukeban['all']['nyuin'], $filter, 'warrantyStart', 'warrantyEnd', null, $exclude),
+                'events' => self::toCalendarEvents(self::conbineNyuin($ukeban['all']['nyuin'], true), $filter, 'warrantyStart', 'warrantyEnd', null, $exclude),
                 'rendering' => 'background',
             ],
             [
