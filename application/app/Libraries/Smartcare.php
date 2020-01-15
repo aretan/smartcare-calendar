@@ -535,7 +535,9 @@ class Smartcare
                         $event['end'] = $buff;
                     }
                 }
-                $events[] = $event;
+                if ($event['start'] <= $event['end']) {
+                    $events[] = $event;
+                }
             } else {
                 $event = [];
                 $event['start'] = $line[$start];
